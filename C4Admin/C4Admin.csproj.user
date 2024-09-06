@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="GUI\AssetEditors\EditAcl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditAclGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditChangeTrigger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditConfigEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditFolderType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditFormat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditIndexItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditLanguage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditLifecycle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditLifecycleState.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditMetasetType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditObjectType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditRelationType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetEditors\EditUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\AclsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\ChangeTriggersControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\ConfigEntriesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\FolderTypesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\FormatsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\GroupsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\IndexItemsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\LanguagesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\LifecyclesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\MetasetTypesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\ObjectTypesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\RelationTypesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\TestInterfaceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\AssetLists\UsersControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GUI\C4AMainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

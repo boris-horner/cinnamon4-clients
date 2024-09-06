@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataModel\**" />
+    <EmbeddedResource Remove="DataModel\**" />
+    <None Remove="DataModel\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Log\" />
+    <Folder Include="TaskDefinitions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\C4ServerConnector\C4ServerConnector.csproj" />
+    <ProjectReference Include="..\ContentAwareness\ContentAwareness.csproj" />
+  </ItemGroup>
+
+</Project>

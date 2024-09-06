@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>C4ObjectApi</name>
+    </assembly>
+    <members>
+        <member name="P:C4ObjectApi.Operations.Import.RootImportFileNode.ImportNodes">
+            <summary>
+            Gets the child ImportFileNode dictionary.
+            </summary>
+        </member>
+        <member name="M:C4ObjectApi.Operations.Import.RootImportFileNode.CollectImportNodes(System.String,System.Collections.Generic.Dictionary{System.String,C4ObjectApi.Operations.Import.ImportFileNode})">
+            <summary>
+            Add the deep dependencies of a content adaptor to <c>children</c>.
+            </summary>
+            <param name="ca">content adaptor</param>
+            <param name="children">hashtable containing all dependencies of content adaptor ca</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.GetSubfolders">
+            <summary>
+            Return all folders inside a folder.
+            </summary>
+            <remarks>Causes a command to be send to the server</remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.CreateSubfolder(System.String)">
+            <summary>
+            Creates a subfolder to this folder in the repository.
+            </summary>
+            <param name="name">the name of the subfolder</param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.DeleteFolder">
+            <summary>
+            Delete this folder in the repository.
+            </summary>
+            <remarks>empty folders only</remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.Delete(System.Boolean)">
+            <summary>
+            Deletes a folder and its content recursively
+            </summary>
+            <param name="deleteContents"><c>true</c> - delete folder content recursively</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.SetDependencies(System.String,System.Collections.Generic.Dictionary{System.String,C4ObjectApi.Repository.CmnObject})">
+            <summary>
+            Set the dependencies for a file.
+            </summary>
+            <param name="fnToObj">a dictionary containing all dependencies for the file</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:C4ObjectApi.Repository.CmnFolder.CreateLinks(System.Collections.Generic.Dictionary{System.Int64,C4ObjectApi.Interfaces.IRepositoryNode},C4ServerConnector.Assets.C4Acl)">
+            <summary>
+            Set name and or description of an folder.
+            currently accepted fields
+            <list type="bullet">
+            <item><description>[parentid] = new parent id</description></item>
+            <item><description>[name]= new name</description></item>
+            </list>
+            </summary>
+            <exception cref="T:System.Exception">if the command failed</exception>
+            <remarks></remarks>
+        </member>
+    </members>
+</doc>

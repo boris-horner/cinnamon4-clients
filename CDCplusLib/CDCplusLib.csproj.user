@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Common\GUI\AddRemoveList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\Checkin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ContextTabControlContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\EditListValue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\LifecycleStateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\LifecycleStateSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ListViewColumnEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ListViewSettingsEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ObjectWithoutContent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ProgressBarPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ProgressNumericPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\RelationTypeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\ResultListDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\SelectDeleteVersions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\SelectObjectsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\SelectVersion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\SessionTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Common\GUI\TextWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\Import\EditFileImportRequests.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Common\Import\EditSelectedFileImportRequests.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TabControls\ContentsFolderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\ContentsListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\ContentsSessionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\EditRawMetadataTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\FolderPropertiesTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\ListPropertiesTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\ObjectPropertiesTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\PermissionsTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\RelationsTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchOperatorGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermBooleanGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermCustomListValueGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermCustomTreeValueGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermDateGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermDecimalGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermFolderGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermIntegerGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermLifecycleGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermStringGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\SearchEditorNodes\SearchTermSystemConfigItemsGui.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TabControls\ViewNotificationTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
