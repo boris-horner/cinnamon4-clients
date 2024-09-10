@@ -192,8 +192,6 @@ namespace CDCplusLib.DataModel
                             // silently ignore unconfigured columns
                             return "---";
                         }
-
-                        break;
                     }
             }
         }
