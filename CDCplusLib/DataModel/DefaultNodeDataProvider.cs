@@ -142,7 +142,7 @@ namespace CDCplusLib.DataModel
                             return "";
                         if (o.LifecycleState is null)
                             return "";
-                        return o.LifecycleState.Name + " [" + o.Session.SessionConfig.C4Sc.LifecyclesById[o.LifecycleState.LifecycleId].Name + "]";
+                        return o.LifecycleState.ToString() + " [" + o.Session.SessionConfig.C4Sc.LifecyclesById[o.LifecycleState.LifecycleId].ToString() + "]";
                     }
 
                 case "language":
