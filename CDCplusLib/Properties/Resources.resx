@@ -886,6 +886,9 @@ The change will be committed when you click the Save button.</value>
   <data name="permObjectContentWrite" xml:space="preserve">
     <value>Write content</value>
   </data>
+  <data name="permObjectLanguageWrite" xml:space="preserve">
+    <value>Write language</value>
+  </data>
   <data name="permObjectLifecycleStateWrite" xml:space="preserve">
     <value>Write LC state</value>
   </data>

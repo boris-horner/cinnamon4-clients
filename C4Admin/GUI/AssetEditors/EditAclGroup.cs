@@ -60,30 +60,40 @@ namespace C4Admin.GUI.AssetEditors
         private void InitLists()
         {
             clbPermissions.Items.Clear();
-            clbPermissions.Items.Add(GetPermissionEntry("folder.create.folder"));
-            clbPermissions.Items.Add(GetPermissionEntry("folder.create.object"));
-            clbPermissions.Items.Add(GetPermissionEntry("link.target.write"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.acl.write"));
+
+            // common
             clbPermissions.Items.Add(GetPermissionEntry("node.browse"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.delete"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.metadata.read"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.metadata.write"));
+            clbPermissions.Items.Add(GetPermissionEntry("node.acl.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.name.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.owner.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.parent_folder.write"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.summary.write"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.sysmetadata.read"));
             clbPermissions.Items.Add(GetPermissionEntry("node.type.write"));
+            clbPermissions.Items.Add(GetPermissionEntry("node.sysmetadata.read"));      // obsolete?
+            clbPermissions.Items.Add(GetPermissionEntry("node.metadata.read"));
+            clbPermissions.Items.Add(GetPermissionEntry("node.metadata.write"));
+            clbPermissions.Items.Add(GetPermissionEntry("node.summary.write"));
+            clbPermissions.Items.Add(GetPermissionEntry("node.delete"));
+
+            // object
+            clbPermissions.Items.Add(GetPermissionEntry("object.lock"));
             clbPermissions.Items.Add(GetPermissionEntry("object.content.read"));
             clbPermissions.Items.Add(GetPermissionEntry("object.content.write"));
             clbPermissions.Items.Add(GetPermissionEntry("object.language.write"));
             clbPermissions.Items.Add(GetPermissionEntry("object.lifecyclestate.write"));
-            clbPermissions.Items.Add(GetPermissionEntry("object.lock"));
             clbPermissions.Items.Add(GetPermissionEntry("object.version"));
+
+            // folder
+            clbPermissions.Items.Add(GetPermissionEntry("folder.create.object"));
+            clbPermissions.Items.Add(GetPermissionEntry("folder.create.folder"));
+
+            // relation
             clbPermissions.Items.Add(GetPermissionEntry("relation.child.add"));
             clbPermissions.Items.Add(GetPermissionEntry("relation.child.remove"));
             clbPermissions.Items.Add(GetPermissionEntry("relation.parent.add"));
             clbPermissions.Items.Add(GetPermissionEntry("relation.parent.remove"));
+
+            // link
+            clbPermissions.Items.Add(GetPermissionEntry("link.target.write"));
 
             cboAcl.Items.Clear();
             foreach (C4Acl acl in _acls.Values)

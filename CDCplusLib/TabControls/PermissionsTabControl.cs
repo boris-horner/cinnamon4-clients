@@ -92,27 +92,28 @@ namespace CDCplusLib.TabControls
             lvwCurrentPermissions.Groups.Add("link", Properties.Resources.lblLinkPermissions);
 
             // common
-            lvwCurrentPermissions.Items.Add("Node_Acl_Write", Properties.Resources.permNodeAclWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
             lvwCurrentPermissions.Items.Add("Node_Browse", Properties.Resources.permNodeBrowse, "inactive").Group = lvwCurrentPermissions.Groups["common"];
-            lvwCurrentPermissions.Items.Add("Node_Delete", Properties.Resources.permNodeDelete, "inactive").Group = lvwCurrentPermissions.Groups["common"];
-            lvwCurrentPermissions.Items.Add("Node_Metadata_Read", Properties.Resources.permNodeMetadataRead, "inactive").Group = lvwCurrentPermissions.Groups["common"];
-            lvwCurrentPermissions.Items.Add("Node_Metadata_Write", Properties.Resources.permNodeMetadataWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
+            lvwCurrentPermissions.Items.Add("Node_Acl_Write", Properties.Resources.permNodeAclWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
             lvwCurrentPermissions.Items.Add("Node_Name_Write", Properties.Resources.permNodeNameWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
             lvwCurrentPermissions.Items.Add("Node_Owner_Write", Properties.Resources.permNodeOwnerWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
             lvwCurrentPermissions.Items.Add("Node_Parent_Folder_Write", Properties.Resources.permNodeMove, "inactive").Group = lvwCurrentPermissions.Groups["common"];
-            lvwCurrentPermissions.Items.Add("Node_Summary_Write", Properties.Resources.permNodeSummaryWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
             lvwCurrentPermissions.Items.Add("Node_Type_Write", Properties.Resources.permNodeTypeWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
+            lvwCurrentPermissions.Items.Add("Node_Metadata_Read", Properties.Resources.permNodeMetadataRead, "inactive").Group = lvwCurrentPermissions.Groups["common"];
+            lvwCurrentPermissions.Items.Add("Node_Metadata_Write", Properties.Resources.permNodeMetadataWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
+            lvwCurrentPermissions.Items.Add("Node_Summary_Write", Properties.Resources.permNodeSummaryWrite, "inactive").Group = lvwCurrentPermissions.Groups["common"];
+            lvwCurrentPermissions.Items.Add("Node_Delete", Properties.Resources.permNodeDelete, "inactive").Group = lvwCurrentPermissions.Groups["common"];
 
             // object
+            lvwCurrentPermissions.Items.Add("Object_Lock", Properties.Resources.permObjectLock, "inactive").Group = lvwCurrentPermissions.Groups["object"];
             lvwCurrentPermissions.Items.Add("Object_Content_Read", Properties.Resources.permObjectContentRead, "inactive").Group = lvwCurrentPermissions.Groups["object"];
             lvwCurrentPermissions.Items.Add("Object_Content_Write", Properties.Resources.permObjectContentWrite, "inactive").Group = lvwCurrentPermissions.Groups["object"];
+            lvwCurrentPermissions.Items.Add("Object_Language_Write", Properties.Resources.permObjectLanguageWrite, "inactive").Group = lvwCurrentPermissions.Groups["object"];
             lvwCurrentPermissions.Items.Add("Object_LifecycleState_Write", Properties.Resources.permObjectLifecycleStateWrite, "inactive").Group = lvwCurrentPermissions.Groups["object"];
-            lvwCurrentPermissions.Items.Add("Object_Lock", Properties.Resources.permObjectLock, "inactive").Group = lvwCurrentPermissions.Groups["object"];
             lvwCurrentPermissions.Items.Add("Object_Version", Properties.Resources.permObjectVersion, "inactive").Group = lvwCurrentPermissions.Groups["object"];
 
             // folder
-            lvwCurrentPermissions.Items.Add("Folder_Create_Folder", Properties.Resources.permFolderCreateFolder, "inactive").Group = lvwCurrentPermissions.Groups["folder"];
             lvwCurrentPermissions.Items.Add("Folder_Create_Object", Properties.Resources.permFolderCreateObject, "inactive").Group = lvwCurrentPermissions.Groups["folder"];
+            lvwCurrentPermissions.Items.Add("Folder_Create_Folder", Properties.Resources.permFolderCreateFolder, "inactive").Group = lvwCurrentPermissions.Groups["folder"];
 
             // relation
             lvwCurrentPermissions.Items.Add("Relation_Child_Add", Properties.Resources.permRelationChildAdd, "inactive").Group = lvwCurrentPermissions.Groups["relation"];
@@ -205,6 +206,7 @@ namespace CDCplusLib.TabControls
 
             // object
             lvwCurrentPermissions.Items["Object_LifecycleState_Write"].ImageKey = ow.Permissions.Object_LifecycleState_Write ? "active" : "inactive";
+            lvwCurrentPermissions.Items["Object_Language_Write"].ImageKey = ow.Permissions.Object_Language_Write ? "active" : "inactive";
             lvwCurrentPermissions.Items["Object_Content_Read"].ImageKey = ow.Permissions.Object_Content_Read ? "active" : "inactive";
             lvwCurrentPermissions.Items["Object_Content_Write"].ImageKey = ow.Permissions.Object_Content_Write ? "active" : "inactive";
             lvwCurrentPermissions.Items["Object_Lock"].ImageKey = ow.Permissions.Object_Lock ? "active" : "inactive";
@@ -249,6 +251,7 @@ namespace CDCplusLib.TabControls
             if (perm.Node_Metadata_Write) AddString(result, Properties.Resources.permNodeMetadataWrite);
             if (perm.Node_Summary_Write) AddString(result, Properties.Resources.permNodeSummaryWrite);
             if (perm.Node_Delete) AddString(result, Properties.Resources.permNodeDelete);
+            if (perm.Object_Language_Write) AddString(result, Properties.Resources.permObjectLanguageWrite);
             if (perm.Object_LifecycleState_Write) AddString(result, Properties.Resources.permObjectLifecycleStateWrite);
             if (perm.Object_Content_Read) AddString(result, Properties.Resources.permObjectContentRead);
             if (perm.Object_Content_Write) AddString(result, Properties.Resources.permObjectContentWrite);

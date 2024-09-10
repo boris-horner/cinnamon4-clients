@@ -2354,6 +2354,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write language.
+        /// </summary>
+        internal static string permObjectLanguageWrite {
+            get {
+                return ResourceManager.GetString("permObjectLanguageWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write LC state.
         /// </summary>
         internal static string permObjectLifecycleStateWrite {

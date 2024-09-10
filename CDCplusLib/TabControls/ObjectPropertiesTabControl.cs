@@ -27,7 +27,7 @@ namespace CDCplusLib.TabControls
 {
     public partial class ObjectPropertiesTabControl : UserControl, IGenericControl
     {
-        private bool _editable;
+        //private bool _editable;
         private bool _readable;
         private bool _enableEvents;
         private CmnObject _o;
@@ -53,7 +53,7 @@ namespace CDCplusLib.TabControls
             _enableEvents = true;
             _initCompleted = false;
             LocalizeGui();
-            SetControlsEnabledState(false, false);
+            SetControlsEnabledState(false);
         }
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }
@@ -97,17 +97,18 @@ namespace CDCplusLib.TabControls
             }
         }
 
-        private void SetControlsEnabledState(bool dirty, bool writable)
+        private void SetControlsEnabledState(bool dirty)
         {
             if (_enableEvents)
             {
+                bool writable = _o == null? false : (_o.Permissions.Object_Lock && (_o.Permissions.Node_Name_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Node_Owner_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Object_Language_Write || _o.Permissions.Object_LifecycleState_Write));
                 IsDirty = dirty;
                 cmdSave.Enabled = writable && IsDirty;
-                txtName.Enabled = writable;
-                cboObjType.Enabled = writable && !_lockObjType;
-                cboOwner.Enabled = writable;
-                cboLanguage.Enabled = writable;
-                cmdSelectLifecycle.Enabled = writable;
+                txtName.Enabled = writable && _o.Permissions.Node_Name_Write;
+                cboObjType.Enabled = writable && !_lockObjType && _o.Permissions.Node_Type_Write;
+                cboOwner.Enabled = writable && _o.Permissions.Node_Owner_Write;
+                cboLanguage.Enabled = writable && _o.Permissions.Object_Language_Write;
+                cmdSelectLifecycle.Enabled = writable && _o.Permissions.Object_LifecycleState_Write;
             }
         }
 
@@ -174,14 +175,13 @@ namespace CDCplusLib.TabControls
             IsDirty = false;
             if (_o == null)
             {
-                _editable = false;
+                //_editable = false;
                 _readable = false;
                 ClearGui();
             }
             else
             {
                 // TODO: enable / disable metadata fields according to individual permissions
-                _editable = (_o.Permissions.Object_Lock && (_o.Permissions.Node_Name_Write && _o.Permissions.Node_Owner_Write && _o.Permissions.Node_Type_Write && _o.Permissions.Object_Language_Write));
                 _readable = (_o.Permissions.Node_Browse);
 
                 if (_readable)
@@ -195,7 +195,7 @@ namespace CDCplusLib.TabControls
             }
             if (msg != null) MessageReceived(msg);
             _enableEvents = true;
-            SetControlsEnabledState(false, _editable);
+            SetControlsEnabledState(false);
         }
         public bool IsDirty { get; private set; }
         public bool IsValid(Dictionary<long, IRepositoryNode> dict, IGenericControl.ContextType ct)
@@ -271,7 +271,7 @@ namespace CDCplusLib.TabControls
             finally
             {
                 if (origLock == null) _o.Unlock();
-                SetControlsEnabledState(false, _editable);
+                SetControlsEnabledState(false);
                 ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
                 msg.ModifiedObjects.Add(_o.Id, _o);
                 MessageSent?.Invoke(msg);
@@ -291,22 +291,22 @@ namespace CDCplusLib.TabControls
 
         private void txtName_TextChanged(object sender, EventArgs e)
         {
-            SetControlsEnabledState(true, _editable);
+            SetControlsEnabledState(true);
         }
 
         private void cboOwner_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetControlsEnabledState(true, _editable);
+            SetControlsEnabledState(true);
         }
 
         private void cboObjType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetControlsEnabledState(true, _editable);
+            SetControlsEnabledState(true);
         }
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetControlsEnabledState(true, _editable);
+            SetControlsEnabledState(true);
         }
 
         private void lnkParentPath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -327,7 +327,7 @@ namespace CDCplusLib.TabControls
             {
                 _selectedLcState = lcSel.SelectedLifecycleState;
                 UpdateLifecycleDisplay();
-                SetControlsEnabledState(true, _editable);
+                SetControlsEnabledState(true);
             }
         }
         private void UpdateLifecycleDisplay()

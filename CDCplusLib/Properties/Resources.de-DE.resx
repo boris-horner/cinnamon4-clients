@@ -916,4 +916,7 @@ Die Änderung wird gespeichert, wenn Sie auf den Speichern-Button klicken.</valu
   <data name="mnuAddMetasetType" xml:space="preserve">
     <value>Metaset-Typ hinzufügen</value>
   </data>
+  <data name="permObjectLanguageWrite" xml:space="preserve">
+    <value>Sprache schreiben</value>
+  </data>
 </root>
