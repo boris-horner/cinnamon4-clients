@@ -57,7 +57,7 @@ namespace C4ServerConnector.Assets
             if (!MetasetsByTypeId.ContainsKey(ms.TypeId)) MetasetsByTypeId.Add(ms.TypeId, new HashSet<C4Metaset>());
             if(!MetasetsByTypeId[ms.TypeId].Contains(ms)) MetasetsByTypeId[ms.TypeId].Add(ms);
         }
-        [Obsolete("The LegacyXml property is temporary until all client code using the legacy Metadata property are ported to the new logic.")]
+        //[Obsolete("The LegacyXml property is temporary until all client code using the legacy Metadata property are ported to the new logic.")]
         //public XmlDocument LegacyXml
         //{
         //    get
