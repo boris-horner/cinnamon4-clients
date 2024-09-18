@@ -56,7 +56,7 @@ namespace CDCplusLib.ContextFunctions
                 bool delAllRels = false;
                 if (sel.Count == 1 && sel.Values.First() is CmnObject)
                 {
-                    if (((CmnObject)sel.Values.First()).LatestBranch && _deleteAllVersionsEnabled)
+                    if ((((CmnObject)sel.Values.First()).LatestBranch || ((CmnObject)sel.Values.First()).LatestHead) && _deleteAllVersionsEnabled)
                     {
                         SelectDeleteVersions delDlg = new SelectDeleteVersions(_deleteAllVersionsEnabled, true);
                         if (delDlg.ShowDialog() == DialogResult.OK)
