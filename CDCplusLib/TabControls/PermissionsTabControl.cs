@@ -188,6 +188,12 @@ namespace CDCplusLib.TabControls
         {
             IRepositoryNode ow = _dict.First().Value;
 
+            bool cboAclEnabled = cboAcl.Enabled;
+            cboAcl.Enabled = true;
+            //cboAcl.SelectedItem = ow.Acl;
+            cboAcl.Text = ow.Acl.ToString();
+            cboAcl.Enabled = cboAclEnabled;
+
             bool owner = _s.User == ow.Owner;
             bool superuser = _s.IsSuperuser;
             SetCurrentPermissionLabel(owner, superuser);
@@ -225,10 +231,6 @@ namespace CDCplusLib.TabControls
 			// link
 			lvwCurrentPermissions.Items["Link_Target_Write"].ImageKey = ow.Permissions.Link_Target_Write ? "active" : "inactive";
 
-            bool cboAclEnabled = cboAcl.Enabled;
-            cboAcl.Enabled = true;
-            cboAcl.SelectedItem = ow.Acl;
-            cboAcl.Enabled = cboAclEnabled;
         }
 
         private void AddString(StringBuilder sb, string text)
