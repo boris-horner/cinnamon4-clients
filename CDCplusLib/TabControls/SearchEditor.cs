@@ -26,6 +26,7 @@ using C4ObjectApi.Global;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using System.Xml.Linq;
 
 namespace CDCplusLib.TabControls
 {
@@ -51,7 +52,7 @@ namespace CDCplusLib.TabControls
         private int _maxResultCount;
         private bool _enableEvents;
         private Dictionary<string, XmlElement> _fieldToTermDefinition;
-        private Dictionary<string, C4Metaset> _nameToMasterData;
+        private Dictionary<string, XmlElement> _nameToMasterData;
         private readonly Random _rnd;
         private Dictionary<long, IRepositoryNode> _dict;
         private C4Metadata _meta;
@@ -360,35 +361,48 @@ namespace CDCplusLib.TabControls
                 }
             }
 
-            _nameToMasterData = new Dictionary<string, C4Metaset>();
+            _nameToMasterData = new Dictionary<string, XmlElement>();
             foreach (XmlElement mdoEl in _configEl.SelectNodes("custom/master_data/master_data_object"))
             {
                 string name = mdoEl.GetAttribute("name");
-                if (!_nameToMasterData.ContainsKey(name))
+                switch(mdoEl.GetAttribute("type"))
                 {
-                    // find object
-                    // TODO: add folder path reference as search criteria
-                    XmlElement mdSourceEl = (XmlElement)mdoEl.SelectSingleNode("custom/control_data/master_data_source");
-                    CmnObject mdO = _s.SearchSingleObject("<BooleanQuery>" +
-                        "<Clause occurs=\"must\" ><ExactPointQuery type=\"long\" fieldName=\"object_type\" value=\"" + ((long)_s.SessionConfig.C4Sc.ObjectTypesByName["_config"].Id).ToString() + "\"/></Clause>" +
-                        "<Clause occurs=\"must\" ><TermQuery fieldName=\"name\" >" + mdoEl.SelectSingleNode("master_data_source").InnerText.ToLower() + "</TermQuery></Clause>" +
-                        "<Clause occurs=\"must\" ><TermQuery fieldName=\"latest_head\" >true</TermQuery></Clause></BooleanQuery>", false);
+                    case "metaset":
+                        {
+                            if (!_nameToMasterData.ContainsKey(name))
+                            {
+                                // find object
+                                // TODO: add folder path reference as search criteria
+                                XmlElement mdSourceEl = (XmlElement)mdoEl.SelectSingleNode("custom/control_data/master_data_source");
+                                CmnObject mdO = _s.SearchSingleObject("<BooleanQuery>" +
+                                    "<Clause occurs=\"must\" ><ExactPointQuery type=\"long\" fieldName=\"object_type\" value=\"" + ((long)_s.SessionConfig.C4Sc.ObjectTypesByName["_config"].Id).ToString() + "\"/></Clause>" +
+                                    "<Clause occurs=\"must\" ><TermQuery fieldName=\"name\" >" + mdoEl.SelectSingleNode("master_data_source").InnerText.ToLower() + "</TermQuery></Clause>" +
+                                    "<Clause occurs=\"must\" ><TermQuery fieldName=\"latest_head\" >true</TermQuery></Clause></BooleanQuery>", false);
 
-                    // get metaset
-                    C4Metaset ms = null;
-                    try
-                    {
-                        HashSet<long> typeIds = new HashSet<long>();
-                        long mdTypeNameId = (long)_s.SessionConfig.C4Sc.MetasetTypesByName[mdoEl.SelectSingleNode("master_data_metaset_name").InnerText].Id;
-                        typeIds.Add(mdTypeNameId);
-                        C4Metadata m = _s.CommandSession.GetObjectMeta(mdO.Id, typeIds);
-                        ms = m.MetasetsByTypeId[mdTypeNameId].First();
-                        _nameToMasterData.Add(name, ms);
-                    }
-                    catch (NullReferenceException ex)
-                    {
-                        throw new ApplicationException("SearchEditor: master_data_metaset_name missing from the configuration.");
-                    }
+                                // get metaset
+                                C4Metaset ms = null;
+                                try
+                                {
+                                    HashSet<long> typeIds = new HashSet<long>();
+                                    long mdTypeNameId = (long)_s.SessionConfig.C4Sc.MetasetTypesByName[mdoEl.SelectSingleNode("master_data_metaset_name").InnerText].Id;
+                                    typeIds.Add(mdTypeNameId);
+                                    C4Metadata m = _s.CommandSession.GetObjectMeta(mdO.Id, typeIds);
+                                    ms = m.MetasetsByTypeId[mdTypeNameId].First();
+                                    _nameToMasterData.Add(name, ms.Content);
+                                }
+                                catch (NullReferenceException ex)
+                                {
+                                    throw new ApplicationException("SearchEditor: master_data_metaset_name missing from the configuration.");
+                                }
+                            }
+                            break;
+                        }
+                    case "config_entry":
+                        {
+                            XmlDocument ce = _s.GetConfigEntry(mdoEl.GetAttribute("name"));
+                            _nameToMasterData.Add(name, ce.DocumentElement);
+                            break;
+                        }
                 }
             }
             XmlNode mpsN = _configEl.SelectSingleNode("custom/maxpagesize");

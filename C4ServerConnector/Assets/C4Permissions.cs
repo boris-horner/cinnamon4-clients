@@ -36,7 +36,7 @@ namespace C4ServerConnector.Assets
         public bool Node_Owner_Write { get { return GetPermission("node.owner.write"); } set { SetPermission("node.owner.write", value); } }
         public bool Node_Parent_Folder_Write{ get { return GetPermission("node.parent_folder.write"); } set { SetPermission("node.parent_folder.write", value); } }
         public bool Node_Summary_Write { get { return GetPermission("node.summary.write"); } set { SetPermission("node.summary.write", value); } }
-        public bool Node_SysMetadata_Read { get { return GetPermission("node.sysmetadata.read"); } set { SetPermission("node.sysmetadata.read", value); } }
+        //public bool Node_SysMetadata_Read { get { return GetPermission("node.sysmetadata.read"); } set { SetPermission("node.sysmetadata.read", value); } }
         public bool Node_Type_Write { get { return GetPermission("node.type.write"); } set { SetPermission("node.type.write", value); } }
         public bool Object_Content_Read { get { return GetPermission("object.content.read"); } set { SetPermission("object.content.read", value); } }
         public bool Object_Content_Write { get { return GetPermission("object.content.write"); } set { SetPermission("object.content.write", value); } }
