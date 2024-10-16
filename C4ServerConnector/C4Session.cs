@@ -1860,7 +1860,7 @@ namespace C4ServerConnector
             }
             catch (WebException ex)
             {
-                ThrowException(ex);
+                //ThrowException(ex);
                 return null;
             }
         }

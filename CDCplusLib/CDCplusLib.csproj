@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,10 @@
     <EmbeddedResource Remove="Common\GUI\LifeCycleTermControl.resx" />
     <EmbeddedResource Remove="Common\GUI\StandardMessage.resx" />
     <EmbeddedResource Remove="Common\GUI\XmlTextBox.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
   <ItemGroup>
