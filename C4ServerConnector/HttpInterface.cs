@@ -236,14 +236,21 @@ namespace C4ServerConnector
             else
             {
                 StringBuilder sb = new StringBuilder();
-                foreach(XmlElement errorEl in errors)
+                bool throwable = false;
+                foreach (XmlElement errorEl in errors)
                 {
                     string code = errorEl.SelectSingleNode("code").InnerText;
                     if (code == "INTERNAL_SERVER_ERROR_TRY_AGAIN_LATER") throw new InternalServerErrorException(errorEl.SelectSingleNode("message").InnerText);
-                    else if (code == "") throw new SessionExpiredException(errorEl.SelectSingleNode("message").InnerText);
-                    sb.AppendLine(code + ": "+ errorEl.SelectSingleNode("message").InnerText);
+                    else if (code == "AUTHENTICATION_FAIL_SESSION_EXPIRED") throw new SessionExpiredException(errorEl.SelectSingleNode("message").InnerText);
+                    else if (code == "FOLDER_NOT_FOUND") ; /* do nothing*/
+                    else if (code == "OBJECT_NOT_FOUND") ; /* do nothing*/
+                    else
+                    {
+                        throwable = true;
+                        sb.AppendLine(code + ": " + errorEl.SelectSingleNode("message").InnerText);
+                    }
                 }
-                throw new ApplicationException(sb.ToString());
+                if(throwable) throw new ApplicationException(sb.ToString());
             }
         }
         private void CheckForConnectErrors(XmlDocument resp)
