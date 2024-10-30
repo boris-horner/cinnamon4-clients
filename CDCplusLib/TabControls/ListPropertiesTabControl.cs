@@ -40,10 +40,10 @@ namespace CDCplusLib.TabControls
         private ToolTip _tt;
         private C4LifecycleState _lcs;
         private Dictionary<long, IRepositoryNode> _dict;
-        //private XmlElement _configEl;
         private C4LifecycleState _selectedLcState;
         private bool _lcDirty;
-        //private XmlElement _configSet;
+        private bool _isSuperuser = false;
+        private bool _isSuperuserSet = false;
 
         public event IGenericControl.MessageSentEventHandler MessageSent;
 
@@ -60,10 +60,13 @@ namespace CDCplusLib.TabControls
             lblTotalSize.Text = Properties.Resources.lblTotalSize;
             lblFormat.Text = Properties.Resources.lblFormat;
             lblLanguage.Text = Properties.Resources.lblLanguage;
+            lblAcl.Text = Properties.Resources.lblAcl;
             lblOwner.Text = Properties.Resources.lblOwner;
             lblObjType.Text = Properties.Resources.lblObjectType;
             lblLifecycleAndState.Text = Properties.Resources.lblLifecycleAndState;
             lblCount.Text = Properties.Resources.lblCount;
+            chkContentChanged.Text = Properties.Resources.lblContentChanged;
+            chkMetadataChanged.Text = Properties.Resources.lblMetadataChanged;
 
             _tt = new ToolTip();
             _tt.SetToolTip(cmdSave, Properties.Resources.ttSave);
@@ -71,56 +74,19 @@ namespace CDCplusLib.TabControls
 
         private void InitLists()
         {
-            // TODO: convert this code from using client.behaviour.config to general client configuration
             if (!_initCompleted)
             {
                 cboOwner.Items.Clear();
                 foreach (C4User u in _s.SessionConfig.C4Sc.UsersById.Values) cboOwner.Items.Add(u);
                 cboLanguage.Items.Clear();
                 foreach (C4Language l in _s.SessionConfig.C4Sc.LanguagesByName.Values) cboLanguage.Items.Add(l);
+                cboAcl.Items.Clear();
+                foreach (C4Acl a in _s.SessionConfig.C4Sc.AclsByName.Values) cboAcl.Items.Add(a);
                 cboObjType.Items.Clear();
                 foreach (C4ObjectType ot in _s.SessionConfig.C4Sc.ObjectTypesByName.Values) cboObjType.Items.Add(ot);
                 _initCompleted = true;
             }
         }
-        //private void InitConfig(string configSetName)
-        //{
-        //    if (_configSet == null)
-        //    {
-        //        try
-        //        {
-        //            XmlDocument ce = _s.GetConfigEntry("client.behaviour.config");
-        //            _configSet = (XmlElement)ce.SelectSingleNode("/config/config_sets/config_set[@name='" + configSetName + "']");
-        //            cboObjType.Items.Clear();
-        //            cboObjType.Items.Add("");
-        //            XmlElement otEl = ce == null ? null : (XmlElement)_configSet.SelectSingleNode("filters/objecttype");
-        //            foreach (C4ObjectType ot in _s.SessionConfig.C4Sc.ObjectTypesByName.Values)
-        //            {
-        //                if (_s.User.IsSuperuser | (otEl == null || otEl.SelectSingleNode("no_assign[.='" + ot.Name + "']") == null))
-        //                {
-        //                    cboObjType.Items.Add(ot);
-        //                }
-        //            }
-
-        //            cboOwner.Items.Clear();
-        //            cboOwner.Items.Add("");
-        //            foreach (C4User u in _s.SessionConfig.C4Sc.UsersById.Values)
-        //                cboOwner.Items.Add(u);
-        //            cboLanguage.Items.Clear();
-        //            cboLanguage.Items.Add("");
-        //            foreach (C4Language l in _s.SessionConfig.C4Sc.LanguagesByName.Values)
-        //                cboLanguage.Items.Add(l);
-        //        }
-        //        catch (ApplicationException apEx)
-        //        {
-        //            throw apEx;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw new ApplicationException("Missing or invalid configuration entry 'client.behaviour.config' - please contact your system administrator.");
-        //        }
-        //    }
-        //}
 
         private void ActivateControls(bool dirty)
         {
@@ -128,15 +94,8 @@ namespace CDCplusLib.TabControls
             {
                 IsDirty = dirty;
                 cmdSave.Enabled = dirty;
-
-                // Dim writable As Boolean = False
-                // If Not o_ Is Nothing Then
-                // writable = (o_.Locked Is Nothing) And (o_.Permissions.WriteObjectSysmeta)
-                // End If
-                // cmdSave.Enabled = writable And dirty
-                // cboObjType.Enabled = writable And Not lockObjType_
-                // cboOwner.Enabled = writable
-                // cboLanguage.Enabled = writable
+                chkContentChanged.Enabled = _isSuperuser;
+                chkMetadataChanged.Enabled = _isSuperuser;
             }
         }
 
@@ -155,6 +114,11 @@ namespace CDCplusLib.TabControls
         {
             _initCompleted = false;
             _dict = dict;
+            if (!_isSuperuserSet)
+            {
+                _isSuperuser = _s.User.GroupIds.Contains((long)_s.SessionConfig.C4Sc.GroupsByName["_superusers"].Id);
+                _isSuperuserSet = true;
+            }
             _lcDirty = false;
             //InitConfig("_default");
             if (dict.Count > 0)
@@ -167,6 +131,8 @@ namespace CDCplusLib.TabControls
                 bool ownDiffs = false;
                 C4Language lng = null;
                 bool lngDiffs = false;
+                C4Acl acl = null;
+                bool aclDiffs = false;
                 _lcs = null;
                 bool lcsHasValue = false;
                 bool lcsDiffs = false;
@@ -176,10 +142,38 @@ namespace CDCplusLib.TabControls
                 bool fmtHasValue = false;
                 _f = null;
                 bool fDiffs = false;
+                bool? metadataChanged = null;
+                bool? contentChanged = null;
+                bool metadataChangedDiffs = false;
+                bool contentChangedDiffs = false;
                 foreach (IRepositoryNode ow in dict.Values)
                 {
                     CmnObject o = (CmnObject)ow;
                     totalSize += o.ContentSize;
+                    if (!metadataChangedDiffs)
+                    {
+                        if (metadataChanged.HasValue)
+                        {
+                            if (metadataChanged != o.MetadataChanged)
+                                metadataChangedDiffs = true;
+                        }
+                        else
+                        {
+                            metadataChanged = o.MetadataChanged;
+                        }
+                    }
+                    if (!contentChangedDiffs)
+                    {
+                        if (contentChanged.HasValue)
+                        {
+                            if (contentChanged != o.ContentChanged)
+                                contentChangedDiffs = true;
+                        }
+                        else
+                        {
+                            contentChanged = o.ContentChanged;
+                        }
+                    }
                     if (!fDiffs)
                     {
                         // TODO: does this logic make sense? Isn't the second one always true?
@@ -213,12 +207,12 @@ namespace CDCplusLib.TabControls
                             lngDiffs = true;
                     }
 
-                    if (!lngDiffs)
+                    if (!aclDiffs)
                     {
-                        if (lng == null)
-                            lng = o.Language;
-                        if (lng != o.Language)
-                            lngDiffs = true;
+                        if (acl == null)
+                            acl = o.Acl;
+                        if (acl != o.Acl)
+                            aclDiffs = true;
                     }
 
                     if (!fmtDiffs)
@@ -283,6 +277,7 @@ namespace CDCplusLib.TabControls
                 cboObjType.Text = otDiffs ? "" : ot.ToString();
                 cboOwner.Text = ownDiffs ? "" : own.ToString();
                 cboLanguage.Text = lngDiffs ? "" : lng.ToString();
+                cboAcl.Text = aclDiffs ? "" : acl.ToString();
                 txtFormat.Text = fmtDiffs ? "" : fmt == null ? Properties.Resources.lblNoFormat : fmt.ToString();
                 if (fDiffs)
                 {
@@ -300,6 +295,22 @@ namespace CDCplusLib.TabControls
                     _lcs = null;
                 _selectedLcState = _lcs;
                 UpdateLifecycleDisplay(lcsDiffs);
+                if (metadataChangedDiffs)
+                {
+                    chkMetadataChanged.CheckState = CheckState.Indeterminate;
+                }
+                else
+                {
+                    chkMetadataChanged.CheckState = metadataChanged.Value ? CheckState.Checked : CheckState.Unchecked;
+                }
+                if (contentChangedDiffs)
+                {
+                    chkContentChanged.CheckState = CheckState.Indeterminate;
+                }
+                else
+                {
+                    chkContentChanged.CheckState = contentChanged.Value ? CheckState.Checked : CheckState.Unchecked;
+                }
             }
             else
             {
@@ -308,6 +319,7 @@ namespace CDCplusLib.TabControls
                 cboObjType.Text = "";
                 cboOwner.Text = "";
                 cboLanguage.Text = "";
+                cboAcl.Text = "";
                 txtFormat.Text = "";
                 txtLifecycleAndState.Text = "";
                 _selectedLcState = null;
@@ -351,6 +363,8 @@ namespace CDCplusLib.TabControls
 
             Dictionary<long, CmnObject> failed = new Dictionary<long, CmnObject>();
             C4User origLock = null;
+            bool? metadataChangedValue = chkMetadataChanged.CheckState == CheckState.Indeterminate ? null : (chkMetadataChanged.CheckState == CheckState.Checked);
+            bool? contentChangedValue = chkContentChanged.CheckState == CheckState.Indeterminate ? null : (chkContentChanged.CheckState == CheckState.Checked);
             foreach (CmnObject o in _dict.Values)
             {
                 try
@@ -360,46 +374,29 @@ namespace CDCplusLib.TabControls
                         origLock = o.Locked;
                         if (origLock == null)
                             o.Lock();
-                        if (o.Permissions.Node_Owner_Write && cboOwner.SelectedIndex > 0)
-                        {
-                            C4User selOwner = (C4User)cboOwner.SelectedItem;
-                            if (o.Owner != selOwner)
-								o.Session.CommandSession.UpdateObject(o.Id,
-																	null,
-																	null,
-																	selOwner.Id);
-                        }
 
-                        if (o.Permissions.Node_Type_Write && cboObjType.SelectedIndex > 0)
-                        {
-                            C4ObjectType selObjType = (C4ObjectType)cboObjType.SelectedItem;
-                            if (o.ObjectType != selObjType)
-								o.Session.CommandSession.UpdateObject(o.Id,
-																	null,
-																	null,
-																	null,
-                                                                    null,
-                                                                    selObjType.Id);
-                        }
+                        // TODO: combine all this into one statement
+                        bool? metadataChanged = _isSuperuser && metadataChangedValue.HasValue && metadataChangedValue != o.MetadataChanged ? metadataChangedValue : null;
+                        bool? contentChanged = _isSuperuser && contentChangedValue.HasValue && contentChangedValue != o.ContentChanged ? contentChangedValue : null;
+                        long? ownerId = (o.Permissions.Node_Owner_Write && cboOwner.SelectedIndex > 0 && o.Owner != (C4User)cboOwner.SelectedItem) ? ((C4User)cboOwner.SelectedItem).Id : null;
+                        long? objTypeId = (o.Permissions.Node_Type_Write && cboObjType.SelectedIndex > 0 && o.ObjectType != (C4ObjectType)cboObjType.SelectedItem) ? ((C4ObjectType)cboObjType.SelectedItem).Id : null;
+                        long? langId = (o.Permissions.Object_Language_Write && cboLanguage.SelectedIndex > 0 && o.Language != (C4Language)cboLanguage.SelectedItem) ? ((C4Language)cboLanguage.SelectedItem).Id : null;
+                        long? aclId = (o.Permissions.Node_Acl_Write && cboAcl.SelectedIndex > 0 && o.Acl != (C4Acl)cboAcl.SelectedItem) ? ((C4Acl)cboAcl.SelectedItem).Id : null;
 
-                        if (o.Permissions.Object_Language_Write && cboLanguage.SelectedIndex > 0)
-                        {
-                            C4Language selLanguage = (C4Language)cboLanguage.SelectedItem;
-                            if (o.Language != selLanguage)
-								o.Session.CommandSession.UpdateObject(o.Id,
-																	null,
-																	null,
-																	null,
-																	null,
-																	null,
-																	selLanguage.Id);
-                        }
-
+                        o.Session.CommandSession.UpdateObject(o.Id,
+                                                            null,
+                                                            null,
+                                                            ownerId,
+                                                            aclId,
+                                                            objTypeId,
+                                                            langId,
+                                                            metadataChanged,
+                                                            contentChanged);
                         if (_lcDirty)
                         {
                             if (o.Permissions.Object_LifecycleState_Write)
                             {
-                                o.LifecycleState=_selectedLcState;
+                                o.LifecycleState = _selectedLcState;
                             }
                             else
                             {
@@ -527,6 +524,21 @@ namespace CDCplusLib.TabControls
                 StandardMessage.ShowMessage(Properties.Resources.msgNoLifecyclesDefined, StandardMessage.Severity.ErrorMessage, this, null, null);
                 // TODO: better messaging
             }
+        }
+
+        private void chkContentChanged_CheckedChanged(object sender, EventArgs e)
+        {
+            ActivateControls(true);
+        }
+
+        private void chkMetadataChanged_CheckedChanged(object sender, EventArgs e)
+        {
+            ActivateControls(true);
+        }
+
+        private void cboAcl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ActivateControls(true);
         }
     }
 }
