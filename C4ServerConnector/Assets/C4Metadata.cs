@@ -28,7 +28,7 @@ namespace C4ServerConnector.Assets
         public C4Metadata(XmlElement assetEl)
         {
             MetasetsByTypeId = new Dictionary<long, HashSet<C4Metaset>>();
-            foreach(XmlElement msEl in assetEl.SelectNodes("metaset"))
+            if(assetEl!=null) foreach(XmlElement msEl in assetEl.SelectNodes("metaset"))
             {
                 AppendMetaset(new C4Metaset(msEl));
             }

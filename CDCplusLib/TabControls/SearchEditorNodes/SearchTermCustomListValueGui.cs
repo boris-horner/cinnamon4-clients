@@ -65,7 +65,7 @@ namespace CDCplusLib.TabControls.SearchEditorNodes
 
         public List<SearchEditor.Operators> ValidOperators { get; }
 
-        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, C4Metaset> nameToMasterData, GlobalApplicationData gad)
+        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, XmlElement> nameToMasterData, GlobalApplicationData gad)
         {
             _s = s;
             FieldName = fieldName; // termEl.GetAttribute("index_item");
@@ -77,7 +77,7 @@ namespace CDCplusLib.TabControls.SearchEditorNodes
 
             lbListValues.Items.Clear();
             string mdsName = termDefEl.SelectSingleNode("custom/master_data_source/@name").InnerText;
-            XmlElement masterData = (XmlElement)nameToMasterData[mdsName].Content.SelectSingleNode(termDefEl.SelectSingleNode("custom/master_data_root_xpath").InnerText);
+            XmlElement masterData = (XmlElement)nameToMasterData[mdsName].SelectSingleNode(termDefEl.SelectSingleNode("custom/master_data_root_xpath").InnerText);
             lbListValues.Sorted = termDefEl.SelectSingleNode("custom/sorted").InnerText == "true";
 
             foreach (XmlElement value in masterData.SelectNodes("data/value"))

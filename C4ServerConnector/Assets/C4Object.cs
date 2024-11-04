@@ -12,6 +12,7 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using System;
+using System.Linq;
 using System.Xml;
 
 namespace C4ServerConnector.Assets
@@ -85,6 +86,15 @@ namespace C4ServerConnector.Assets
                 Summary = summary.DocumentElement;
             }
             else Summary = null;
+
+            Metadata = new C4Metadata();
+            foreach(XmlElement msEl in assetEl.SelectNodes("metasets/metaset"))
+            {
+                C4Metaset ms = new C4Metaset(msEl);
+                if (!Metadata.MetasetsByTypeId.ContainsKey(ms.TypeId)) 
+                    Metadata.MetasetsByTypeId.Add(ms.TypeId, new System.Collections.Generic.HashSet<C4Metaset>());
+                Metadata.MetasetsByTypeId[ms.TypeId].Add(ms);
+            }
             //XmlElement metaEl = (XmlElement)assetEl.SelectSingleNode("meta");
             //if(metaEl!=null) Metadata = new C4Metadata(metaEl);
         }

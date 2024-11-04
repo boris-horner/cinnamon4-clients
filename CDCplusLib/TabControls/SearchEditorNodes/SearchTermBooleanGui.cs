@@ -62,7 +62,7 @@ namespace CDCplusLib.TabControls.SearchEditorNodes
             optFalse.BackColor = optFalse.Checked ? Color.Tomato : Color.Gray;
             ControlChanged?.Invoke(this, new EventArgs());
         }
-        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, C4Metaset> nameToMasterData, GlobalApplicationData gad)
+        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, XmlElement> nameToMasterData, GlobalApplicationData gad)
         {
             _s = s;
             FieldName = fieldName; // termEl.GetAttribute("index_item");

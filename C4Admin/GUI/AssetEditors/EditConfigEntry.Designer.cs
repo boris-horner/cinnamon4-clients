@@ -237,7 +237,6 @@ namespace C4Admin.GUI.AssetEditors
             ClientSize = new Size(1095, 1014);
             Controls.Add(pData);
             Controls.Add(panel7);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
             Name = "EditConfigEntry";
             Text = "Edit config entry";
             Load += EditConfigEntry_Load;

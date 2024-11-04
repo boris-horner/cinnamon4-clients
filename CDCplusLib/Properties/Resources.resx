@@ -916,4 +916,16 @@ The change will be committed when you click the Save button.</value>
   <data name="ttSave" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="lblChangedFlags" xml:space="preserve">
+    <value>Changed flags</value>
+  </data>
+  <data name="lblMetadataChanged" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="lblContentChanged" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="lblAcl" xml:space="preserve">
+    <value>ACL</value>
+  </data>
 </root>

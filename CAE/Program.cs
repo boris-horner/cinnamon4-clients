@@ -113,10 +113,9 @@ namespace CAE
                     try
                     {
                         // test session
-                        XmlDocument echoResp = c4s.Echo();
-                        //C4Folder echoF = c4s.GetFolderByPath("/home");      // TODO: fix echo command 
-                        if (echoResp != null)
-                        {
+                        //XmlDocument echoResp = c4s.Echo();
+                        //if (echoResp != null)
+                        //{
                             // jobs
                             XmlElement jobsEl = (XmlElement)serverEl.SelectSingleNode("jobs[@active='true']");
                             if (jobsEl != null)
@@ -240,12 +239,12 @@ namespace CAE
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            l.Log("Session is expired - trying to reconnect.");
-                            c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath);
-                        }
+                        //}
+                        //else
+                        //{
+                        //    l.Log("Session is expired - trying to reconnect.");
+                        //    c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath);
+                        //}
 
 
                     }

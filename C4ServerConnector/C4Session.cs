@@ -600,15 +600,18 @@ namespace C4ServerConnector
             Dictionary<long, C4Folder> result = new Dictionary<long, C4Folder>();
             try
             {
-                XmlDocument requestBody = new XmlDocument();
-                requestBody.AppendChild(requestBody.CreateElement("folderRequest"));
-                XmlElement idsEl = (XmlElement)requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ids"));
-                foreach (long id in ids) idsEl.AppendChild(requestBody.CreateElement("id")).InnerText = id.ToString();
-                requestBody.DocumentElement.AppendChild(requestBody.CreateElement("includeSummary")).InnerText = "true";
-                //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("includeCustomMetadata")).InnerText = includeCustomMetadata ? "true" : "false";
-                XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/folder/getFolders"), requestBody);
-                // CheckResponse(resp, requestBody, "/api/folder/getFolders");
-                result = ParseFolderResponse(resp);
+                if (ids.Count > 0)
+                { 
+                    XmlDocument requestBody = new XmlDocument();
+                    requestBody.AppendChild(requestBody.CreateElement("folderRequest"));
+                    XmlElement idsEl = (XmlElement)requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ids"));
+                    foreach (long id in ids) idsEl.AppendChild(requestBody.CreateElement("id")).InnerText = id.ToString();
+                    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("includeSummary")).InnerText = "true";
+                    //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("includeCustomMetadata")).InnerText = includeCustomMetadata ? "true" : "false";
+                    XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/folder/getFolders"), requestBody);
+                    // CheckResponse(resp, requestBody, "/api/folder/getFolders");
+                    result = ParseFolderResponse(resp);
+                }
             }
             catch (WebException ex)
             {
@@ -1860,7 +1863,7 @@ namespace C4ServerConnector
             }
             catch (WebException ex)
             {
-                ThrowException(ex);
+                //ThrowException(ex);
                 return null;
             }
         }

@@ -68,7 +68,7 @@ namespace C4Admin.GUI.AssetEditors
             clbPermissions.Items.Add(GetPermissionEntry("node.owner.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.parent_folder.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.type.write"));
-            clbPermissions.Items.Add(GetPermissionEntry("node.sysmetadata.read"));      // obsolete?
+            //clbPermissions.Items.Add(GetPermissionEntry("node.sysmetadata.read"));      // obsolete?
             clbPermissions.Items.Add(GetPermissionEntry("node.metadata.read"));
             clbPermissions.Items.Add(GetPermissionEntry("node.metadata.write"));
             clbPermissions.Items.Add(GetPermissionEntry("node.summary.write"));
@@ -174,9 +174,9 @@ namespace C4Admin.GUI.AssetEditors
                     case "node.summary.write":
                         permissions.Node_Summary_Write = true;
                         break;
-                    case "node.sysmetadata.read":
-                        permissions.Node_SysMetadata_Read = true;
-                        break;
+                    //case "node.sysmetadata.read":
+                    //    permissions.Node_SysMetadata_Read = true;
+                    //    break;
                     case "node.type.write":
                         permissions.Node_Type_Write = true;
                         break;

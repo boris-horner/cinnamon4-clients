@@ -52,7 +52,7 @@ namespace CDCplusLib.TabControls.SearchEditorNodes
         }
 
 
-        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, C4Metaset> nameToMasterData, GlobalApplicationData gad)
+        public void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, XmlElement> nameToMasterData, GlobalApplicationData gad)
         {
             _s = s;
             lcsLifecycleState.Init(s,false, termEl==null?null:_s.SessionConfig.C4Sc.LifecycleStatesById[long.Parse(termEl.GetAttribute("value"))]);

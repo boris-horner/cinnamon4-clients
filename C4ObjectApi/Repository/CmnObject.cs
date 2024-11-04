@@ -56,59 +56,59 @@ namespace C4ObjectApi.Repository
         }
 
 
-        private C4Object _c4o;
+        public C4Object C4O { get; private set; }
 
         public CmnObject(CmnSession session, C4Object c4o)
         {
             Session = session;
-            _c4o = c4o;
+            C4O = c4o;
             // TODO: read permissions only when actually needed
-            Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[_c4o.AclId], Session.User.Id == _c4o.OwnerId, Session.IsSuperuser);
+            Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[C4O.AclId], Session.User.Id == C4O.OwnerId, Session.IsSuperuser);
             LocalPath = Locked != null ? (Session.LocksMgr.Locks.ContainsKey(Id)?Session.LocksMgr.Locks[Id].ContentFilename:null) : "" ;
         }
-        public long Id { get { return _c4o.Id; } }
+        public long Id { get { return C4O.Id; } }
         public string Name
         {
             get
             {
-                return _c4o.Name;
+                return C4O.Name;
             }
         }
-        public long ContentSize { get { return _c4o.ContentSize; } }
-        public long? PredecessorId { get { return _c4o.PredecessorId; } }
-        public long RootId { get { return _c4o.RootId; } }
-        public C4User Creator { get { return Session.SessionConfig.C4Sc.UsersById[_c4o.CreatorId]; } }      // make this writable by admin
-        public C4User Modifier { get { return Session.SessionConfig.C4Sc.UsersById[_c4o.ModifierId]; } }      // make this writable by admin
+        public long ContentSize { get { return C4O.ContentSize; } }
+        public long? PredecessorId { get { return C4O.PredecessorId; } }
+        public long RootId { get { return C4O.RootId; } }
+        public C4User Creator { get { return Session.SessionConfig.C4Sc.UsersById[C4O.CreatorId]; } }      // make this writable by admin
+        public C4User Modifier { get { return Session.SessionConfig.C4Sc.UsersById[C4O.ModifierId]; } }      // make this writable by admin
         public C4User Owner
         { 
             get 
             { 
-                return Session.SessionConfig.C4Sc.UsersById[_c4o.OwnerId]; 
+                return Session.SessionConfig.C4Sc.UsersById[C4O.OwnerId]; 
             }
         }
-        public C4User Locked { get { return _c4o.LockedId == null ? null : Session.SessionConfig.C4Sc.UsersById[(long)_c4o.LockedId]; } }
-        public long? LockedId { get { return _c4o.LockedId; } }
-        public DateTime Created { get { return _c4o.Created; } }      // make this writable by admin
-        public DateTime Modified { get { return _c4o.Modified; } }      // make this writable by admin
+        public C4User Locked { get { return C4O.LockedId == null ? null : Session.SessionConfig.C4Sc.UsersById[(long)C4O.LockedId]; } }
+        public long? LockedId { get { return C4O.LockedId; } }
+        public DateTime Created { get { return C4O.Created; } }      // make this writable by admin
+        public DateTime Modified { get { return C4O.Modified; } }      // make this writable by admin
         public C4Language Language 
         { 
             get 
             { 
-                return Session.SessionConfig.C4Sc.LanguagesById[_c4o.LanguageId]; 
+                return Session.SessionConfig.C4Sc.LanguagesById[C4O.LanguageId]; 
             }
         }     // make this writable
         public C4Acl Acl 
         { 
             get 
             { 
-                return Session.SessionConfig.C4Sc.AclsById[_c4o.AclId]; 
+                return Session.SessionConfig.C4Sc.AclsById[C4O.AclId]; 
             } 
         }
         public long ParentId 
         { 
             get 
             { 
-                return _c4o.ParentId; 
+                return C4O.ParentId; 
             }
         }    // make this writable
         public CmnFolder Parent
@@ -122,30 +122,30 @@ namespace C4ObjectApi.Repository
         { 
             get 
             { 
-                return _c4o.FormatId == null ? null : Session.SessionConfig.C4Sc.FormatsById[(long)_c4o.FormatId]; 
+                return C4O.FormatId == null ? null : Session.SessionConfig.C4Sc.FormatsById[(long)C4O.FormatId]; 
             } 
         }     // make this writable on set content etc.
         public C4ObjectType ObjectType 
         { 
             get 
             { 
-                return Session.SessionConfig.C4Sc.ObjectTypesById[_c4o.TypeId]; 
+                return Session.SessionConfig.C4Sc.ObjectTypesById[C4O.TypeId]; 
             }
         }     // make this writable
-        public bool LatestHead { get { return _c4o.LatestHead; } }
-        public bool LatestBranch { get { return _c4o.LatestBranch; } }
-        public bool ContentChanged { get { return _c4o.ContentChanged; } }      // make this writable by admin
-        public bool MetadataChanged { get { return _c4o.MetadataChanged; } }      // make this writable by admin
-        public string Version { get { return _c4o.Version; } }
+        public bool LatestHead { get { return C4O.LatestHead; } }
+        public bool LatestBranch { get { return C4O.LatestBranch; } }
+        public bool ContentChanged { get { return C4O.ContentChanged; } }      // make this writable by admin
+        public bool MetadataChanged { get { return C4O.MetadataChanged; } }      // make this writable by admin
+        public string Version { get { return C4O.Version; } }
         public C4LifecycleState LifecycleState 
         { 
             get 
             { 
-                return _c4o.LifecycleStateId == null ? null : Session.SessionConfig.C4Sc.LifecycleStatesById[(long)_c4o.LifecycleStateId]; 
+                return C4O.LifecycleStateId == null ? null : Session.SessionConfig.C4Sc.LifecycleStatesById[(long)C4O.LifecycleStateId]; 
             } 
             set
             {
-                if(_c4o.LifecycleStateId == null)
+                if(C4O.LifecycleStateId == null)
                 {
                     if(value!=null) Session.CommandSession.AttachLifecycle(Id, value.LifecycleId, (long)value.Id);
                     // else: nothing to do
@@ -155,7 +155,7 @@ namespace C4ObjectApi.Repository
                     if (value == null) Session.CommandSession.DetachLifecycle(Id);
                     else
                     {
-                        if (value.LifecycleId != Session.SessionConfig.C4Sc.LifecycleStatesById[(long)_c4o.LifecycleStateId].LifecycleId)
+                        if (value.LifecycleId != Session.SessionConfig.C4Sc.LifecycleStatesById[(long)C4O.LifecycleStateId].LifecycleId)
                         {
                             Session.CommandSession.DetachLifecycle(Id);
                             Session.CommandSession.AttachLifecycle(Id, value.LifecycleId, (long)value.Id);
@@ -163,10 +163,10 @@ namespace C4ObjectApi.Repository
                         else Session.CommandSession.ChangeState(Id, (long)value.Id);
                     }
                 }
-                _c4o.LifecycleStateId = value==null?null:value.Id;
+                C4O.LifecycleStateId = value==null?null:value.Id;
             }
         }
-        public XmlElement Summary { get { return _c4o.Summary; } }      // make this writable by admin
+        public XmlElement Summary { get { return C4O.Summary; } }      // make this writable by admin
         public C4Permissions Permissions { get; }
         public CmnSession Session { get; }
 
@@ -427,7 +427,7 @@ namespace C4ObjectApi.Repository
         {
             if (File.Exists(inputFilename) & !(format == null))
             {
-                _c4o.FormatId = format.Id;
+                C4O.FormatId = format.Id;
                 Session.CommandSession.SetContent(Id, (long)format.Id, inputFilename);
 
                 Refresh();
@@ -783,13 +783,13 @@ namespace C4ObjectApi.Repository
         public void Lock()
         {
             XmlDocument respDoc = Session.CommandSession.LockObject(Id);
-            _c4o.LockedId = Session.User.Id;
+            C4O.LockedId = Session.User.Id;
         }
 
         public void Unlock()
         {
             XmlDocument respDoc = Session.CommandSession.UnlockObject(Id);
-            _c4o.LockedId = null;
+            C4O.LockedId = null;
         }
 
         public void GetContent(bool writeProtect, string targetFilename = null)
@@ -865,7 +865,7 @@ namespace C4ObjectApi.Repository
         {
             HashSet<long> ids = new HashSet<long>();
             ids.Add(Id);
-            _c4o = Session.CommandSession.GetObjectsById(ids, false).Values.First();
+            C4O = Session.CommandSession.GetObjectsById(ids, false).Values.First();
         }
 
         public override string ToString()

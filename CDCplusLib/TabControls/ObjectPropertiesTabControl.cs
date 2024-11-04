@@ -41,6 +41,8 @@ namespace CDCplusLib.TabControls
         private bool _lockObjType;
         private C4LifecycleState _selectedLcState;
         private Dictionary<long, IRepositoryNode> _dict;
+        private bool _isSuperuser=false;
+        private bool _isSuperuserSet = false;
 
         //public ISynchronizeInvoke EventSyncInvoke { get; set; }
         public event IGenericControl.MessageSentEventHandler MessageSent;
@@ -78,6 +80,9 @@ namespace CDCplusLib.TabControls
             lblObjType.Text = Properties.Resources.lblObjectType;
             lblLockedBy.Text = Properties.Resources.lblLockedBy;
             lblLifecycleAndState.Text = Properties.Resources.lblLifecycleAndState;
+            lblChangedFlags.Text = Properties.Resources.lblChangedFlags;
+            chkContentChanged.Text = Properties.Resources.lblContentChanged;
+            chkMetadataChanged.Text = Properties.Resources.lblMetadataChanged;
 
             _tt = new ToolTip();
             _tt.SetToolTip(cmdSave, Properties.Resources.ttSave);
@@ -101,7 +106,7 @@ namespace CDCplusLib.TabControls
         {
             if (_enableEvents)
             {
-                bool writable = _o == null? false : (_o.Permissions.Object_Lock && (_o.Permissions.Node_Name_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Node_Owner_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Object_Language_Write || _o.Permissions.Object_LifecycleState_Write));
+                bool writable = _o == null ? false : (_o.Permissions.Object_Lock && (_o.Permissions.Node_Name_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Node_Owner_Write || _o.Permissions.Node_Type_Write || _o.Permissions.Object_Language_Write || _o.Permissions.Object_LifecycleState_Write));
                 IsDirty = dirty;
                 cmdSave.Enabled = writable && IsDirty;
                 txtName.Enabled = writable && _o.Permissions.Node_Name_Write;
@@ -109,6 +114,8 @@ namespace CDCplusLib.TabControls
                 cboOwner.Enabled = writable && _o.Permissions.Node_Owner_Write;
                 cboLanguage.Enabled = writable && _o.Permissions.Object_Language_Write;
                 cmdSelectLifecycle.Enabled = writable && _o.Permissions.Object_LifecycleState_Write;
+                chkContentChanged.Enabled = _isSuperuser;
+                chkMetadataChanged.Enabled = _isSuperuser;
             }
         }
 
@@ -134,6 +141,8 @@ namespace CDCplusLib.TabControls
             txtModifiedBy.Text = "";
             txtModificationDate.Text = "";
             txtLifecycleAndState.Text = "";
+            chkContentChanged.Checked = false;
+            chkMetadataChanged.Checked = false;
             _selectedLcState = null;
         }
 
@@ -167,11 +176,18 @@ namespace CDCplusLib.TabControls
             txtCreationDate.Text = _o.Created.ToString();
             txtModifiedBy.Text = _o.Modifier.ToString();
             txtModificationDate.Text = _o.Modified.ToString();
+            chkContentChanged.Checked = _o.ContentChanged;
+            chkMetadataChanged.Checked = _o.MetadataChanged;
         }
         public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
         {
             _dict = dict;
-            _o = DictionaryHelper.GetSingleObject(dict);
+            _o = (CmnObject)((dict != null && dict.Count > 0) ? dict.Values.First() : null);
+            if (!_isSuperuserSet)
+            {
+                _isSuperuser = _o.Session.User.GroupIds.Contains((long)_o.Session.SessionConfig.C4Sc.GroupsByName["_superusers"].Id);
+                _isSuperuserSet = true;
+            }
             IsDirty = false;
             if (_o == null)
             {
@@ -237,7 +253,9 @@ namespace CDCplusLib.TabControls
                                                    _o.Owner == (C4User)cboOwner.SelectedItem ? null : ((C4User)cboOwner.SelectedItem).Id,
                                                    null,
                                                    _o.ObjectType == (C4ObjectType)cboObjType.SelectedItem ? null : ((C4ObjectType)cboObjType.SelectedItem).Id,
-                                                   _o.Language.Id == ((C4Language)cboLanguage.SelectedItem).Id ? null : ((C4Language)cboLanguage.SelectedItem).Id);
+                                                   _o.Language.Id == ((C4Language)cboLanguage.SelectedItem).Id ? null : ((C4Language)cboLanguage.SelectedItem).Id,
+                                                   chkMetadataChanged.Checked!=_o.MetadataChanged? chkMetadataChanged.Checked:null,
+                                                   chkContentChanged.Checked != _o.ContentChanged ? chkContentChanged.Checked : null);
 
 
                     C4LifecycleState oldState = _o.LifecycleState;
@@ -334,6 +352,16 @@ namespace CDCplusLib.TabControls
         {
             if (_selectedLcState == null) txtLifecycleAndState.Text = Properties.Resources.lblNoLifecycle;
             else txtLifecycleAndState.Text = _selectedLcState.ToString() + " [" + _o.Session.SessionConfig.C4Sc.LifecyclesById[_selectedLcState.LifecycleId].ToString() + "]";
+        }
+
+        private void chkContentChanged_CheckedChanged(object sender, EventArgs e)
+        {
+            SetControlsEnabledState(true);
+        }
+
+        private void chkMetadataChanged_CheckedChanged(object sender, EventArgs e)
+        {
+            SetControlsEnabledState(true);
         }
     }
 }

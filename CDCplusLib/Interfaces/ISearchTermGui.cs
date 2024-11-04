@@ -21,7 +21,7 @@ namespace CDCplusLib.Interfaces
     public interface ISearchTermGui
     {
         event EventHandler ControlChanged;
-        void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, C4Metaset> nameToMasterData, GlobalApplicationData gad);
+        void Init(CmnSession s, string fieldName, XmlElement termEl, XmlElement termDefEl, Dictionary<string, XmlElement> nameToMasterData, GlobalApplicationData gad);
         string FieldName { get; }
         string FieldDisplayName { get; }
         string Value { get; }

@@ -28,18 +28,9 @@ namespace C4ObjectApi.Repository
     public class CmnFolder : IRepositoryNode, IEquatable<CmnFolder>
     {
         private string _name;
-        //protected CmnFolder _parent;
-        private C4Folder _c4f;
-        //private C4Acl _acl;
-        //private C4User _owner;
-        //private XmlDocument _metadata;
-        //private C4FolderType _type;
-        //private C4Permissions _permissions;
-        //private bool _metadataChanged;
-        //private XmlDocument _summary;
-        //private XmlElement _source;
         private string _folderPath;
 
+        public C4Folder C4F { get; private set; }
         public enum FolderMetadata
         {
             AclId,
@@ -53,37 +44,37 @@ namespace C4ObjectApi.Repository
         public CmnFolder(CmnSession session, C4Folder c4f)
         {
             Session = session;
-            _c4f = c4f;
-            Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[_c4f.AclId], (long)Session.User.Id == c4f.OwnerId, Session.IsSuperuser);
+            C4F = c4f;
+            Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[C4F.AclId], (long)Session.User.Id == c4f.OwnerId, Session.IsSuperuser);
         }
 
-        public long Id { get { return _c4f.Id; } }
+        public long Id { get { return C4F.Id; } }
         public string Name
         {
             get
             {
-                return _c4f.Name;
+                return C4F.Name;
             }
         }
         public C4User Owner 
         { 
             get 
             { 
-                return Session.SessionConfig.C4Sc.UsersById[_c4f.OwnerId]; 
+                return Session.SessionConfig.C4Sc.UsersById[C4F.OwnerId]; 
             }
         }  
         public C4Acl Acl
         {
             get
             {
-                return Session.SessionConfig.C4Sc.AclsById[_c4f.AclId];
+                return Session.SessionConfig.C4Sc.AclsById[C4F.AclId];
             }
         }     // make this writable
         public long ParentId
         {
             get
             {
-                return _c4f.ParentId;
+                return C4F.ParentId;
             }
         }
         public CmnFolder Parent
@@ -104,19 +95,19 @@ namespace C4ObjectApi.Repository
         {
             get
             {
-                return Session.SessionConfig.C4Sc.FolderTypesById[_c4f.TypeId];
+                return Session.SessionConfig.C4Sc.FolderTypesById[C4F.TypeId];
             }
             set
             {
                 Session.CommandSession.UpdateFolder(Id, null, null, null, value.Id);
-                _c4f.TypeId = (long)value.Id;
+                C4F.TypeId = (long)value.Id;
             }
         }     
         public bool MetadataChanged 
         { 
             get 
             { 
-                return _c4f.MetadataChanged; 
+                return C4F.MetadataChanged; 
             }
             //set
             //{
@@ -128,12 +119,12 @@ namespace C4ObjectApi.Repository
         { 
             get 
             { 
-                return _c4f.Summary; 
+                return C4F.Summary; 
             }
             set
             {
                 Session.CommandSession.SetFolderSummary(Id, value);
-                _c4f.Summary = value;
+                C4F.Summary = value;
             }
         }      
         public C4Permissions Permissions { get; }
@@ -143,7 +134,7 @@ namespace C4ObjectApi.Repository
         {
             get
             {
-                return _c4f.HasSubfolders;
+                return C4F.HasSubfolders;
             }
         }
 
@@ -409,7 +400,7 @@ public void SetChangedStatus(bool metadataChanged)
         {
             HashSet<long> ids = new HashSet<long>();
             ids.Add(Id);
-            _c4f = Session.CommandSession.GetFoldersById(ids).Values.First();
+            C4F = Session.CommandSession.GetFoldersById(ids).Values.First();
         }
         public CmnLink Link { get; private set; }
     }

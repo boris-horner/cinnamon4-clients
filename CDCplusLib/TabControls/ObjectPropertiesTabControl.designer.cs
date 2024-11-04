@@ -33,6 +33,12 @@
             cmdSave = new Button();
             TableLayoutPanel1 = new TableLayoutPanel();
             TableLayoutPanel2 = new TableLayoutPanel();
+            panel1 = new Panel();
+            panel5 = new Panel();
+            chkMetadataChanged = new CheckBox();
+            chkContentChanged = new CheckBox();
+            lblChangedFlags = new Label();
+            pictureBox8 = new PictureBox();
             PictureBox5 = new PictureBox();
             PictureBox4 = new PictureBox();
             PictureBox3 = new PictureBox();
@@ -120,6 +126,9 @@
             panel20.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             TableLayoutPanel2.SuspendLayout();
+            panel1.SuspendLayout();
+            panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox3).BeginInit();
@@ -211,6 +220,8 @@
             TableLayoutPanel2.ColumnCount = 2;
             TableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
             TableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TableLayoutPanel2.Controls.Add(panel1, 1, 5);
+            TableLayoutPanel2.Controls.Add(pictureBox8, 0, 5);
             TableLayoutPanel2.Controls.Add(PictureBox5, 0, 4);
             TableLayoutPanel2.Controls.Add(PictureBox4, 0, 3);
             TableLayoutPanel2.Controls.Add(PictureBox3, 0, 2);
@@ -224,14 +235,85 @@
             TableLayoutPanel2.Dock = DockStyle.Top;
             TableLayoutPanel2.Location = new Point(3, 3);
             TableLayoutPanel2.Name = "TableLayoutPanel2";
-            TableLayoutPanel2.RowCount = 5;
+            TableLayoutPanel2.RowCount = 6;
             TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            TableLayoutPanel2.Size = new Size(902, 250);
+            TableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            TableLayoutPanel2.Size = new Size(902, 300);
             TableLayoutPanel2.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(panel5);
+            panel1.Controls.Add(lblChangedFlags);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(50, 250);
+            panel1.Margin = new Padding(0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(852, 50);
+            panel1.TabIndex = 56;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(chkMetadataChanged);
+            panel5.Controls.Add(chkContentChanged);
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(0, 15);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(852, 35);
+            panel5.TabIndex = 43;
+            // 
+            // chkMetadataChanged
+            // 
+            chkMetadataChanged.AutoSize = true;
+            chkMetadataChanged.Dock = DockStyle.Left;
+            chkMetadataChanged.Location = new Point(74, 0);
+            chkMetadataChanged.Name = "chkMetadataChanged";
+            chkMetadataChanged.Padding = new Padding(5, 0, 0, 0);
+            chkMetadataChanged.Size = new Size(81, 35);
+            chkMetadataChanged.TabIndex = 44;
+            chkMetadataChanged.Text = "Metadata";
+            chkMetadataChanged.UseVisualStyleBackColor = true;
+            chkMetadataChanged.CheckedChanged += chkMetadataChanged_CheckedChanged;
+            // 
+            // chkContentChanged
+            // 
+            chkContentChanged.AutoSize = true;
+            chkContentChanged.Dock = DockStyle.Left;
+            chkContentChanged.Location = new Point(0, 0);
+            chkContentChanged.Name = "chkContentChanged";
+            chkContentChanged.Padding = new Padding(5, 0, 0, 0);
+            chkContentChanged.Size = new Size(74, 35);
+            chkContentChanged.TabIndex = 43;
+            chkContentChanged.Text = "Content";
+            chkContentChanged.UseVisualStyleBackColor = true;
+            chkContentChanged.CheckedChanged += chkContentChanged_CheckedChanged;
+            // 
+            // lblChangedFlags
+            // 
+            lblChangedFlags.AutoSize = true;
+            lblChangedFlags.Dock = DockStyle.Top;
+            lblChangedFlags.Location = new Point(0, 0);
+            lblChangedFlags.Name = "lblChangedFlags";
+            lblChangedFlags.Size = new Size(83, 15);
+            lblChangedFlags.TabIndex = 41;
+            lblChangedFlags.Text = "Changed flags";
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Dock = DockStyle.Fill;
+            pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
+            pictureBox8.Location = new Point(0, 250);
+            pictureBox8.Margin = new Padding(0);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Padding = new Padding(9);
+            pictureBox8.Size = new Size(50, 50);
+            pictureBox8.SizeMode = PictureBoxSizeMode.AutoSize;
+            pictureBox8.TabIndex = 44;
+            pictureBox8.TabStop = false;
             // 
             // PictureBox5
             // 
@@ -1154,6 +1236,11 @@
             TableLayoutPanel1.PerformLayout();
             TableLayoutPanel2.ResumeLayout(false);
             TableLayoutPanel2.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)PictureBox3).EndInit();
@@ -1314,5 +1401,11 @@
         internal PictureBox PictureBox11;
         internal PictureBox PictureBox10;
         internal PictureBox pbLockedBy;
+        internal Panel panel1;
+        internal Label lblChangedFlags;
+        internal PictureBox pictureBox8;
+        private Panel panel5;
+        private CheckBox chkMetadataChanged;
+        private CheckBox chkContentChanged;
     }
 }
