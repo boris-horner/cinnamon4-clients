@@ -41,7 +41,7 @@ namespace CDCplusLib.TabControls
         private bool _lockObjType;
         private C4LifecycleState _selectedLcState;
         private Dictionary<long, IRepositoryNode> _dict;
-        private bool _isSuperuser=false;
+        private bool _isSuperuser = false;
         private bool _isSuperuserSet = false;
 
         //public ISynchronizeInvoke EventSyncInvoke { get; set; }
@@ -254,7 +254,7 @@ namespace CDCplusLib.TabControls
                                                    null,
                                                    _o.ObjectType == (C4ObjectType)cboObjType.SelectedItem ? null : ((C4ObjectType)cboObjType.SelectedItem).Id,
                                                    _o.Language.Id == ((C4Language)cboLanguage.SelectedItem).Id ? null : ((C4Language)cboLanguage.SelectedItem).Id,
-                                                   chkMetadataChanged.Checked!=_o.MetadataChanged? chkMetadataChanged.Checked:null,
+                                                   chkMetadataChanged.Checked != _o.MetadataChanged ? chkMetadataChanged.Checked : null,
                                                    chkContentChanged.Checked != _o.ContentChanged ? chkContentChanged.Checked : null);
 
 
@@ -362,6 +362,24 @@ namespace CDCplusLib.TabControls
         private void chkMetadataChanged_CheckedChanged(object sender, EventArgs e)
         {
             SetControlsEnabledState(true);
+        }
+
+        private void ObjectPropertiesTabControl_Paint(object sender, PaintEventArgs e)
+        {
+            pNameIcon.Width = pNameIcon.Height;
+            pObjTypeIcon.Width = pObjTypeIcon.Height;
+            pOwnerIcon.Width = pOwnerIcon.Height;
+            pLanguageIcon.Width = pLanguageIcon.Height;
+            //pLcStateIcon.Height = pNameIcon.Height;
+            pLcStateIcon.Width = pNameIcon.Height;
+            pChangedFlagsIcon.Width = pNameIcon.Height;
+            pFlags.Height = txtName.Height;     // set it to the reference height of another object
+            pIdsIcon.Width = pIdsIcon.Height;
+            pCreatedIcon.Width = pCreatedIcon.Height;
+            pModifiedIcon.Width = pModifiedIcon.Height;
+            pLockedIcon.Width = pLockedIcon.Height;
+            pFormatIcon.Width = pFormatIcon.Height;
+            pSizeIcon.Width = pSizeIcon.Height;
         }
     }
 }
