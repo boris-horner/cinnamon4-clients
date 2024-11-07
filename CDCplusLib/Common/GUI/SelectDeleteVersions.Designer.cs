@@ -28,93 +28,122 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.chkDeleteProtectedRelations = new System.Windows.Forms.CheckBox();
-            this.optAll = new System.Windows.Forms.RadioButton();
-            this.optSelectedOnly = new System.Windows.Forms.RadioButton();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdOk = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            chkDeleteProtectedRelations = new CheckBox();
+            optAll = new RadioButton();
+            optSelectedOnly = new RadioButton();
+            panel1 = new Panel();
+            cmdCancel = new Button();
+            panel4 = new Panel();
+            cmdOk = new Button();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // chkDeleteProtectedRelations
             // 
-            this.chkDeleteProtectedRelations.AutoSize = true;
-            this.chkDeleteProtectedRelations.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkDeleteProtectedRelations.Location = new System.Drawing.Point(10, 86);
-            this.chkDeleteProtectedRelations.Margin = new System.Windows.Forms.Padding(4);
-            this.chkDeleteProtectedRelations.Name = "chkDeleteProtectedRelations";
-            this.chkDeleteProtectedRelations.Size = new System.Drawing.Size(193, 21);
-            this.chkDeleteProtectedRelations.TabIndex = 13;
-            this.chkDeleteProtectedRelations.Text = "Delete protected relations";
-            this.chkDeleteProtectedRelations.UseVisualStyleBackColor = true;
+            chkDeleteProtectedRelations.AutoSize = true;
+            chkDeleteProtectedRelations.Dock = DockStyle.Top;
+            chkDeleteProtectedRelations.ImeMode = ImeMode.NoControl;
+            chkDeleteProtectedRelations.Location = new Point(10, 53);
+            chkDeleteProtectedRelations.Margin = new Padding(4);
+            chkDeleteProtectedRelations.Name = "chkDeleteProtectedRelations";
+            chkDeleteProtectedRelations.Padding = new Padding(0, 20, 0, 0);
+            chkDeleteProtectedRelations.Size = new Size(369, 39);
+            chkDeleteProtectedRelations.TabIndex = 13;
+            chkDeleteProtectedRelations.Text = "Delete protected relations";
+            chkDeleteProtectedRelations.UseVisualStyleBackColor = true;
             // 
             // optAll
             // 
-            this.optAll.AutoSize = true;
-            this.optAll.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.optAll.Location = new System.Drawing.Point(10, 43);
-            this.optAll.Margin = new System.Windows.Forms.Padding(4);
-            this.optAll.Name = "optAll";
-            this.optAll.Size = new System.Drawing.Size(145, 21);
-            this.optAll.TabIndex = 12;
-            this.optAll.Text = "Delete all versions";
-            this.optAll.UseVisualStyleBackColor = true;
+            optAll.AutoSize = true;
+            optAll.Dock = DockStyle.Top;
+            optAll.ImeMode = ImeMode.NoControl;
+            optAll.Location = new Point(10, 29);
+            optAll.Margin = new Padding(4);
+            optAll.Name = "optAll";
+            optAll.Padding = new Padding(0, 5, 0, 0);
+            optAll.Size = new Size(369, 24);
+            optAll.TabIndex = 12;
+            optAll.Text = "Delete all versions";
+            optAll.UseVisualStyleBackColor = true;
             // 
             // optSelectedOnly
             // 
-            this.optSelectedOnly.AutoSize = true;
-            this.optSelectedOnly.Checked = true;
-            this.optSelectedOnly.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.optSelectedOnly.Location = new System.Drawing.Point(10, 13);
-            this.optSelectedOnly.Margin = new System.Windows.Forms.Padding(4);
-            this.optSelectedOnly.Name = "optSelectedOnly";
-            this.optSelectedOnly.Size = new System.Drawing.Size(214, 21);
-            this.optSelectedOnly.TabIndex = 11;
-            this.optSelectedOnly.TabStop = true;
-            this.optSelectedOnly.Text = "Delete selected versions only";
-            this.optSelectedOnly.UseVisualStyleBackColor = true;
+            optSelectedOnly.AutoSize = true;
+            optSelectedOnly.Checked = true;
+            optSelectedOnly.Dock = DockStyle.Top;
+            optSelectedOnly.ImeMode = ImeMode.NoControl;
+            optSelectedOnly.Location = new Point(10, 10);
+            optSelectedOnly.Margin = new Padding(4);
+            optSelectedOnly.Name = "optSelectedOnly";
+            optSelectedOnly.Size = new Size(369, 19);
+            optSelectedOnly.TabIndex = 11;
+            optSelectedOnly.TabStop = true;
+            optSelectedOnly.Text = "Delete selected versions only";
+            optSelectedOnly.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(cmdOk);
+            panel1.Controls.Add(panel4);
+            panel1.Controls.Add(cmdCancel);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(10, 92);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(0, 20, 0, 0);
+            panel1.Size = new Size(369, 45);
+            panel1.TabIndex = 14;
             // 
             // cmdCancel
             // 
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdCancel.Location = new System.Drawing.Point(121, 131);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(4);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(100, 28);
-            this.cmdCancel.TabIndex = 10;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Dock = DockStyle.Right;
+            cmdCancel.ImeMode = ImeMode.NoControl;
+            cmdCancel.Location = new Point(281, 20);
+            cmdCancel.Margin = new Padding(4);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(88, 25);
+            cmdCancel.TabIndex = 12;
+            cmdCancel.Text = "Cancel";
+            cmdCancel.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(271, 20);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 25);
+            panel4.TabIndex = 36;
             // 
             // cmdOk
             // 
-            this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOk.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdOk.Location = new System.Drawing.Point(13, 131);
-            this.cmdOk.Margin = new System.Windows.Forms.Padding(4);
-            this.cmdOk.Name = "cmdOk";
-            this.cmdOk.Size = new System.Drawing.Size(100, 28);
-            this.cmdOk.TabIndex = 9;
-            this.cmdOk.Text = "Ok";
-            this.cmdOk.UseVisualStyleBackColor = true;
+            cmdOk.DialogResult = DialogResult.OK;
+            cmdOk.Dock = DockStyle.Right;
+            cmdOk.ImeMode = ImeMode.NoControl;
+            cmdOk.Location = new Point(183, 20);
+            cmdOk.Margin = new Padding(4);
+            cmdOk.Name = "cmdOk";
+            cmdOk.Size = new Size(88, 25);
+            cmdOk.TabIndex = 37;
+            cmdOk.Text = "Ok";
+            cmdOk.UseVisualStyleBackColor = true;
             // 
             // SelectDeleteVersions
             // 
-            this.AcceptButton = this.cmdOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(320, 173);
-            this.Controls.Add(this.chkDeleteProtectedRelations);
-            this.Controls.Add(this.optAll);
-            this.Controls.Add(this.optSelectedOnly);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOk);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "SelectDeleteVersions";
-            this.Text = "Delete versions behaviour";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            ClientSize = new Size(389, 150);
+            Controls.Add(panel1);
+            Controls.Add(chkDeleteProtectedRelations);
+            Controls.Add(optAll);
+            Controls.Add(optSelectedOnly);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Name = "SelectDeleteVersions";
+            Padding = new Padding(10);
+            Text = "Delete versions behaviour";
+            panel1.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -122,7 +151,9 @@
         internal System.Windows.Forms.CheckBox chkDeleteProtectedRelations;
         internal System.Windows.Forms.RadioButton optAll;
         internal System.Windows.Forms.RadioButton optSelectedOnly;
-        internal System.Windows.Forms.Button cmdCancel;
-        internal System.Windows.Forms.Button cmdOk;
+        private Panel panel1;
+        internal Button cmdCancel;
+        internal Button cmdOk;
+        private Panel panel4;
     }
 }

@@ -117,209 +117,629 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuLinkToFolder" xml:space="preserve">
-    <value>Verknüpfung in Ordner erstellen</value>
-  </data>
-  <data name="lblObjectType" xml:space="preserve">
-    <value>Objekttyp</value>
-  </data>
-  <data name="lblCreationDate" xml:space="preserve">
-    <value>Erstellungsdatum / -zeit</value>
-  </data>
-  <data name="msgFailureCopyingToClipboard" xml:space="preserve">
-    <value>Fehler beim Kopieren in die Zwischenablage.</value>
-  </data>
-  <data name="lblAddColumn" xml:space="preserve">
-    <value>Spalte hinzufügen</value>
-  </data>
-  <data name="lblFalse" xml:space="preserve">
-    <value>Falsch</value>
+  <data name="exFailureLoadingConfiguration" xml:space="preserve">
+    <value>Fehler beim Laden der Konfiguration.</value>
   </data>
   <data name="exFailureUpdatingTabs" xml:space="preserve">
     <value>Fehler beim Aktualisieren der Tabs.</value>
   </data>
-  <data name="mnuOpenCheckedOutFile" xml:space="preserve">
-    <value>Ausgecheckte Datei öffnen</value>
+  <data name="lblAclEntries" xml:space="preserve">
+    <value>ACL-Einträge</value>
   </data>
-  <data name="opStringContains" xml:space="preserve">
-    <value>enthält</value>
+  <data name="lblAclName" xml:space="preserve">
+    <value>Name</value>
   </data>
-  <data name="msgNoObjectFound" xml:space="preserve">
-    <value>Das Objekt mit der angegebenen ID wurde nicht gefunden.</value>
-  </data>
-  <data name="opIsBefore" xml:space="preserve">
-    <value>ist vor</value>
-  </data>
-  <data name="lblLifecycleState" xml:space="preserve">
-    <value>Lebenszyklus-Status</value>
-  </data>
-  <data name="lblTreeLocked" xml:space="preserve">
-    <value>Gesperrte Objekte</value>
-  </data>
-  <data name="lblFormat" xml:space="preserve">
-    <value>Format</value>
-  </data>
-  <data name="lblAddOperator" xml:space="preserve">
-    <value>Operator hinzufügen</value>
-  </data>
-  <data name="mnuDeleteMetasetType" xml:space="preserve">
-    <value>Metaset-Typ entfernen</value>
-  </data>
-  <data name="mnuSelectLinkVersion" xml:space="preserve">
-    <value>Version des verknüpften Objekts auswählen</value>
-  </data>
-  <data name="lblImportDots" xml:space="preserve">
-    <value>Importieren ...</value>
-  </data>
-  <data name="msgNoLifecyclesDefined" xml:space="preserve">
-    <value>In diesem Repository sind keine Lebenszyklen definiert.</value>
-  </data>
-  <data name="lblNot" xml:space="preserve">
-    <value>NICHT</value>
-  </data>
-  <data name="lblGreaterThanOrEqual" xml:space="preserve">
-    <value>ist größer als oder gleich</value>
-  </data>
-  <data name="mnuExport" xml:space="preserve">
-    <value>Exportieren</value>
-  </data>
-  <data name="lblSize" xml:space="preserve">
-    <value>Größe</value>
-  </data>
-  <data name="lblSuperuser" xml:space="preserve">
-    <value>Superuser</value>
-  </data>
-  <data name="msgNoReadPermission" xml:space="preserve">
-    <value>Sie haben nicht die Berechtigung, die folgenden Objekte / Ordner zu lesen:</value>
-  </data>
-  <data name="msgFailureViewingObject" xml:space="preserve">
-    <value>Fehler beim Anzeigen des Objekts.</value>
-  </data>
-  <data name="lblShownColumns" xml:space="preserve">
-    <value>Angezeigte Spalten</value>
-  </data>
-  <data name="permLinkTargetWrite" xml:space="preserve">
-    <value>Verknüpfungsziel schreiben</value>
-  </data>
-  <data name="lblColumnDown" xml:space="preserve">
-    <value>Spalte nach unten verschieben</value>
-  </data>
-  <data name="lblOk" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="lblTargetFolder" xml:space="preserve">
-    <value>Zielordner</value>
-  </data>
-  <data name="mnuCreateNewVersion" xml:space="preserve">
-    <value>Neue Version erzeugen</value>
-  </data>
-  <data name="lblTreeSearches" xml:space="preserve">
-    <value>Gespeicherte Suchabfragen</value>
-  </data>
-  <data name="lblVariableSpecifyName" xml:space="preserve">
-    <value>Variable (Namen angeben)</value>
-  </data>
-  <data name="msgFailureAppendingContent" xml:space="preserve">
-    <value>Fehler beim Hinzufügen von Inhalt aus einer Datei.</value>
-  </data>
-  <data name="permRelationChildRemove" xml:space="preserve">
-    <value>Kind entfernen</value>
-  </data>
-  <data name="opIsEqualOrAfter" xml:space="preserve">
-    <value>ist gleich oder nach</value>
-  </data>
-  <data name="lblVersion" xml:space="preserve">
-    <value>Version</value>
-  </data>
-  <data name="lblProperties" xml:space="preserve">
-    <value>Eigenschaften</value>
-  </data>
-  <data name="mnuAppendContent" xml:space="preserve">
-    <value>Inhalt aus Datei hinzufügen</value>
-  </data>
-  <data name="lblLifecycle" xml:space="preserve">
-    <value>Lebenszyklus</value>
-  </data>
-  <data name="lblNoLifecycle" xml:space="preserve">
-    <value>Kein Lebenszyklus</value>
-  </data>
-  <data name="msgFailureCopying" xml:space="preserve">
-    <value>Beim Kopieren der Auswahl ist ein Fehler aufgetreten.</value>
-  </data>
-  <data name="lblTrue" xml:space="preserve">
-    <value>Wahr</value>
-  </data>
-  <data name="lblStartsWith" xml:space="preserve">
-    <value>beginnt mit</value>
-  </data>
-  <data name="lblEmergencyConfig" xml:space="preserve">
-    <value>Grundkonfiguration</value>
-  </data>
-  <data name="lblEditSelectedNodeContent" xml:space="preserve">
-    <value>Inhalt bearbeiten</value>
-  </data>
-  <data name="lblContains" xml:space="preserve">
-    <value>enthält</value>
-  </data>
-  <data name="lblId" xml:space="preserve">
-    <value>Id</value>
-  </data>
-  <data name="lblRelationType" xml:space="preserve">
-    <value>Beziehungstyp</value>
+  <data name="lblAddColumn" xml:space="preserve">
+    <value>Spalte hinzufügen</value>
   </data>
   <data name="lblAddConfig" xml:space="preserve">
     <value>Spaltenkonfiguration hinzufügen</value>
   </data>
-  <data name="lblYes" xml:space="preserve">
-    <value>Ja</value>
+  <data name="lblAddOperator" xml:space="preserve">
+    <value>Operator hinzufügen</value>
   </data>
-  <data name="mnuCopyTicket" xml:space="preserve">
-    <value>Ticket kopieren</value>
+  <data name="lblAddTerm" xml:space="preserve">
+    <value>Term hinzufügen</value>
   </data>
-  <data name="lblReload" xml:space="preserve">
-    <value>Neu laden</value>
+  <data name="lblAny" xml:space="preserve">
+    <value>BELIEBIG</value>
   </data>
-  <data name="lblTreeContent" xml:space="preserve">
-    <value>Inhalt</value>
+  <data name="lblApplyConfig" xml:space="preserve">
+    <value>Spaltenkonfiguration anwenden</value>
+  </data>
+  <data name="lblAvailableColumns" xml:space="preserve">
+    <value>Verfügbare Spalten</value>
+  </data>
+  <data name="lblAvailableConfig" xml:space="preserve">
+    <value>Verfügbare Spaltenkonfigurationen</value>
+  </data>
+  <data name="lblBytes" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="lblCancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="lblCDCplusMainWindow" xml:space="preserve">
+    <value>CDCplus</value>
+  </data>
+  <data name="lblCheckin" xml:space="preserve">
+    <value>Einchecken</value>
+  </data>
+  <data name="lblCheckinFromCheckoutPath" xml:space="preserve">
+    <value>Von ausgecheckter Datei einchecken</value>
   </data>
   <data name="lblCheckinFromOtherFile" xml:space="preserve">
     <value>Von anderer Datei einchecken</value>
   </data>
-  <data name="mnuNewFolder" xml:space="preserve">
-    <value>Neuer Ordner</value>
+  <data name="lblChildren" xml:space="preserve">
+    <value>Kinder</value>
   </data>
-  <data name="lblRelations" xml:space="preserve">
-    <value>Beziehungen</value>
+  <data name="lblChooseTarget" xml:space="preserve">
+    <value>Zielobjekt auswählen</value>
   </data>
-  <data name="msgFailureDeletingInsufPerm" xml:space="preserve">
-    <value>Fehler beim Löschen der Auswahl wegen unzureichender Berechtigungen.</value>
+  <data name="lblChooseTargets" xml:space="preserve">
+    <value>Zielobjekte auswählen</value>
+  </data>
+  <data name="lblColumnDown" xml:space="preserve">
+    <value>Spalte nach unten verschieben</value>
+  </data>
+  <data name="lblColumnUp" xml:space="preserve">
+    <value>Spalte nach oben verschieben</value>
+  </data>
+  <data name="lblColumnWidthPreview" xml:space="preserve">
+    <value>Spaltenbreite-Vorschau</value>
   </data>
   <data name="lblCommonPermissions" xml:space="preserve">
     <value>Gemeinsame Berechtigungen</value>
   </data>
-  <data name="lblReverse" xml:space="preserve">
-    <value>Umgekehrte Reihenfolge</value>
+  <data name="lblConfigName" xml:space="preserve">
+    <value>Name</value>
   </data>
-  <data name="lblPermissions" xml:space="preserve">
-    <value>Berechtigungen</value>
-  </data>
-  <data name="lblOwner" xml:space="preserve">
-    <value>Eigentümer</value>
-  </data>
-  <data name="msgNoCreateFolderPermission" xml:space="preserve">
-    <value>Sie haben nicht die Berechtigung, im Zielordner Ordner zu erzeugen.</value>
-  </data>
-  <data name="mnuDeleteMetaset" xml:space="preserve">
-    <value>Metaset entfernen</value>
-  </data>
-  <data name="lblShowLatestInHead" xml:space="preserve">
-    <value>Neueste Version (Stamm)</value>
+  <data name="lblContains" xml:space="preserve">
+    <value>enthält</value>
   </data>
   <data name="lblCount" xml:space="preserve">
     <value>Anzahl</value>
   </data>
+  <data name="lblCreatedBy" xml:space="preserve">
+    <value>Erstellt von</value>
+  </data>
+  <data name="lblCreateNewVersion" xml:space="preserve">
+    <value>Neue Version erzeugen</value>
+  </data>
+  <data name="lblCreationDate" xml:space="preserve">
+    <value>Erstellungsdatum / -zeit</value>
+  </data>
+  <data name="lblCurrentPermissions" xml:space="preserve">
+    <value>Aktuelle Berechtigungen</value>
+  </data>
+  <data name="lblDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="lblDeleteAllVersions" xml:space="preserve">
+    <value>Alle Versionen löschen</value>
+  </data>
+  <data name="lblDeleteConfig" xml:space="preserve">
+    <value>Spaltenkonfiguration löschen</value>
+  </data>
+  <data name="lblDeleteProtectedRelations" xml:space="preserve">
+    <value>Geschützte Relationen löschen</value>
+  </data>
+  <data name="lblDeleteSelectedVersions" xml:space="preserve">
+    <value>Ausgewählte Versionen löschen</value>
+  </data>
+  <data name="lblEditFileImportRequests" xml:space="preserve">
+    <value>Importeinstellungen bearbeiten</value>
+  </data>
+  <data name="lblEditSelectedNodeContent" xml:space="preserve">
+    <value>Inhalt bearbeiten</value>
+  </data>
+  <data name="lblEditSelectedNodeParas" xml:space="preserve">
+    <value>Einstellungen der ausgewählten Knoten bearbeiten</value>
+  </data>
+  <data name="lblEmergencyConfig" xml:space="preserve">
+    <value>Grundkonfiguration</value>
+  </data>
+  <data name="lblEntireFolder" xml:space="preserve">
+    <value>Ordner mit gesamtem Inhalt</value>
+  </data>
+  <data name="lblEquals" xml:space="preserve">
+    <value>ist gleich</value>
+  </data>
+  <data name="lblFalse" xml:space="preserve">
+    <value>Falsch</value>
+  </data>
+  <data name="lblFieldName" xml:space="preserve">
+    <value>Feldname</value>
+  </data>
+  <data name="lblFilename" xml:space="preserve">
+    <value>Dateiname</value>
+  </data>
+  <data name="lblFiles" xml:space="preserve">
+    <value>Dateien</value>
+  </data>
+  <data name="lblFixedVersion" xml:space="preserve">
+    <value>Feste Version</value>
+  </data>
+  <data name="lblFolder" xml:space="preserve">
+    <value>Ordner</value>
+  </data>
+  <data name="lblFolderId" xml:space="preserve">
+    <value>Ordner-ID</value>
+  </data>
+  <data name="lblFolderPath" xml:space="preserve">
+    <value>Ordnerpfad</value>
+  </data>
+  <data name="lblFolderPermissions" xml:space="preserve">
+    <value>Ordner-Berechtigungen</value>
+  </data>
+  <data name="lblFolderType" xml:space="preserve">
+    <value>Ordnertyp</value>
+  </data>
+  <data name="lblFormat" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="lblGreaterThan" xml:space="preserve">
+    <value>ist größer als</value>
+  </data>
+  <data name="lblGreaterThanOrEqual" xml:space="preserve">
+    <value>ist größer als oder gleich</value>
+  </data>
+  <data name="lblGroup" xml:space="preserve">
+    <value>Gruppe</value>
+  </data>
+  <data name="lblHideSettings" xml:space="preserve">
+    <value>Einstellungen verbergen</value>
+  </data>
+  <data name="lblHideTranslations" xml:space="preserve">
+    <value>Übersetzungen verbergen</value>
+  </data>
+  <data name="lblId" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="lblImport" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="lblImportDots" xml:space="preserve">
+    <value>Importieren ...</value>
+  </data>
+  <data name="lblLanguage" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="lblLatestVersion" xml:space="preserve">
+    <value>Neueste Version</value>
+  </data>
+  <data name="lblLessThan" xml:space="preserve">
+    <value>ist kleiner als</value>
+  </data>
+  <data name="lblLessThanOrEqual" xml:space="preserve">
+    <value>ist kleiner als oder gleich</value>
+  </data>
+  <data name="lblLifecycle" xml:space="preserve">
+    <value>Lebenszyklus</value>
+  </data>
+  <data name="lblLifecycleAndState" xml:space="preserve">
+    <value>Lebenszyklus und Status</value>
+  </data>
+  <data name="lblLifecycleState" xml:space="preserve">
+    <value>Lebenszyklus-Status</value>
+  </data>
+  <data name="lblLinkPermissions" xml:space="preserve">
+    <value>Verknüpfungs-Berechtigungen</value>
+  </data>
+  <data name="lblLockedBy" xml:space="preserve">
+    <value>Gesperrt von</value>
+  </data>
+  <data name="lblMessage" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="lblModificationDate" xml:space="preserve">
+    <value>Änderungsdatum / -zeit</value>
+  </data>
+  <data name="lblModifiedBy" xml:space="preserve">
+    <value>Geändert von</value>
+  </data>
+  <data name="lblName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="lblNamedConfig" xml:space="preserve">
+    <value>Benannte Konfiguration: {0}</value>
+  </data>
+  <data name="lblNewFolder" xml:space="preserve">
+    <value>Neuer Ordner</value>
+  </data>
+  <data name="lblNewName" xml:space="preserve">
+    <value>Neuer Name</value>
+  </data>
+  <data name="lblNewObjectWithoutContent" xml:space="preserve">
+    <value>Neues Objekt ohne Inhalt</value>
+  </data>
+  <data name="lblNo" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="lblNoFormat" xml:space="preserve">
+    <value>Kein Format</value>
+  </data>
+  <data name="lblNoLifecycle" xml:space="preserve">
+    <value>Kein Lebenszyklus</value>
+  </data>
+  <data name="lblNot" xml:space="preserve">
+    <value>NICHT</value>
+  </data>
+  <data name="lblNotification" xml:space="preserve">
+    <value>Benachrichtigung</value>
+  </data>
+  <data name="lblObjectName" xml:space="preserve">
+    <value>Objektname</value>
+  </data>
+  <data name="lblObjectPermissions" xml:space="preserve">
+    <value>Objekt-Berechtigungen</value>
+  </data>
+  <data name="lblObjectType" xml:space="preserve">
+    <value>Objekttyp</value>
+  </data>
+  <data name="lblOk" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="lblOwner" xml:space="preserve">
+    <value>Eigentümer</value>
+  </data>
+  <data name="lblParentFolderId" xml:space="preserve">
+    <value>Eltern-Id</value>
+  </data>
+  <data name="lblParents" xml:space="preserve">
+    <value>Eltern</value>
+  </data>
+  <data name="lblPath" xml:space="preserve">
+    <value>Pfad</value>
+  </data>
+  <data name="lblPermissions" xml:space="preserve">
+    <value>Berechtigungen</value>
+  </data>
+  <data name="lblProperties" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="lblQuery" xml:space="preserve">
+    <value>Abfrage</value>
+  </data>
+  <data name="lblRawMetadata" xml:space="preserve">
+    <value>Metadaten (roh)</value>
+  </data>
+  <data name="lblRelatesTo" xml:space="preserve">
+    <value>Bezug</value>
+  </data>
+  <data name="lblRelationPermissions" xml:space="preserve">
+    <value>Relations-Berechtigungen</value>
+  </data>
+  <data name="lblRelations" xml:space="preserve">
+    <value>Beziehungen</value>
+  </data>
+  <data name="lblRelationType" xml:space="preserve">
+    <value>Beziehungstyp</value>
+  </data>
+  <data name="lblReload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="lblRemoveColumn" xml:space="preserve">
+    <value>Spalte entfernen</value>
+  </data>
+  <data name="lblReverse" xml:space="preserve">
+    <value>Umgekehrte Reihenfolge</value>
+  </data>
+  <data name="lblRootId" xml:space="preserve">
+    <value>Stamm-ID</value>
+  </data>
+  <data name="lblSave" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="lblSaveConfig" xml:space="preserve">
+    <value>Spaltenkonfiguration speichern</value>
+  </data>
+  <data name="lblSearch" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="lblSearchEditor" xml:space="preserve">
+    <value>Suche</value>
+  </data>
+  <data name="lblSearchFolders" xml:space="preserve">
+    <value>Ordner suchen</value>
+  </data>
+  <data name="lblSearchObjects" xml:space="preserve">
+    <value>Objekte suchen</value>
+  </data>
+  <data name="lblSearchResults" xml:space="preserve">
+    <value>Suchergebnisse</value>
+  </data>
+  <data name="lblSelectRelation" xml:space="preserve">
+    <value>Wählen Sie einen Beziehungstyp</value>
+  </data>
+  <data name="lblSetConfigAsDefault" xml:space="preserve">
+    <value>Spaltenkonfiguration als Standard festlegen</value>
+  </data>
+  <data name="lblShowAllVersions" xml:space="preserve">
+    <value>Alle Versionen</value>
+  </data>
+  <data name="lblShowLatestInBranches" xml:space="preserve">
+    <value>Neueste Versionen (Verzweigungen)</value>
+  </data>
+  <data name="lblShowLatestInHead" xml:space="preserve">
+    <value>Neueste Version (Stamm)</value>
+  </data>
+  <data name="lblShownColumns" xml:space="preserve">
+    <value>Angezeigte Spalten</value>
+  </data>
+  <data name="lblShowQuery" xml:space="preserve">
+    <value>Abfrage anzeigen</value>
+  </data>
+  <data name="lblShowSettings" xml:space="preserve">
+    <value>Einstellungen anzeigen</value>
+  </data>
+  <data name="lblShowTranslations" xml:space="preserve">
+    <value>Übersetzungen anzeigen</value>
+  </data>
+  <data name="lblSize" xml:space="preserve">
+    <value>Größe</value>
+  </data>
+  <data name="lblSortThisColumn" xml:space="preserve">
+    <value>Nach dieser Spalte sortieren</value>
+  </data>
+  <data name="lblStandardConfig" xml:space="preserve">
+    <value>Standardkonfiguration</value>
+  </data>
+  <data name="lblStartsWith" xml:space="preserve">
+    <value>beginnt mit</value>
+  </data>
+  <data name="lblSuperuser" xml:space="preserve">
+    <value>Superuser</value>
+  </data>
+  <data name="lblTargetFolder" xml:space="preserve">
+    <value>Zielordner</value>
+  </data>
+  <data name="lblTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="lblTotalSize" xml:space="preserve">
+    <value>Gesamtgröße</value>
+  </data>
+  <data name="lblTranslationsTitle" xml:space="preserve">
+    <value>Übersetzungen - Quellsprache: {0}</value>
+  </data>
+  <data name="lblTreeContent" xml:space="preserve">
+    <value>Inhalt</value>
+  </data>
+  <data name="lblTreeHome" xml:space="preserve">
+    <value>Meine Dokumente</value>
+  </data>
+  <data name="lblTreeLocked" xml:space="preserve">
+    <value>Gesperrte Objekte</value>
+  </data>
+  <data name="lblTreeResults" xml:space="preserve">
+    <value>Ergebnisse</value>
+  </data>
+  <data name="lblTreeSearches" xml:space="preserve">
+    <value>Gespeicherte Suchabfragen</value>
+  </data>
+  <data name="lblTreeTasks" xml:space="preserve">
+    <value>Aufgaben und Nachrichten</value>
+  </data>
+  <data name="lblTrue" xml:space="preserve">
+    <value>Wahr</value>
+  </data>
+  <data name="lblType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="lblUnsavedChanges" xml:space="preserve">
+    <value>Ungespeicherte Änderungen</value>
+  </data>
+  <data name="lblUpdateToLatestInHead" xml:space="preserve">
+    <value>Referenzen auf neueste Versionen im Stamm aktualisieren</value>
+  </data>
+  <data name="lblUser" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="lblVariableSpecifyName" xml:space="preserve">
+    <value>Variable (Namen angeben)</value>
+  </data>
+  <data name="lblVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="lblVersionSelector" xml:space="preserve">
+    <value>Version auswählen</value>
+  </data>
+  <data name="lblViewDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="lblViewLargeIcons" xml:space="preserve">
+    <value>Große Symbole</value>
+  </data>
+  <data name="lblViewSmallIcons" xml:space="preserve">
+    <value>Kleine Symbole</value>
+  </data>
+  <data name="lblWidth" xml:space="preserve">
+    <value>Spaltenbreite</value>
+  </data>
+  <data name="lblYes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="mnuAddMetaset" xml:space="preserve">
+    <value>Metaset hinzufügen</value>
+  </data>
+  <data name="mnuAddMetasetType" xml:space="preserve">
+    <value>Metaset-Typ hinzufügen</value>
+  </data>
+  <data name="mnuAddNewRelation" xml:space="preserve">
+    <value>Neue Relation</value>
+  </data>
+  <data name="mnuAppendContent" xml:space="preserve">
+    <value>Inhalt aus Datei hinzufügen</value>
+  </data>
+  <data name="mnuCancelCheckout" xml:space="preserve">
+    <value>Checkout abbrechen</value>
+  </data>
+  <data name="mnuCheckin" xml:space="preserve">
+    <value>Einchecken</value>
+  </data>
+  <data name="mnuCheckout" xml:space="preserve">
+    <value>Auschecken</value>
+  </data>
+  <data name="mnuClone" xml:space="preserve">
+    <value>Duplizieren</value>
+  </data>
+  <data name="mnuCopy" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="mnuCopyFilename" xml:space="preserve">
+    <value>Dateinamen kopieren</value>
+  </data>
+  <data name="mnuCopyPathFilename" xml:space="preserve">
+    <value>Pfad und Dateinamen kopieren</value>
+  </data>
+  <data name="mnuCopyTicket" xml:space="preserve">
+    <value>Ticket kopieren</value>
+  </data>
+  <data name="mnuCreateNewVersion" xml:space="preserve">
+    <value>Neue Version erzeugen</value>
+  </data>
+  <data name="mnuCreateObjectWithoutContent" xml:space="preserve">
+    <value>Neues Objekt ohne Inhalt</value>
+  </data>
+  <data name="mnuCut" xml:space="preserve">
+    <value>Ausschneiden</value>
+  </data>
+  <data name="mnuDeleteLinks" xml:space="preserve">
+    <value>Verknüpfungen löschen</value>
+  </data>
+  <data name="mnuDeleteMetaset" xml:space="preserve">
+    <value>Metaset entfernen</value>
+  </data>
+  <data name="mnuDeleteMetasetType" xml:space="preserve">
+    <value>Metaset-Typ entfernen</value>
+  </data>
+  <data name="mnuExport" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="mnuImportRendition" xml:space="preserve">
+    <value>Formatvariante importieren</value>
+  </data>
+  <data name="mnuLinkToFolder" xml:space="preserve">
+    <value>Verknüpfung in Ordner erstellen</value>
+  </data>
+  <data name="mnuNewFolder" xml:space="preserve">
+    <value>Neuer Ordner</value>
+  </data>
+  <data name="mnuNewObjectFromTemplate" xml:space="preserve">
+    <value>Neues Objekt aus Vorlage</value>
+  </data>
+  <data name="mnuNewObjectWithoutContent" xml:space="preserve">
+    <value>Neues Objekt ohne Inhalt</value>
+  </data>
+  <data name="mnuOpenCheckedOutFile" xml:space="preserve">
+    <value>Ausgecheckte Datei öffnen</value>
+  </data>
+  <data name="mnuOpenInNewWindow" xml:space="preserve">
+    <value>In neuem Fenster öffnen</value>
+  </data>
+  <data name="mnuPaste" xml:space="preserve">
+    <value>Einfügen ...</value>
+  </data>
+  <data name="mnuPasteAllVersions" xml:space="preserve">
+    <value>Alle Versionen</value>
+  </data>
+  <data name="mnuPasteSelectedVersions" xml:space="preserve">
+    <value>Nur ausgewählte Versionen</value>
+  </data>
+  <data name="mnuRemoveRelation" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="mnuRenameFolder" xml:space="preserve">
+    <value>Ordner umbenennen</value>
+  </data>
+  <data name="mnuReplaceRelation" xml:space="preserve">
+    <value>Ersetzen</value>
+  </data>
+  <data name="mnuSelectLinkVersion" xml:space="preserve">
+    <value>Version des verknüpften Objekts auswählen</value>
+  </data>
+  <data name="mnuUpdateRelation" xml:space="preserve">
+    <value>Version aktualisieren</value>
+  </data>
+  <data name="mnuView" xml:space="preserve">
+    <value>Anzeigen</value>
+  </data>
+  <data name="msgBranchingForbidden" xml:space="preserve">
+    <value>Fehler beim Versionieren des Objekts. Durch Versionieren wäre eine Verzweigung entstanden, Verzweigungen sind in der aktuellen Sitzung jedoch deaktiviert.</value>
+  </data>
+  <data name="msgCancelCheckoutChangesLost" xml:space="preserve">
+    <value>Wenn Sie den Checkout abbrechen, werden Ihre Änderungen nicht gespeichert. Sind Sie sicher?</value>
+  </data>
+  <data name="msgCheckoutOpenInAssociatedApp" xml:space="preserve">
+    <value>Möchten Sie die ausgecheckte Datei in der zugeordneten Applikation öffnen?</value>
+  </data>
+  <data name="msgCopyingRootFoldersNotSupported" xml:space="preserve">
+    <value>Das Kopieren von Ordnern der obersten Ebene ist nicht unterstützt.</value>
+  </data>
+  <data name="msgCopySelectedNoFoldersPermitted" xml:space="preserve">
+    <value>Beim Kopieren ausgewählter Versionen sind Ordner nicht unterstützt.</value>
+  </data>
+  <data name="msgEmptySearchDefinition" xml:space="preserve">
+    <value>Leere Suchdefinition.</value>
+  </data>
+  <data name="msgFailureAppendingContent" xml:space="preserve">
+    <value>Fehler beim Hinzufügen von Inhalt aus einer Datei.</value>
+  </data>
+  <data name="msgFailureApplyingProperties" xml:space="preserve">
+    <value>Speichern der Eigenschaften schlug fehl bei {0} Objekten.</value>
+  </data>
+  <data name="msgFailureCheckingIn" xml:space="preserve">
+    <value>Fehler beim Einchecken</value>
+  </data>
+  <data name="msgFailureCopying" xml:space="preserve">
+    <value>Beim Kopieren der Auswahl ist ein Fehler aufgetreten.</value>
+  </data>
+  <data name="msgFailureCopyingToClipboard" xml:space="preserve">
+    <value>Fehler beim Kopieren in die Zwischenablage.</value>
+  </data>
+  <data name="msgFailureCopyingToClipboardNoChildFound" xml:space="preserve">
+    <value>Fehler beim Kopieren in die Zwischenablage. Die ausgewählte Referenz wurde nicht gefunden.</value>
+  </data>
+  <data name="msgFailureCreatingObject" xml:space="preserve">
+    <value>Fehler beim Erstellen des Objekts.</value>
+  </data>
+  <data name="msgFailureCreatingReferences" xml:space="preserve">
+    <value>Die folgenden Referenzen konnten nicht erzeugt werden.</value>
+  </data>
+  <data name="msgFailureDeleting" xml:space="preserve">
+    <value>Fehler beim Löschen der Auswahl, {0} Knoten wurden nicht gelöscht.</value>
+  </data>
+  <data name="msgFailureDeletingInsufPerm" xml:space="preserve">
+    <value>Fehler beim Löschen der Auswahl wegen unzureichender Berechtigungen.</value>
+  </data>
+  <data name="msgFailureDeletingVersionWithSuccessor" xml:space="preserve">
+    <value>Fehler beim Löschen des Objekts. Objekte mit Nachfolger-Version können nicht gelöscht werden.</value>
+  </data>
+  <data name="msgFailureLockingLockedByOtherUser" xml:space="preserve">
+    <value>Objekt kann nicht gesperrt werden, es ist bereits von einem anderen Benutzer gesperrt.</value>
+  </data>
+  <data name="msgFailureMoving" xml:space="preserve">
+    <value>Beim Verschieben der Auswahl ist ein Fehler aufgetreten.</value>
+  </data>
+  <data name="msgFailureViewingObject" xml:space="preserve">
+    <value>Fehler beim Anzeigen des Objekts.</value>
+  </data>
+  <data name="msgFailureWritingMetadata" xml:space="preserve">
+    <value>Fehler beim Speichern der Metadaten</value>
+  </data>
+  <data name="msgImportErrorsReadToolTips" xml:space="preserve">
+    <value>Es gab Fehler bei der Analyse der Dateien. Details finden Sie in den ToolTips zu den Dateien.</value>
+  </data>
   <data name="msgInsufficientPermissions" xml:space="preserve">
     <value>Sie haben nicht die Berechtigung, die gewählte Funktion auszuführen.</value>
+  </data>
+  <data name="msgInsufficientPermissionsAddRelation" xml:space="preserve">
+    <value>Sie haben nicht die Berechtigung, mindestens eine der Relationen hinzuzufügen.</value>
+  </data>
+  <data name="msgInsufficientPermissionsRemoveRelation" xml:space="preserve">
+    <value>Sie haben nicht die Berechtigung, mindestens eine der Relationen zu entfernen.</value>
   </data>
   <data name="msgMoreThanXResults" xml:space="preserve">
     <value>Die Suche lieferte viele Ergebnisse ({0}). 
@@ -327,122 +747,29 @@ Alle Ergebnisse anzuzeigen, kann mehrere Minuten dauern.
 Versuchen Sie ggf., die Suchkriterien einzuengen.
 Möchten Sie alle Resultate anzeigen?</value>
   </data>
-  <data name="lblPath" xml:space="preserve">
-    <value>Pfad</value>
+  <data name="msgNoCreateFolderPermission" xml:space="preserve">
+    <value>Sie haben nicht die Berechtigung, im Zielordner Ordner zu erzeugen.</value>
   </data>
-  <data name="msgFailureCreatingObject" xml:space="preserve">
-    <value>Fehler beim Erstellen des Objekts.</value>
+  <data name="msgNoLifecyclesDefined" xml:space="preserve">
+    <value>In diesem Repository sind keine Lebenszyklen definiert.</value>
   </data>
-  <data name="lblCheckin" xml:space="preserve">
-    <value>Einchecken</value>
+  <data name="msgNoMovePermission" xml:space="preserve">
+    <value>Sie haben nicht die Berechtigung, die folgenden Objekte / Ordner zu verschieben:</value>
   </data>
-  <data name="lblBytes" xml:space="preserve">
-    <value>Byte</value>
+  <data name="msgNoObjectFound" xml:space="preserve">
+    <value>Das Objekt mit der angegebenen ID wurde nicht gefunden.</value>
   </data>
-  <data name="lblSave" xml:space="preserve">
-    <value>Speichern</value>
-  </data>
-  <data name="lblFiles" xml:space="preserve">
-    <value>Dateien</value>
+  <data name="msgNoReadPermission" xml:space="preserve">
+    <value>Sie haben nicht die Berechtigung, die folgenden Objekte / Ordner zu lesen:</value>
   </data>
   <data name="msgReferencesNotFound" xml:space="preserve">
     <value>Die folgenden Referenzen sind nicht mit Objekten verknüpft:</value>
   </data>
-  <data name="lblFolderId" xml:space="preserve">
-    <value>Ordner-ID</value>
+  <data name="msgSaveUnsavedChanges" xml:space="preserve">
+    <value>Es gibt ungespeicherte Änderungen in '{0}'. Sollen diese gespeichert werden?</value>
   </data>
-  <data name="lblTitle" xml:space="preserve">
-    <value>Titel</value>
-  </data>
-  <data name="lblNoFormat" xml:space="preserve">
-    <value>Kein Format</value>
-  </data>
-  <data name="mnuClone" xml:space="preserve">
-    <value>Duplizieren</value>
-  </data>
-  <data name="permFolderCreateObject" xml:space="preserve">
-    <value>Objekt erzeugen</value>
-  </data>
-  <data name="lblVersionSelector" xml:space="preserve">
-    <value>Version auswählen</value>
-  </data>
-  <data name="lblDeleteSelectedVersions" xml:space="preserve">
-    <value>Ausgewählte Versionen löschen</value>
-  </data>
-  <data name="msgFailureLockingLockedByOtherUser" xml:space="preserve">
-    <value>Objekt kann nicht gesperrt werden, es ist bereits von einem anderen Benutzer gesperrt.</value>
-  </data>
-  <data name="lblLatestVersion" xml:space="preserve">
-    <value>Neueste Version</value>
-  </data>
-  <data name="lblTreeResults" xml:space="preserve">
-    <value>Ergebnisse</value>
-  </data>
-  <data name="lblEditSelectedNodeParas" xml:space="preserve">
-    <value>Einstellungen der ausgewählten Knoten bearbeiten</value>
-  </data>
-  <data name="lblConfigName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="lblSearchResults" xml:space="preserve">
-    <value>Suchergebnisse</value>
-  </data>
-  <data name="lblName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="msgFailureMoving" xml:space="preserve">
-    <value>Beim Verschieben der Auswahl ist ein Fehler aufgetreten.</value>
-  </data>
-  <data name="msgImportErrorsReadToolTips" xml:space="preserve">
-    <value>Es gab Fehler bei der Analyse der Dateien. Details finden Sie in den ToolTips zu den Dateien.</value>
-  </data>
-  <data name="lblDeleteProtectedRelations" xml:space="preserve">
-    <value>Geschützte Relationen löschen</value>
-  </data>
-  <data name="msgFailureCopyingToClipboardNoChildFound" xml:space="preserve">
-    <value>Fehler beim Kopieren in die Zwischenablage. Die ausgewählte Referenz wurde nicht gefunden.</value>
-  </data>
-  <data name="lblNo" xml:space="preserve">
-    <value>Nein</value>
-  </data>
-  <data name="msgCopySelectedNoFoldersPermitted" xml:space="preserve">
-    <value>Beim Kopieren ausgewählter Versionen sind Ordner nicht unterstützt.</value>
-  </data>
-  <data name="lblTranslationsTitle" xml:space="preserve">
-    <value>Übersetzungen - Quellsprache: {0}</value>
-  </data>
-  <data name="mnuCut" xml:space="preserve">
-    <value>Ausschneiden</value>
-  </data>
-  <data name="lblFolderPath" xml:space="preserve">
-    <value>Ordnerpfad</value>
-  </data>
-  <data name="opStringEndsWith" xml:space="preserve">
-    <value>endet mit</value>
-  </data>
-  <data name="lblAny" xml:space="preserve">
-    <value>BELIEBIG</value>
-  </data>
-  <data name="mnuOpenInNewWindow" xml:space="preserve">
-    <value>In neuem Fenster öffnen</value>
-  </data>
-  <data name="lblViewDetails" xml:space="preserve">
-    <value>Details</value>
-  </data>
-  <data name="lblObjectName" xml:space="preserve">
-    <value>Objektname</value>
-  </data>
-  <data name="lblFolderPermissions" xml:space="preserve">
-    <value>Ordner-Berechtigungen</value>
-  </data>
-  <data name="lblFolder" xml:space="preserve">
-    <value>Ordner</value>
-  </data>
-  <data name="msgFailureCheckingIn" xml:space="preserve">
-    <value>Fehler beim Einchecken</value>
-  </data>
-  <data name="lblRemoveColumn" xml:space="preserve">
-    <value>Spalte entfernen</value>
+  <data name="msgSelfReferencesNotAllowed" xml:space="preserve">
+    <value>Relationen eines Objekts mit sich selbst sind nicht zulässig.</value>
   </data>
   <data name="msgShowAllSearchResults" xml:space="preserve">
     <value>Die Suche lieferte sehr viele Ergebnisse ({0}). 
@@ -450,473 +777,155 @@ Alle Ergebnisse anzuzeigen, kann mehrere Minuten dauern.
 Versuchen Sie ggf., die Suchkriterien einzuengen.
 Möchten Sie alle Resultate anzeigen?</value>
   </data>
-  <data name="permObjectContentWrite" xml:space="preserve">
-    <value>Inhalt schreiben</value>
-  </data>
-  <data name="lblWidth" xml:space="preserve">
-    <value>Spaltenbreite</value>
-  </data>
-  <data name="msgBranchingForbidden" xml:space="preserve">
-    <value>Fehler beim Versionieren des Objekts. Durch Versionieren wäre eine Verzweigung entstanden, Verzweigungen sind in der aktuellen Sitzung jedoch deaktiviert.</value>
-  </data>
-  <data name="msgEmptySearchDefinition" xml:space="preserve">
-    <value>Leere Suchdefinition.</value>
-  </data>
-  <data name="lblSortThisColumn" xml:space="preserve">
-    <value>Nach dieser Spalte sortieren</value>
-  </data>
-  <data name="lblNamedConfig" xml:space="preserve">
-    <value>Benannte Konfiguration: {0}</value>
-  </data>
-  <data name="lblUpdateToLatestInHead" xml:space="preserve">
-    <value>Referenzen auf neueste Versionen im Stamm aktualisieren</value>
-  </data>
-  <data name="msgInsufficientPermissionsAddRelation" xml:space="preserve">
-    <value>Sie haben nicht die Berechtigung, mindestens eine der Relationen hinzuzufügen.</value>
-  </data>
-  <data name="lblShowSettings" xml:space="preserve">
-    <value>Einstellungen anzeigen</value>
-  </data>
-  <data name="lblCheckinFromCheckoutPath" xml:space="preserve">
-    <value>Von ausgecheckter Datei einchecken</value>
-  </data>
-  <data name="opIsEqualOrBefore" xml:space="preserve">
-    <value>ist gleich oder vor</value>
-  </data>
-  <data name="msgSaveUnsavedChanges" xml:space="preserve">
-    <value>Es gibt ungespeicherte Änderungen in '{0}'. Sollen diese gespeichert werden?</value>
-  </data>
-  <data name="mnuAddMetaset" xml:space="preserve">
-    <value>Metaset hinzufügen</value>
-  </data>
-  <data name="lblFilename" xml:space="preserve">
-    <value>Dateiname</value>
-  </data>
-  <data name="lblApplyConfig" xml:space="preserve">
-    <value>Spaltenkonfiguration anwenden</value>
-  </data>
-  <data name="lblSearch" xml:space="preserve">
-    <value>Suchen</value>
-  </data>
-  <data name="msgFailureApplyingProperties" xml:space="preserve">
-    <value>Speichern der Eigenschaften schlug fehl bei {0} Objekten.</value>
-  </data>
-  <data name="lblRelatesTo" xml:space="preserve">
-    <value>Bezug</value>
-  </data>
-  <data name="opIsEqual" xml:space="preserve">
-    <value>ist gleich</value>
-  </data>
-  <data name="lblStandardConfig" xml:space="preserve">
-    <value>Standardkonfiguration</value>
-  </data>
-  <data name="permRelationParentRemove" xml:space="preserve">
-    <value>Elternobjekt entfernen</value>
-  </data>
-  <data name="lblDelete" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="lblRelationPermissions" xml:space="preserve">
-    <value>Relations-Berechtigungen</value>
-  </data>
-  <data name="mnuPaste" xml:space="preserve">
-    <value>Einfügen ...</value>
-  </data>
-  <data name="lblEquals" xml:space="preserve">
-    <value>ist gleich</value>
-  </data>
-  <data name="lblObjectPermissions" xml:space="preserve">
-    <value>Objekt-Berechtigungen</value>
-  </data>
-  <data name="lblDeleteConfig" xml:space="preserve">
-    <value>Spaltenkonfiguration löschen</value>
-  </data>
-  <data name="opContainedWordStartsWith" xml:space="preserve">
-    <value>enthaltenes Wort beginnt mit</value>
-  </data>
-  <data name="permObjectVersion" xml:space="preserve">
-    <value>Versionieren</value>
-  </data>
-  <data name="msgInsufficientPermissionsRemoveRelation" xml:space="preserve">
-    <value>Sie haben nicht die Berechtigung, mindestens eine der Relationen zu entfernen.</value>
-  </data>
-  <data name="mnuCheckout" xml:space="preserve">
-    <value>Auschecken</value>
-  </data>
-  <data name="lblEntireFolder" xml:space="preserve">
-    <value>Ordner mit gesamtem Inhalt</value>
-  </data>
-  <data name="permNodeSummaryWrite" xml:space="preserve">
-    <value>Zusammenfassung schreiben</value>
-  </data>
-  <data name="lblLifecycleAndState" xml:space="preserve">
-    <value>Lebenszyklus und Status</value>
-  </data>
-  <data name="lblRawMetadata" xml:space="preserve">
-    <value>Metadaten (roh)</value>
-  </data>
-  <data name="lblGreaterThan" xml:space="preserve">
-    <value>ist größer als</value>
-  </data>
-  <data name="mnuCopyFilename" xml:space="preserve">
-    <value>Dateinamen kopieren</value>
-  </data>
-  <data name="lblHideSettings" xml:space="preserve">
-    <value>Einstellungen verbergen</value>
-  </data>
-  <data name="permNodeAclWrite" xml:space="preserve">
-    <value>ACL schreiben</value>
-  </data>
-  <data name="permFolderCreateFolder" xml:space="preserve">
-    <value>Ordner erzeugen</value>
-  </data>
-  <data name="mnuUpdateRelation" xml:space="preserve">
-    <value>Version aktualisieren</value>
-  </data>
-  <data name="mnuNewObjectWithoutContent" xml:space="preserve">
-    <value>Neues Objekt ohne Inhalt</value>
-  </data>
-  <data name="lblFixedVersion" xml:space="preserve">
-    <value>Feste Version</value>
-  </data>
-  <data name="lblAvailableConfig" xml:space="preserve">
-    <value>Verfügbare Spaltenkonfigurationen</value>
-  </data>
-  <data name="lblTreeTasks" xml:space="preserve">
-    <value>Aufgaben und Nachrichten</value>
-  </data>
-  <data name="lblLessThan" xml:space="preserve">
-    <value>ist kleiner als</value>
-  </data>
-  <data name="lblParents" xml:space="preserve">
-    <value>Eltern</value>
-  </data>
-  <data name="permNodeBrowse" xml:space="preserve">
-    <value>Anzeigen</value>
-  </data>
-  <data name="lblCurrentPermissions" xml:space="preserve">
-    <value>Aktuelle Berechtigungen</value>
-  </data>
-  <data name="mnuView" xml:space="preserve">
-    <value>Anzeigen</value>
-  </data>
-  <data name="mnuPasteAllVersions" xml:space="preserve">
-    <value>Alle Versionen</value>
-  </data>
-  <data name="msgFailureWritingMetadata" xml:space="preserve">
-    <value>Fehler beim Speichern der Metadaten</value>
-  </data>
-  <data name="lblModifiedBy" xml:space="preserve">
-    <value>Geändert von</value>
-  </data>
-  <data name="lblCancel" xml:space="preserve">
-    <value>Abbrechen</value>
-  </data>
-  <data name="lblTotalSize" xml:space="preserve">
-    <value>Gesamtgröße</value>
-  </data>
-  <data name="permObjectLock" xml:space="preserve">
-    <value>Sperren</value>
-  </data>
-  <data name="ttSave" xml:space="preserve">
-    <value>Speichern</value>
-  </data>
-  <data name="lblSearchFolders" xml:space="preserve">
-    <value>Ordner suchen</value>
-  </data>
-  <data name="msgCheckoutOpenInAssociatedApp" xml:space="preserve">
-    <value>Möchten Sie die ausgecheckte Datei in der zugeordneten Applikation öffnen?</value>
-  </data>
-  <data name="lblSetConfigAsDefault" xml:space="preserve">
-    <value>Spaltenkonfiguration als Standard festlegen</value>
-  </data>
-  <data name="opIsGreater" xml:space="preserve">
-    <value>ist größer</value>
-  </data>
-  <data name="lblLanguage" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
-  <data name="lblViewLargeIcons" xml:space="preserve">
-    <value>Große Symbole</value>
-  </data>
-  <data name="mnuAddNewRelation" xml:space="preserve">
-    <value>Neue Relation</value>
-  </data>
-  <data name="opIsEqualOrGreater" xml:space="preserve">
-    <value>ist größer oder gleich</value>
-  </data>
-  <data name="lblUser" xml:space="preserve">
-    <value>Benutzer</value>
-  </data>
-  <data name="lblChooseTarget" xml:space="preserve">
-    <value>Zielobjekt auswählen</value>
-  </data>
-  <data name="lblMessage" xml:space="preserve">
-    <value>Nachricht</value>
-  </data>
-  <data name="msgFailureCreatingReferences" xml:space="preserve">
-    <value>Die folgenden Referenzen konnten nicht erzeugt werden.</value>
-  </data>
-  <data name="lblRootId" xml:space="preserve">
-    <value>Stamm-ID</value>
-  </data>
-  <data name="msgCopyingRootFoldersNotSupported" xml:space="preserve">
-    <value>Das Kopieren von Ordnern der obersten Ebene ist nicht unterstützt.</value>
-  </data>
-  <data name="lblLockedBy" xml:space="preserve">
-    <value>Gesperrt von</value>
-  </data>
-  <data name="permRelationParentAdd" xml:space="preserve">
-    <value>Elternobjekt hinzufügen</value>
-  </data>
-  <data name="lblHideTranslations" xml:space="preserve">
-    <value>Übersetzungen verbergen</value>
-  </data>
-  <data name="lblColumnUp" xml:space="preserve">
-    <value>Spalte nach oben verschieben</value>
-  </data>
-  <data name="opContainedWordContains" xml:space="preserve">
-    <value>enthaltenes Wort enthält</value>
-  </data>
-  <data name="permObjectLifecycleStateWrite" xml:space="preserve">
-    <value>LC-Status schreiben</value>
-  </data>
-  <data name="mnuReplaceRelation" xml:space="preserve">
-    <value>Ersetzen</value>
-  </data>
-  <data name="lblAclEntries" xml:space="preserve">
-    <value>ACL-Einträge</value>
-  </data>
-  <data name="opIsEqualOrLess" xml:space="preserve">
-    <value>ist kleiner oder gleich</value>
-  </data>
-  <data name="permNodeSysMetadataWrite" xml:space="preserve">
-    <value>Sys MD schreiben</value>
-  </data>
-  <data name="lblLinkPermissions" xml:space="preserve">
-    <value>Verknüpfungs-Berechtigungen</value>
-  </data>
-  <data name="opIsLess" xml:space="preserve">
-    <value>ist kleiner</value>
-  </data>
-  <data name="lblImport" xml:space="preserve">
-    <value>Import</value>
-  </data>
-  <data name="lblModificationDate" xml:space="preserve">
-    <value>Änderungsdatum / -zeit</value>
-  </data>
-  <data name="lblSearchEditor" xml:space="preserve">
-    <value>Suche</value>
-  </data>
-  <data name="lblShowAllVersions" xml:space="preserve">
-    <value>Alle Versionen</value>
-  </data>
-  <data name="lblSearchObjects" xml:space="preserve">
-    <value>Objekte suchen</value>
-  </data>
-  <data name="lblChildren" xml:space="preserve">
-    <value>Kinder</value>
-  </data>
-  <data name="lblCreatedBy" xml:space="preserve">
-    <value>Erstellt von</value>
-  </data>
-  <data name="lblDeleteAllVersions" xml:space="preserve">
-    <value>Alle Versionen löschen</value>
-  </data>
-  <data name="lblAddTerm" xml:space="preserve">
-    <value>Term hinzufügen</value>
-  </data>
-  <data name="lblShowTranslations" xml:space="preserve">
-    <value>Übersetzungen anzeigen</value>
-  </data>
-  <data name="mnuDeleteLinks" xml:space="preserve">
-    <value>Verknüpfungen löschen</value>
-  </data>
-  <data name="lblChooseTargets" xml:space="preserve">
-    <value>Zielobjekte auswählen</value>
-  </data>
-  <data name="lblAvailableColumns" xml:space="preserve">
-    <value>Verfügbare Spalten</value>
-  </data>
-  <data name="permNodeOwnerWrite" xml:space="preserve">
-    <value>Eigentümer schreiben</value>
-  </data>
-  <data name="lblAclName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="permRelationChildAdd" xml:space="preserve">
-    <value>Kind hinzufügen</value>
-  </data>
-  <data name="lblTreeHome" xml:space="preserve">
-    <value>Meine Dokumente</value>
+  <data name="msgSuccessfullyExported" xml:space="preserve">
+    <value>Die Auswahl wurde erfolgreich nach {0} exportiert.</value>
   </data>
   <data name="msgSureRemoveRelations" xml:space="preserve">
     <value>Sind Sie sicher, die ausgewählten Relationen zu entfernen?
 Die Änderung wird gespeichert, wenn Sie auf den Speichern-Button klicken.</value>
   </data>
-  <data name="opStringStartsWith" xml:space="preserve">
-    <value>beginnt mit</value>
-  </data>
-  <data name="permNodeMetadataRead" xml:space="preserve">
-    <value>MD lesen</value>
-  </data>
-  <data name="permObjectContentRead" xml:space="preserve">
-    <value>Inhalt lesen</value>
-  </data>
-  <data name="permNodeTypeWrite" xml:space="preserve">
-    <value>Typ schreiben</value>
-  </data>
-  <data name="lblNewObjectWithoutContent" xml:space="preserve">
-    <value>Neues Objekt ohne Inhalt</value>
-  </data>
-  <data name="msgSuccessfullyExported" xml:space="preserve">
-    <value>Die Auswahl wurde erfolgreich nach {0} exportiert.</value>
-  </data>
-  <data name="lblGroup" xml:space="preserve">
-    <value>Gruppe</value>
-  </data>
-  <data name="mnuCancelCheckout" xml:space="preserve">
-    <value>Checkout abbrechen</value>
-  </data>
-  <data name="lblNotification" xml:space="preserve">
-    <value>Benachrichtigung</value>
-  </data>
-  <data name="lblFieldName" xml:space="preserve">
-    <value>Feldname</value>
-  </data>
   <data name="msgUnknownFileExtension" xml:space="preserve">
     <value>Unbekannte Datei-Erweiterung.</value>
   </data>
-  <data name="lblFolderType" xml:space="preserve">
-    <value>Ordnertyp</value>
-  </data>
-  <data name="mnuPasteSelectedVersions" xml:space="preserve">
-    <value>Nur ausgewählte Versionen</value>
-  </data>
-  <data name="mnuCreateObjectWithoutContent" xml:space="preserve">
-    <value>Neues Objekt ohne Inhalt</value>
-  </data>
-  <data name="lblColumnWidthPreview" xml:space="preserve">
-    <value>Spaltenbreite-Vorschau</value>
-  </data>
-  <data name="mnuRemoveRelation" xml:space="preserve">
-    <value>Entfernen</value>
-  </data>
-  <data name="mnuCheckin" xml:space="preserve">
-    <value>Einchecken</value>
-  </data>
-  <data name="lblShowQuery" xml:space="preserve">
-    <value>Abfrage anzeigen</value>
+  <data name="opContainedWordContains" xml:space="preserve">
+    <value>enthaltenes Wort enthält</value>
   </data>
   <data name="opContainedWordEndsWith" xml:space="preserve">
     <value>enthaltenes Wort endet mit</value>
   </data>
-  <data name="mnuImportRendition" xml:space="preserve">
-    <value>Formatvariante importieren</value>
-  </data>
-  <data name="lblType" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="lblNewName" xml:space="preserve">
-    <value>Neuer Name</value>
-  </data>
-  <data name="lblUnsavedChanges" xml:space="preserve">
-    <value>Ungespeicherte Änderungen</value>
-  </data>
-  <data name="msgSelfReferencesNotAllowed" xml:space="preserve">
-    <value>Relationen eines Objekts mit sich selbst sind nicht zulässig.</value>
-  </data>
-  <data name="opIsAfter" xml:space="preserve">
-    <value>ist nach</value>
-  </data>
-  <data name="lblSaveConfig" xml:space="preserve">
-    <value>Spaltenkonfiguration speichern</value>
-  </data>
-  <data name="lblCreateNewVersion" xml:space="preserve">
-    <value>Neue Version erzeugen</value>
-  </data>
-  <data name="permNodeMetadataWrite" xml:space="preserve">
-    <value>MD schreiben</value>
-  </data>
-  <data name="permNodeDelete" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="permNodeMove" xml:space="preserve">
-    <value>Verschieben</value>
-  </data>
-  <data name="exFailureLoadingConfiguration" xml:space="preserve">
-    <value>Fehler beim Laden der Konfiguration.</value>
-  </data>
-  <data name="opIsTrue" xml:space="preserve">
-    <value>ist wahr</value>
-  </data>
-  <data name="mnuNewObjectFromTemplate" xml:space="preserve">
-    <value>Neues Objekt aus Vorlage</value>
-  </data>
-  <data name="mnuRenameFolder" xml:space="preserve">
-    <value>Ordner umbenennen</value>
-  </data>
-  <data name="lblLessThanOrEqual" xml:space="preserve">
-    <value>ist kleiner als oder gleich</value>
-  </data>
-  <data name="opIsFalse" xml:space="preserve">
-    <value>ist falsch</value>
-  </data>
-  <data name="msgFailureDeletingVersionWithSuccessor" xml:space="preserve">
-    <value>Fehler beim Löschen des Objekts. Objekte mit Nachfolger-Version können nicht gelöscht werden.</value>
-  </data>
-  <data name="lblQuery" xml:space="preserve">
-    <value>Abfrage</value>
-  </data>
-  <data name="lblCDCplusMainWindow" xml:space="preserve">
-    <value>CDCplus</value>
-  </data>
-  <data name="mnuCopyPathFilename" xml:space="preserve">
-    <value>Pfad und Dateinamen kopieren</value>
-  </data>
-  <data name="lblShowLatestInBranches" xml:space="preserve">
-    <value>Neueste Versionen (Verzweigungen)</value>
-  </data>
-  <data name="lblEditFileImportRequests" xml:space="preserve">
-    <value>Importeinstellungen bearbeiten</value>
-  </data>
-  <data name="lblNewFolder" xml:space="preserve">
-    <value>Neuer Ordner</value>
-  </data>
-  <data name="msgCancelCheckoutChangesLost" xml:space="preserve">
-    <value>Wenn Sie den Checkout abbrechen, werden Ihre Änderungen nicht gespeichert. Sind Sie sicher?</value>
-  </data>
-  <data name="permNodeNameWrite" xml:space="preserve">
-    <value>Name schreiben</value>
-  </data>
-  <data name="lblParentFolderId" xml:space="preserve">
-    <value>Eltern-Id</value>
-  </data>
-  <data name="mnuCopy" xml:space="preserve">
-    <value>Kopieren</value>
-  </data>
-  <data name="tabShowFolderContents" xml:space="preserve">
-    <value>Inhalt</value>
-  </data>
-  <data name="lblViewSmallIcons" xml:space="preserve">
-    <value>Kleine Symbole</value>
-  </data>
-  <data name="msgNoMovePermission" xml:space="preserve">
-    <value>Sie haben nicht die Berechtigung, die folgenden Objekte / Ordner zu verschieben:</value>
-  </data>
-  <data name="msgFailureDeleting" xml:space="preserve">
-    <value>Fehler beim Löschen der Auswahl, {0} Knoten wurden nicht gelöscht.</value>
+  <data name="opContainedWordStartsWith" xml:space="preserve">
+    <value>enthaltenes Wort beginnt mit</value>
   </data>
   <data name="opContainsWord" xml:space="preserve">
     <value>enthält Wort</value>
   </data>
-  <data name="lblSelectRelation" xml:space="preserve">
-    <value>Wählen Sie einen Beziehungstyp</value>
+  <data name="opIsAfter" xml:space="preserve">
+    <value>ist nach</value>
   </data>
-  <data name="mnuAddMetasetType" xml:space="preserve">
-    <value>Metaset-Typ hinzufügen</value>
+  <data name="opIsBefore" xml:space="preserve">
+    <value>ist vor</value>
+  </data>
+  <data name="opIsEqual" xml:space="preserve">
+    <value>ist gleich</value>
+  </data>
+  <data name="opIsEqualOrAfter" xml:space="preserve">
+    <value>ist gleich oder nach</value>
+  </data>
+  <data name="opIsEqualOrBefore" xml:space="preserve">
+    <value>ist gleich oder vor</value>
+  </data>
+  <data name="opIsEqualOrGreater" xml:space="preserve">
+    <value>ist größer oder gleich</value>
+  </data>
+  <data name="opIsEqualOrLess" xml:space="preserve">
+    <value>ist kleiner oder gleich</value>
+  </data>
+  <data name="opIsFalse" xml:space="preserve">
+    <value>ist falsch</value>
+  </data>
+  <data name="opIsGreater" xml:space="preserve">
+    <value>ist größer</value>
+  </data>
+  <data name="opIsLess" xml:space="preserve">
+    <value>ist kleiner</value>
+  </data>
+  <data name="opIsTrue" xml:space="preserve">
+    <value>ist wahr</value>
+  </data>
+  <data name="opStringContains" xml:space="preserve">
+    <value>enthält</value>
+  </data>
+  <data name="opStringEndsWith" xml:space="preserve">
+    <value>endet mit</value>
+  </data>
+  <data name="opStringStartsWith" xml:space="preserve">
+    <value>beginnt mit</value>
+  </data>
+  <data name="permFolderCreateFolder" xml:space="preserve">
+    <value>Ordner erzeugen</value>
+  </data>
+  <data name="permFolderCreateObject" xml:space="preserve">
+    <value>Objekt erzeugen</value>
+  </data>
+  <data name="permLinkTargetWrite" xml:space="preserve">
+    <value>Verknüpfungsziel schreiben</value>
+  </data>
+  <data name="permNodeAclWrite" xml:space="preserve">
+    <value>ACL schreiben</value>
+  </data>
+  <data name="permNodeBrowse" xml:space="preserve">
+    <value>Anzeigen</value>
+  </data>
+  <data name="permNodeDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="permNodeMetadataRead" xml:space="preserve">
+    <value>MD lesen</value>
+  </data>
+  <data name="permNodeMetadataWrite" xml:space="preserve">
+    <value>MD schreiben</value>
+  </data>
+  <data name="permNodeMove" xml:space="preserve">
+    <value>Verschieben</value>
+  </data>
+  <data name="permNodeNameWrite" xml:space="preserve">
+    <value>Name schreiben</value>
+  </data>
+  <data name="permNodeOwnerWrite" xml:space="preserve">
+    <value>Eigentümer schreiben</value>
+  </data>
+  <data name="permNodeSummaryWrite" xml:space="preserve">
+    <value>Zusammenfassung schreiben</value>
+  </data>
+  <data name="permNodeTypeWrite" xml:space="preserve">
+    <value>Typ schreiben</value>
+  </data>
+  <data name="permObjectContentRead" xml:space="preserve">
+    <value>Inhalt lesen</value>
+  </data>
+  <data name="permObjectContentWrite" xml:space="preserve">
+    <value>Inhalt schreiben</value>
   </data>
   <data name="permObjectLanguageWrite" xml:space="preserve">
     <value>Sprache schreiben</value>
+  </data>
+  <data name="permObjectLifecycleStateWrite" xml:space="preserve">
+    <value>LC-Status schreiben</value>
+  </data>
+  <data name="permObjectLock" xml:space="preserve">
+    <value>Sperren</value>
+  </data>
+  <data name="permObjectVersion" xml:space="preserve">
+    <value>Versionieren</value>
+  </data>
+  <data name="permRelationChildAdd" xml:space="preserve">
+    <value>Kind hinzufügen</value>
+  </data>
+  <data name="permRelationChildRemove" xml:space="preserve">
+    <value>Kind entfernen</value>
+  </data>
+  <data name="permRelationParentAdd" xml:space="preserve">
+    <value>Elternobjekt hinzufügen</value>
+  </data>
+  <data name="permRelationParentRemove" xml:space="preserve">
+    <value>Elternobjekt entfernen</value>
+  </data>
+  <data name="tabShowFolderContents" xml:space="preserve">
+    <value>Inhalt</value>
+  </data>
+  <data name="ttSave" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="lblChangedFlags" xml:space="preserve">
+    <value>Änderungs-Flags</value>
+  </data>
+  <data name="lblMetadataChanged" xml:space="preserve">
+    <value>Metadaten</value>
+  </data>
+  <data name="lblContentChanged" xml:space="preserve">
+    <value>Inhalt</value>
+  </data>
+  <data name="lblAcl" xml:space="preserve">
+    <value>ACL</value>
   </data>
 </root>

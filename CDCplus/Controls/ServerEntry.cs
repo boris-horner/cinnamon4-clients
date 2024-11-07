@@ -157,16 +157,16 @@ namespace CDCplus.Controls
 
 		private void ResizeControl()
 		{
-			// int h = 62;
-			int h = _baseHeight;
-			File.AppendAllText(_logFn, " Base server entry height: " + _baseHeight.ToString() + "\n");
-			foreach (UserControl uc in pSessions.Controls)
-			{
-				h += uc.Height;
-				File.AppendAllText(_logFn, " Session entry height: " + uc.Height.ToString() + "\n");
-			}
-			Height = h;
-			File.AppendAllText(_logFn, " Computed server entry height: " + h.ToString() + "\n");
+			//// int h = 62;
+			//int h = _baseHeight;
+			//File.AppendAllText(_logFn, " Base server entry height: " + _baseHeight.ToString() + "\n");
+			//foreach (UserControl uc in pSessions.Controls)
+			//{
+			//	h += uc.Height;
+			//	File.AppendAllText(_logFn, " Session entry height: " + uc.Height.ToString() + "\n");
+			//}
+			//Height = h;
+			//File.AppendAllText(_logFn, " Computed server entry height: " + h.ToString() + "\n");
 			Resized?.Invoke(this);
 
 		}

@@ -79,6 +79,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACL.
+        /// </summary>
+        internal static string lblAcl {
+            get {
+                return ResourceManager.GetString("lblAcl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ACL entries.
         /// </summary>
         internal static string lblAclEntries {
@@ -196,6 +205,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changed flags.
+        /// </summary>
+        internal static string lblChangedFlags {
+            get {
+                return ResourceManager.GetString("lblChangedFlags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check in.
         /// </summary>
         internal static string lblCheckin {
@@ -300,6 +318,15 @@ namespace CDCplusLib.Properties {
         internal static string lblContains {
             get {
                 return ResourceManager.GetString("lblContains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        internal static string lblContentChanged {
+            get {
+                return ResourceManager.GetString("lblContentChanged", resourceCulture);
             }
         }
         
@@ -705,6 +732,15 @@ namespace CDCplusLib.Properties {
         internal static string lblMessage {
             get {
                 return ResourceManager.GetString("lblMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata.
+        /// </summary>
+        internal static string lblMetadataChanged {
+            get {
+                return ResourceManager.GetString("lblMetadataChanged", resourceCulture);
             }
         }
         
