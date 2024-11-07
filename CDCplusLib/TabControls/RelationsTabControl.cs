@@ -364,7 +364,7 @@ namespace CDCplusLib.TabControls
             Dictionary<long, CmnObject> latestObjsByRootId = new Dictionary<long, CmnObject>();
             foreach (CmnObject latestO in _o.Session.SearchObjects(query).Values)
             {
-                if (!latestObjsByRootId.ContainsKey(latestO.RootId)) latestObjsByRootId.Add(latestO.RootId, latestO);
+                if (!latestObjsByRootId.ContainsKey(latestO.RootId) && latestO.LatestHead) latestObjsByRootId.Add(latestO.RootId, latestO);
             }
             // build lookup table
 
