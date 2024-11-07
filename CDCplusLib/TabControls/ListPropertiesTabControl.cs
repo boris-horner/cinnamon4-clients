@@ -22,6 +22,7 @@ using C4ObjectApi.Repository;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using System.Xml.Linq;
 
 namespace CDCplusLib.TabControls
 {
@@ -65,6 +66,7 @@ namespace CDCplusLib.TabControls
             lblObjType.Text = Properties.Resources.lblObjectType;
             lblLifecycleAndState.Text = Properties.Resources.lblLifecycleAndState;
             lblCount.Text = Properties.Resources.lblCount;
+            lblChangedFlags.Text = Properties.Resources.lblChangedFlags;
             chkContentChanged.Text = Properties.Resources.lblContentChanged;
             chkMetadataChanged.Text = Properties.Resources.lblMetadataChanged;
 
@@ -539,6 +541,20 @@ namespace CDCplusLib.TabControls
         private void cboAcl_SelectedIndexChanged(object sender, EventArgs e)
         {
             ActivateControls(true);
+        }
+
+        private void ListPropertiesTabControl_Paint(object sender, PaintEventArgs e)
+        {
+            pObjTypeIcon.Width = pObjTypeIcon.Height;
+            pOwnerIcon.Width = pOwnerIcon.Height;
+            pLanguageIcon.Width = pLanguageIcon.Height;
+            pLcStateIcon.Width = pObjTypeIcon.Height;
+            pChangedFlagsIcon.Width = pObjTypeIcon.Height;
+            pFlags.Height = cboObjType.Height;     // set it to the reference height of another object
+            pIdsIcon.Width = pIdsIcon.Height;
+            pAclIcon.Width = pAclIcon.Height;
+            pSizeIcon.Width = pSizeIcon.Height;
+            pFormatIcon.Width = pFormatIcon.Height;
         }
     }
 }

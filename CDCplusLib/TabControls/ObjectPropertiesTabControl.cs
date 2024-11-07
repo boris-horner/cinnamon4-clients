@@ -370,7 +370,6 @@ namespace CDCplusLib.TabControls
             pObjTypeIcon.Width = pObjTypeIcon.Height;
             pOwnerIcon.Width = pOwnerIcon.Height;
             pLanguageIcon.Width = pLanguageIcon.Height;
-            //pLcStateIcon.Height = pNameIcon.Height;
             pLcStateIcon.Width = pNameIcon.Height;
             pChangedFlagsIcon.Width = pNameIcon.Height;
             pFlags.Height = txtName.Height;     // set it to the reference height of another object
