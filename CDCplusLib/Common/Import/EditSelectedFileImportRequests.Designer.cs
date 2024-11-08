@@ -29,230 +29,326 @@ namespace CDCplusLib.Common.Import
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmdBrowseTargetFolder = new System.Windows.Forms.Button();
-            this.lblTargetFolder = new System.Windows.Forms.Label();
-            this.cboLanguage = new System.Windows.Forms.ComboBox();
-            this.lblLanguage = new System.Windows.Forms.Label();
-            this.cboFormat = new System.Windows.Forms.ComboBox();
-            this.lblFormat = new System.Windows.Forms.Label();
-            this.cboObjectType = new System.Windows.Forms.ComboBox();
-            this.lblObjType = new System.Windows.Forms.Label();
-            this.txtName = new System.Windows.Forms.TextBox();
-            this.lblName = new System.Windows.Forms.Label();
-            this.cmdSelectFile = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdOk = new System.Windows.Forms.Button();
-            this.txtTargetPath = new System.Windows.Forms.TextBox();
-            this.cmdSelectLifecycleState = new System.Windows.Forms.Button();
-            this.lblLifecycleState = new System.Windows.Forms.Label();
-            this.txtLifecycleState = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
-            // 
-            // cmdBrowseTargetFolder
-            // 
-            this.cmdBrowseTargetFolder.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdBrowseTargetFolder.Location = new System.Drawing.Point(314, 277);
-            this.cmdBrowseTargetFolder.Name = "cmdBrowseTargetFolder";
-            this.cmdBrowseTargetFolder.Size = new System.Drawing.Size(24, 20);
-            this.cmdBrowseTargetFolder.TabIndex = 37;
-            this.cmdBrowseTargetFolder.Text = "...";
-            this.cmdBrowseTargetFolder.UseVisualStyleBackColor = true;
-            this.cmdBrowseTargetFolder.Click += new System.EventHandler(this.cmdBrowseTargetFolder_Click);
-            // 
-            // lblTargetFolder
-            // 
-            this.lblTargetFolder.AutoSize = true;
-            this.lblTargetFolder.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblTargetFolder.Location = new System.Drawing.Point(12, 261);
-            this.lblTargetFolder.Name = "lblTargetFolder";
-            this.lblTargetFolder.Size = new System.Drawing.Size(67, 13);
-            this.lblTargetFolder.TabIndex = 36;
-            this.lblTargetFolder.Text = "Target folder";
+            cboLanguage = new ComboBox();
+            lblLanguage = new Label();
+            cboFormat = new ComboBox();
+            lblFormat = new Label();
+            cboObjectType = new ComboBox();
+            lblObjType = new Label();
+            txtName = new TextBox();
+            lblName = new Label();
+            lblLifecycleState = new Label();
+            lblTargetFolder = new Label();
+            panel1 = new Panel();
+            txtLifecycleState = new TextBox();
+            panel5 = new Panel();
+            cmdSelectLifecycleState = new Button();
+            panel3 = new Panel();
+            cmdOk = new Button();
+            panel4 = new Panel();
+            cmdCancel = new Button();
+            panel2 = new Panel();
+            txtTargetPath = new TextBox();
+            panel6 = new Panel();
+            cmdBrowseTargetFolder = new Button();
+            panel1.SuspendLayout();
+            panel3.SuspendLayout();
+            panel2.SuspendLayout();
+            SuspendLayout();
             // 
             // cboLanguage
             // 
-            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLanguage.FormattingEnabled = true;
-            this.cboLanguage.Location = new System.Drawing.Point(12, 173);
-            this.cboLanguage.Name = "cboLanguage";
-            this.cboLanguage.Size = new System.Drawing.Size(329, 21);
-            this.cboLanguage.Sorted = true;
-            this.cboLanguage.TabIndex = 35;
+            cboLanguage.Dock = DockStyle.Top;
+            cboLanguage.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboLanguage.FormattingEnabled = true;
+            cboLanguage.Location = new Point(10, 169);
+            cboLanguage.Margin = new Padding(4, 3, 4, 3);
+            cboLanguage.Name = "cboLanguage";
+            cboLanguage.Size = new Size(464, 23);
+            cboLanguage.Sorted = true;
+            cboLanguage.TabIndex = 35;
             // 
             // lblLanguage
             // 
-            this.lblLanguage.AutoSize = true;
-            this.lblLanguage.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblLanguage.Location = new System.Drawing.Point(12, 157);
-            this.lblLanguage.Name = "lblLanguage";
-            this.lblLanguage.Size = new System.Drawing.Size(55, 13);
-            this.lblLanguage.TabIndex = 34;
-            this.lblLanguage.Text = "Language";
+            lblLanguage.AutoSize = true;
+            lblLanguage.Dock = DockStyle.Top;
+            lblLanguage.ImeMode = ImeMode.NoControl;
+            lblLanguage.Location = new Point(10, 144);
+            lblLanguage.Margin = new Padding(4, 0, 4, 0);
+            lblLanguage.Name = "lblLanguage";
+            lblLanguage.Padding = new Padding(0, 10, 0, 0);
+            lblLanguage.Size = new Size(59, 25);
+            lblLanguage.TabIndex = 34;
+            lblLanguage.Text = "Language";
             // 
             // cboFormat
             // 
-            this.cboFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFormat.Enabled = false;
-            this.cboFormat.FormattingEnabled = true;
-            this.cboFormat.Location = new System.Drawing.Point(12, 123);
-            this.cboFormat.Name = "cboFormat";
-            this.cboFormat.Size = new System.Drawing.Size(329, 21);
-            this.cboFormat.Sorted = true;
-            this.cboFormat.TabIndex = 33;
+            cboFormat.Dock = DockStyle.Top;
+            cboFormat.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboFormat.Enabled = false;
+            cboFormat.FormattingEnabled = true;
+            cboFormat.Location = new Point(10, 121);
+            cboFormat.Margin = new Padding(4, 3, 4, 3);
+            cboFormat.Name = "cboFormat";
+            cboFormat.Size = new Size(464, 23);
+            cboFormat.Sorted = true;
+            cboFormat.TabIndex = 33;
             // 
             // lblFormat
             // 
-            this.lblFormat.AutoSize = true;
-            this.lblFormat.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblFormat.Location = new System.Drawing.Point(12, 107);
-            this.lblFormat.Name = "lblFormat";
-            this.lblFormat.Size = new System.Drawing.Size(39, 13);
-            this.lblFormat.TabIndex = 32;
-            this.lblFormat.Text = "Format";
+            lblFormat.AutoSize = true;
+            lblFormat.Dock = DockStyle.Top;
+            lblFormat.ImeMode = ImeMode.NoControl;
+            lblFormat.Location = new Point(10, 96);
+            lblFormat.Margin = new Padding(4, 0, 4, 0);
+            lblFormat.Name = "lblFormat";
+            lblFormat.Padding = new Padding(0, 10, 0, 0);
+            lblFormat.Size = new Size(45, 25);
+            lblFormat.TabIndex = 32;
+            lblFormat.Text = "Format";
             // 
             // cboObjectType
             // 
-            this.cboObjectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboObjectType.FormattingEnabled = true;
-            this.cboObjectType.Location = new System.Drawing.Point(12, 74);
-            this.cboObjectType.Name = "cboObjectType";
-            this.cboObjectType.Size = new System.Drawing.Size(329, 21);
-            this.cboObjectType.Sorted = true;
-            this.cboObjectType.TabIndex = 31;
+            cboObjectType.Dock = DockStyle.Top;
+            cboObjectType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboObjectType.FormattingEnabled = true;
+            cboObjectType.Location = new Point(10, 73);
+            cboObjectType.Margin = new Padding(4, 3, 4, 3);
+            cboObjectType.Name = "cboObjectType";
+            cboObjectType.Size = new Size(464, 23);
+            cboObjectType.Sorted = true;
+            cboObjectType.TabIndex = 31;
             // 
             // lblObjType
             // 
-            this.lblObjType.AutoSize = true;
-            this.lblObjType.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblObjType.Location = new System.Drawing.Point(12, 58);
-            this.lblObjType.Name = "lblObjType";
-            this.lblObjType.Size = new System.Drawing.Size(61, 13);
-            this.lblObjType.TabIndex = 30;
-            this.lblObjType.Text = "Object type";
+            lblObjType.AutoSize = true;
+            lblObjType.Dock = DockStyle.Top;
+            lblObjType.ImeMode = ImeMode.NoControl;
+            lblObjType.Location = new Point(10, 48);
+            lblObjType.Margin = new Padding(4, 0, 4, 0);
+            lblObjType.Name = "lblObjType";
+            lblObjType.Padding = new Padding(0, 10, 0, 0);
+            lblObjType.Size = new Size(68, 25);
+            lblObjType.TabIndex = 30;
+            lblObjType.Text = "Object type";
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(12, 25);
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(329, 20);
-            this.txtName.TabIndex = 24;
+            txtName.Dock = DockStyle.Top;
+            txtName.Location = new Point(10, 25);
+            txtName.Margin = new Padding(4, 3, 4, 3);
+            txtName.Name = "txtName";
+            txtName.Size = new Size(464, 23);
+            txtName.TabIndex = 24;
             // 
             // lblName
             // 
-            this.lblName.AutoSize = true;
-            this.lblName.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblName.Location = new System.Drawing.Point(12, 9);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(35, 13);
-            this.lblName.TabIndex = 29;
-            this.lblName.Text = "Name";
-            // 
-            // cmdSelectFile
-            // 
-            this.cmdSelectFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdSelectFile.Location = new System.Drawing.Point(314, 123);
-            this.cmdSelectFile.Name = "cmdSelectFile";
-            this.cmdSelectFile.Size = new System.Drawing.Size(24, 20);
-            this.cmdSelectFile.TabIndex = 28;
-            this.cmdSelectFile.Text = "...";
-            this.cmdSelectFile.UseVisualStyleBackColor = true;
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdCancel.Location = new System.Drawing.Point(92, 316);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 27;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // cmdOk
-            // 
-            this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOk.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdOk.Location = new System.Drawing.Point(11, 316);
-            this.cmdOk.Name = "cmdOk";
-            this.cmdOk.Size = new System.Drawing.Size(75, 23);
-            this.cmdOk.TabIndex = 26;
-            this.cmdOk.Text = "Ok";
-            this.cmdOk.UseVisualStyleBackColor = true;
-            this.cmdOk.Click += new System.EventHandler(this.cmdOk_Click);
-            // 
-            // txtTargetPath
-            // 
-            this.txtTargetPath.Location = new System.Drawing.Point(12, 277);
-            this.txtTargetPath.Name = "txtTargetPath";
-            this.txtTargetPath.ReadOnly = true;
-            this.txtTargetPath.Size = new System.Drawing.Size(296, 20);
-            this.txtTargetPath.TabIndex = 25;
-            // 
-            // cmdSelectLifecycleState
-            // 
-            this.cmdSelectLifecycleState.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdSelectLifecycleState.Location = new System.Drawing.Point(314, 227);
-            this.cmdSelectLifecycleState.Name = "cmdSelectLifecycleState";
-            this.cmdSelectLifecycleState.Size = new System.Drawing.Size(24, 20);
-            this.cmdSelectLifecycleState.TabIndex = 40;
-            this.cmdSelectLifecycleState.Text = "...";
-            this.cmdSelectLifecycleState.UseVisualStyleBackColor = true;
-            this.cmdSelectLifecycleState.Click += new System.EventHandler(this.cmdSelectLifecycleState_Click);
+            lblName.AutoSize = true;
+            lblName.Dock = DockStyle.Top;
+            lblName.ImeMode = ImeMode.NoControl;
+            lblName.Location = new Point(10, 10);
+            lblName.Margin = new Padding(4, 0, 4, 0);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(39, 15);
+            lblName.TabIndex = 29;
+            lblName.Text = "Name";
             // 
             // lblLifecycleState
             // 
-            this.lblLifecycleState.AutoSize = true;
-            this.lblLifecycleState.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblLifecycleState.Location = new System.Drawing.Point(12, 211);
-            this.lblLifecycleState.Name = "lblLifecycleState";
-            this.lblLifecycleState.Size = new System.Drawing.Size(75, 13);
-            this.lblLifecycleState.TabIndex = 39;
-            this.lblLifecycleState.Text = "Lifecycle state";
+            lblLifecycleState.AutoSize = true;
+            lblLifecycleState.Dock = DockStyle.Top;
+            lblLifecycleState.ImeMode = ImeMode.NoControl;
+            lblLifecycleState.Location = new Point(10, 192);
+            lblLifecycleState.Margin = new Padding(4, 0, 4, 0);
+            lblLifecycleState.Name = "lblLifecycleState";
+            lblLifecycleState.Padding = new Padding(0, 10, 0, 0);
+            lblLifecycleState.Size = new Size(81, 25);
+            lblLifecycleState.TabIndex = 46;
+            lblLifecycleState.Text = "Lifecycle state";
+            // 
+            // lblTargetFolder
+            // 
+            lblTargetFolder.AutoSize = true;
+            lblTargetFolder.Dock = DockStyle.Top;
+            lblTargetFolder.ImeMode = ImeMode.NoControl;
+            lblTargetFolder.Location = new Point(10, 251);
+            lblTargetFolder.Margin = new Padding(4, 0, 4, 0);
+            lblTargetFolder.Name = "lblTargetFolder";
+            lblTargetFolder.Size = new Size(74, 15);
+            lblTargetFolder.TabIndex = 50;
+            lblTargetFolder.Text = "Target folder";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(txtLifecycleState);
+            panel1.Controls.Add(panel5);
+            panel1.Controls.Add(cmdSelectLifecycleState);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(10, 217);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(0, 0, 0, 10);
+            panel1.Size = new Size(464, 34);
+            panel1.TabIndex = 47;
             // 
             // txtLifecycleState
             // 
-            this.txtLifecycleState.Location = new System.Drawing.Point(12, 227);
-            this.txtLifecycleState.Name = "txtLifecycleState";
-            this.txtLifecycleState.ReadOnly = true;
-            this.txtLifecycleState.Size = new System.Drawing.Size(296, 20);
-            this.txtLifecycleState.TabIndex = 38;
+            txtLifecycleState.Dock = DockStyle.Fill;
+            txtLifecycleState.Location = new Point(0, 0);
+            txtLifecycleState.Margin = new Padding(4, 3, 4, 3);
+            txtLifecycleState.Name = "txtLifecycleState";
+            txtLifecycleState.ReadOnly = true;
+            txtLifecycleState.Size = new Size(410, 23);
+            txtLifecycleState.TabIndex = 45;
+            // 
+            // panel5
+            // 
+            panel5.Dock = DockStyle.Right;
+            panel5.Location = new Point(410, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(10, 24);
+            panel5.TabIndex = 44;
+            // 
+            // cmdSelectLifecycleState
+            // 
+            cmdSelectLifecycleState.Dock = DockStyle.Right;
+            cmdSelectLifecycleState.ImeMode = ImeMode.NoControl;
+            cmdSelectLifecycleState.Location = new Point(420, 0);
+            cmdSelectLifecycleState.Margin = new Padding(4, 3, 4, 3);
+            cmdSelectLifecycleState.Name = "cmdSelectLifecycleState";
+            cmdSelectLifecycleState.Size = new Size(44, 24);
+            cmdSelectLifecycleState.TabIndex = 43;
+            cmdSelectLifecycleState.Text = "...";
+            cmdSelectLifecycleState.UseVisualStyleBackColor = true;
+            cmdSelectLifecycleState.Click += cmdSelectLifecycleState_Click;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(cmdOk);
+            panel3.Controls.Add(panel4);
+            panel3.Controls.Add(cmdCancel);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(10, 300);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(0, 20, 0, 0);
+            panel3.Size = new Size(464, 45);
+            panel3.TabIndex = 52;
+            // 
+            // cmdOk
+            // 
+            cmdOk.DialogResult = DialogResult.OK;
+            cmdOk.Dock = DockStyle.Right;
+            cmdOk.ImeMode = ImeMode.NoControl;
+            cmdOk.Location = new Point(278, 20);
+            cmdOk.Margin = new Padding(4);
+            cmdOk.Name = "cmdOk";
+            cmdOk.Size = new Size(88, 25);
+            cmdOk.TabIndex = 37;
+            cmdOk.Text = "Ok";
+            cmdOk.UseVisualStyleBackColor = true;
+            cmdOk.Click += cmdOk_Click;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(366, 20);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 25);
+            panel4.TabIndex = 36;
+            // 
+            // cmdCancel
+            // 
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Dock = DockStyle.Right;
+            cmdCancel.ImeMode = ImeMode.NoControl;
+            cmdCancel.Location = new Point(376, 20);
+            cmdCancel.Margin = new Padding(4);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(88, 25);
+            cmdCancel.TabIndex = 12;
+            cmdCancel.Text = "Cancel";
+            cmdCancel.UseVisualStyleBackColor = true;
+            cmdCancel.Click += cmdCancel_Click;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(txtTargetPath);
+            panel2.Controls.Add(panel6);
+            panel2.Controls.Add(cmdBrowseTargetFolder);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(10, 266);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(0, 0, 0, 10);
+            panel2.Size = new Size(464, 34);
+            panel2.TabIndex = 51;
+            // 
+            // txtTargetPath
+            // 
+            txtTargetPath.Dock = DockStyle.Fill;
+            txtTargetPath.Location = new Point(0, 0);
+            txtTargetPath.Margin = new Padding(4, 3, 4, 3);
+            txtTargetPath.Name = "txtTargetPath";
+            txtTargetPath.ReadOnly = true;
+            txtTargetPath.Size = new Size(410, 23);
+            txtTargetPath.TabIndex = 46;
+            // 
+            // panel6
+            // 
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(410, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(10, 24);
+            panel6.TabIndex = 45;
+            // 
+            // cmdBrowseTargetFolder
+            // 
+            cmdBrowseTargetFolder.Dock = DockStyle.Right;
+            cmdBrowseTargetFolder.ImeMode = ImeMode.NoControl;
+            cmdBrowseTargetFolder.Location = new Point(420, 0);
+            cmdBrowseTargetFolder.Margin = new Padding(4, 3, 4, 3);
+            cmdBrowseTargetFolder.Name = "cmdBrowseTargetFolder";
+            cmdBrowseTargetFolder.Size = new Size(44, 24);
+            cmdBrowseTargetFolder.TabIndex = 40;
+            cmdBrowseTargetFolder.Text = "...";
+            cmdBrowseTargetFolder.UseVisualStyleBackColor = true;
+            cmdBrowseTargetFolder.Click += cmdBrowseTargetFolder_Click;
             // 
             // EditSelectedFileImportRequests
             // 
-            this.AcceptButton = this.cmdOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(352, 351);
-            this.Controls.Add(this.cmdSelectLifecycleState);
-            this.Controls.Add(this.lblLifecycleState);
-            this.Controls.Add(this.txtLifecycleState);
-            this.Controls.Add(this.cmdBrowseTargetFolder);
-            this.Controls.Add(this.lblTargetFolder);
-            this.Controls.Add(this.cboLanguage);
-            this.Controls.Add(this.lblLanguage);
-            this.Controls.Add(this.cboFormat);
-            this.Controls.Add(this.lblFormat);
-            this.Controls.Add(this.cboObjectType);
-            this.Controls.Add(this.lblObjType);
-            this.Controls.Add(this.txtName);
-            this.Controls.Add(this.lblName);
-            this.Controls.Add(this.cmdSelectFile);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOk);
-            this.Controls.Add(this.txtTargetPath);
-            this.Name = "EditSelectedFileImportRequests";
-            this.Text = "EditSelectedFileImportRequests";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AcceptButton = cmdOk;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            CancelButton = cmdCancel;
+            ClientSize = new Size(484, 355);
+            Controls.Add(panel3);
+            Controls.Add(panel2);
+            Controls.Add(lblTargetFolder);
+            Controls.Add(panel1);
+            Controls.Add(lblLifecycleState);
+            Controls.Add(cboLanguage);
+            Controls.Add(lblLanguage);
+            Controls.Add(cboFormat);
+            Controls.Add(lblFormat);
+            Controls.Add(cboObjectType);
+            Controls.Add(lblObjType);
+            Controls.Add(txtName);
+            Controls.Add(lblName);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(4, 3, 4, 3);
+            MinimumSize = new Size(500, 0);
+            Name = "EditSelectedFileImportRequests";
+            Padding = new Padding(10);
+            Text = "EditSelectedFileImportRequests";
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        internal System.Windows.Forms.Button cmdBrowseTargetFolder;
-        internal System.Windows.Forms.Label lblTargetFolder;
         internal System.Windows.Forms.ComboBox cboLanguage;
         internal System.Windows.Forms.Label lblLanguage;
         internal System.Windows.Forms.ComboBox cboFormat;
@@ -261,12 +357,19 @@ namespace CDCplusLib.Common.Import
         internal System.Windows.Forms.Label lblObjType;
         internal System.Windows.Forms.TextBox txtName;
         internal System.Windows.Forms.Label lblName;
-        internal System.Windows.Forms.Button cmdSelectFile;
-        internal System.Windows.Forms.Button cmdCancel;
-        internal System.Windows.Forms.Button cmdOk;
-        internal System.Windows.Forms.TextBox txtTargetPath;
-        internal System.Windows.Forms.Button cmdSelectLifecycleState;
-        internal System.Windows.Forms.Label lblLifecycleState;
-        internal System.Windows.Forms.TextBox txtLifecycleState;
+        internal Label lblLifecycleState;
+        internal Label lblTargetFolder;
+        private Panel panel1;
+        internal Button cmdSelectLifecycleState;
+        private Panel panel3;
+        internal Button cmdOk;
+        private Panel panel4;
+        internal Button cmdCancel;
+        private Panel panel2;
+        internal Button cmdBrowseTargetFolder;
+        internal TextBox txtLifecycleState;
+        private Panel panel5;
+        internal TextBox txtTargetPath;
+        private Panel panel6;
     }
 }

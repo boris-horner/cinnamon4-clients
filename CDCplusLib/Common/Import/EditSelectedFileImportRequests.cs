@@ -15,6 +15,7 @@ using CDCplusLib.Common.GUI;
 using System.Xml;
 using C4ObjectApi.Repository;
 using C4ServerConnector.Assets;
+using CDCplusLib.Properties;
 
 namespace CDCplusLib.Common.Import
 {
@@ -49,14 +50,14 @@ namespace CDCplusLib.Common.Import
 
         private void LocalizeGUI()
         {
-            //Text = Praties.My.Resources.Praties.formEditImportSettings;
-            //cmdCancel.Text = Praties.My.Resources.Praties.lblCancel;
-            //cmdOk.Text = Praties.My.Resources.Praties.lblOk;
-            //lblName.Text = Praties.My.Resources.Praties.lblName;
-            //lblObjType.Text = Praties.My.Resources.Praties.lblObjectType;
-            //lblLanguage.Text = Praties.My.Resources.Praties.lblLanguage;
-            //lblFormat.Text = Praties.My.Resources.Praties.lblFormat;
-            //lblTargetFolder.Text = Praties.My.Resources.Praties.lblTargetFolder;
+            Text = Resources.lblEditFileImportRequests;
+            cmdCancel.Text = Resources.lblCancel;
+            cmdOk.Text = Resources.lblOk;
+            lblName.Text = Resources.lblName;
+            lblObjType.Text = Resources.lblObjectType;
+            lblLanguage.Text = Resources.lblLanguage;
+            lblFormat.Text = Resources.lblFormat;
+            lblTargetFolder.Text = Resources.lblTargetFolder;
         }
 
         private void ActivateControls()
@@ -159,7 +160,7 @@ namespace CDCplusLib.Common.Import
 
         private void cmdBrowseTargetFolder_Click(object sender, EventArgs e)
         {
-            SelectObjectsDialog sd = new SelectObjectsDialog(_s, _selectObjectsConfigEl, SelectObjectsDialog.SelectionModes.SelectFolder, _initialFolder,"Select target folder", _gad);
+            SelectObjectsDialog sd = new SelectObjectsDialog(_s, _selectObjectsConfigEl, SelectObjectsDialog.SelectionModes.SelectFolder, _initialFolder, Properties.Resources.lblTargetFolder, _gad);
             CmnFolder targetFolder = _s.GetFolder(TargetPath);
             sd.Folder = targetFolder ?? _initialFolder;
             if (sd.ShowSelectorDialog() == DialogResult.OK)

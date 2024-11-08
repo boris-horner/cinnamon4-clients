@@ -1098,9 +1098,9 @@ namespace CDCplusLib.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select relation type.
         /// </summary>
-        internal static string lblSelectRelation {
+        internal static string lblSelectRelationType {
             get {
-                return ResourceManager.GetString("lblSelectRelation", resourceCulture);
+                return ResourceManager.GetString("lblSelectRelationType", resourceCulture);
             }
         }
         

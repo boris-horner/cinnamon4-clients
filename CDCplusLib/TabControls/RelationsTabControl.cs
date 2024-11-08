@@ -25,6 +25,7 @@ using C4ObjectApi.Exceptions;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.Properties;
 
 namespace CDCplusLib.TabControls
 {
@@ -314,8 +315,15 @@ namespace CDCplusLib.TabControls
                 else
                 {
                     // show relation type selector
-                    RelationTypeSelector rts = new RelationTypeSelector(_o.Session, restrictRtsEl, defaultRt);
-                    if (rts.ShowDialog() == DialogResult.OK)
+                    HashSet<SimpleDisplayItem> availableRelationTypes = new HashSet<SimpleDisplayItem>();
+                    foreach (C4RelationType rt in _o.Session.SessionConfig.C4Sc.RelationTypesByName.Values)
+                    {
+                        if (restrictRtsEl is null || restrictRtsEl.GetAttribute("superuser") == "all" || restrictRtsEl.SelectSingleNode("allow_type[text()='" + rt.Name + "']") is not null)
+                            availableRelationTypes.Add(new SimpleDisplayItem(rt.Name, rt.ToString(), rt));
+                    }
+                    string selRtLabel = defaultRt == null ? null : defaultRt.ToString();
+                    EditListValue elv = new EditListValue(Resources.lblSelectRelationType,Resources.lblRelationType, selRtLabel, availableRelationTypes);
+                    if (elv.ShowDialog() == DialogResult.OK)
                     {
                         Cursor = Cursors.WaitCursor;
                         foreach (IRepositoryNode ow in sd.Selection.Values)
@@ -326,9 +334,10 @@ namespace CDCplusLib.TabControls
                                                    _o.Session.GetHelpUrl(DataModelErrorCodes.INVALID_SELF_REFERENCE));
                             else
                             {
-                                if (parents) rd = new RelationDescriptor(relO, _o, rts.SelectedRelationType, null);
-                                else rd = new RelationDescriptor(_o, relO, rts.SelectedRelationType, null);
-                                if (!lvw.Items.ContainsKey(rd.Key)) AddRelationToLv(lvw, rts.SelectedRelationType, relO, rd);
+                                C4RelationType selRt = elv.Value.Tag as C4RelationType;
+                                if (parents) rd = new RelationDescriptor(relO, _o, selRt, null);
+                                else rd = new RelationDescriptor(_o, relO, selRt, null);
+                                if (!lvw.Items.ContainsKey(rd.Key)) AddRelationToLv(lvw, selRt, relO, rd);
                             }
                         }
                         if (parents) _lvwParentsSort.ReSort();

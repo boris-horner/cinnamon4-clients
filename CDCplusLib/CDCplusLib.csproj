@@ -12,6 +12,8 @@
   <ItemGroup>
     <Compile Remove="Common\GUI\LifeCycleTermControl.cs" />
     <Compile Remove="Common\GUI\LifeCycleTermControl.Designer.cs" />
+    <Compile Remove="Common\GUI\RelationTypeSelector.cs" />
+    <Compile Remove="Common\GUI\RelationTypeSelector.Designer.cs" />
     <Compile Remove="Common\GUI\StandardMessage.cs" />
     <Compile Remove="Common\GUI\StandardMessage.Designer.cs" />
     <Compile Remove="Common\GUI\ValidatingTextBox.cs" />
@@ -22,6 +24,7 @@
 
   <ItemGroup>
     <EmbeddedResource Remove="Common\GUI\LifeCycleTermControl.resx" />
+    <EmbeddedResource Remove="Common\GUI\RelationTypeSelector.resx" />
     <EmbeddedResource Remove="Common\GUI\StandardMessage.resx" />
     <EmbeddedResource Remove="Common\GUI\XmlTextBox.resx" />
   </ItemGroup>

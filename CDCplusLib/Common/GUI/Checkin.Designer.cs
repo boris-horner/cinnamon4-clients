@@ -28,176 +28,239 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.chkUpdateReferences = new System.Windows.Forms.CheckBox();
-            this.lblFormat = new System.Windows.Forms.Label();
-            this.cboFormat = new System.Windows.Forms.ComboBox();
-            this.cmdSelectFile = new System.Windows.Forms.Button();
-            this.optCheckinFromOtherFile = new System.Windows.Forms.RadioButton();
-            this.optCheckinFromCheckoutPath = new System.Windows.Forms.RadioButton();
-            this.chkNewVersion = new System.Windows.Forms.CheckBox();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdOk = new System.Windows.Forms.Button();
-            this.txtCheckinFile = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
-            // 
-            // chkUpdateReferences
-            // 
-            this.chkUpdateReferences.AutoSize = true;
-            this.chkUpdateReferences.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkUpdateReferences.Location = new System.Drawing.Point(13, 204);
-            this.chkUpdateReferences.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.chkUpdateReferences.Name = "chkUpdateReferences";
-            this.chkUpdateReferences.Size = new System.Drawing.Size(254, 20);
-            this.chkUpdateReferences.TabIndex = 26;
-            this.chkUpdateReferences.Text = "Update all references to latest version";
-            this.chkUpdateReferences.UseVisualStyleBackColor = true;
-            // 
-            // lblFormat
-            // 
-            this.lblFormat.AutoSize = true;
-            this.lblFormat.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblFormat.Location = new System.Drawing.Point(13, 139);
-            this.lblFormat.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblFormat.Name = "lblFormat";
-            this.lblFormat.Size = new System.Drawing.Size(49, 16);
-            this.lblFormat.TabIndex = 25;
-            this.lblFormat.Text = "Format";
-            // 
-            // cboFormat
-            // 
-            this.cboFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFormat.FormattingEnabled = true;
-            this.cboFormat.Location = new System.Drawing.Point(13, 158);
-            this.cboFormat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cboFormat.Name = "cboFormat";
-            this.cboFormat.Size = new System.Drawing.Size(433, 24);
-            this.cboFormat.Sorted = true;
-            this.cboFormat.TabIndex = 24;
-            // 
-            // cmdSelectFile
-            // 
-            this.cmdSelectFile.Enabled = false;
-            this.cmdSelectFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdSelectFile.Location = new System.Drawing.Point(416, 99);
-            this.cmdSelectFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmdSelectFile.Name = "cmdSelectFile";
-            this.cmdSelectFile.Size = new System.Drawing.Size(32, 25);
-            this.cmdSelectFile.TabIndex = 23;
-            this.cmdSelectFile.Text = "...";
-            this.cmdSelectFile.UseVisualStyleBackColor = true;
-            this.cmdSelectFile.Click += new System.EventHandler(this.cmdSelectFile_Click);
+            optCheckinFromOtherFile = new RadioButton();
+            optCheckinFromCheckoutPath = new RadioButton();
+            chkNewVersion = new CheckBox();
+            panel2 = new Panel();
+            txtCheckinFile = new TextBox();
+            panel6 = new Panel();
+            cmdSelectFile = new Button();
+            lblFormat = new Label();
+            panel3 = new Panel();
+            cmdOk = new Button();
+            panel4 = new Panel();
+            cmdCancel = new Button();
+            chkUpdateReferences = new CheckBox();
+            cboFormat = new ComboBox();
+            panel2.SuspendLayout();
+            panel3.SuspendLayout();
+            SuspendLayout();
             // 
             // optCheckinFromOtherFile
             // 
-            this.optCheckinFromOtherFile.AutoSize = true;
-            this.optCheckinFromOtherFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.optCheckinFromOtherFile.Location = new System.Drawing.Point(13, 71);
-            this.optCheckinFromOtherFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.optCheckinFromOtherFile.Name = "optCheckinFromOtherFile";
-            this.optCheckinFromOtherFile.Size = new System.Drawing.Size(161, 20);
-            this.optCheckinFromOtherFile.TabIndex = 22;
-            this.optCheckinFromOtherFile.Text = "Check in from other file";
-            this.optCheckinFromOtherFile.UseVisualStyleBackColor = true;
+            optCheckinFromOtherFile.AutoSize = true;
+            optCheckinFromOtherFile.Dock = DockStyle.Top;
+            optCheckinFromOtherFile.ImeMode = ImeMode.NoControl;
+            optCheckinFromOtherFile.Location = new Point(10, 58);
+            optCheckinFromOtherFile.Margin = new Padding(4);
+            optCheckinFromOtherFile.Name = "optCheckinFromOtherFile";
+            optCheckinFromOtherFile.Size = new Size(464, 19);
+            optCheckinFromOtherFile.TabIndex = 22;
+            optCheckinFromOtherFile.Text = "Check in from other file";
+            optCheckinFromOtherFile.UseVisualStyleBackColor = true;
             // 
             // optCheckinFromCheckoutPath
             // 
-            this.optCheckinFromCheckoutPath.AutoSize = true;
-            this.optCheckinFromCheckoutPath.Checked = true;
-            this.optCheckinFromCheckoutPath.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.optCheckinFromCheckoutPath.Location = new System.Drawing.Point(13, 43);
-            this.optCheckinFromCheckoutPath.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.optCheckinFromCheckoutPath.Name = "optCheckinFromCheckoutPath";
-            this.optCheckinFromCheckoutPath.Size = new System.Drawing.Size(204, 20);
-            this.optCheckinFromCheckoutPath.TabIndex = 21;
-            this.optCheckinFromCheckoutPath.TabStop = true;
-            this.optCheckinFromCheckoutPath.Text = "Check in from checked out file";
-            this.optCheckinFromCheckoutPath.UseVisualStyleBackColor = true;
-            this.optCheckinFromCheckoutPath.CheckedChanged += new System.EventHandler(this.optCheckinFromCheckoutPath_CheckedChanged);
+            optCheckinFromCheckoutPath.AutoSize = true;
+            optCheckinFromCheckoutPath.Checked = true;
+            optCheckinFromCheckoutPath.Dock = DockStyle.Top;
+            optCheckinFromCheckoutPath.ImeMode = ImeMode.NoControl;
+            optCheckinFromCheckoutPath.Location = new Point(10, 39);
+            optCheckinFromCheckoutPath.Margin = new Padding(4);
+            optCheckinFromCheckoutPath.Name = "optCheckinFromCheckoutPath";
+            optCheckinFromCheckoutPath.Size = new Size(464, 19);
+            optCheckinFromCheckoutPath.TabIndex = 21;
+            optCheckinFromCheckoutPath.TabStop = true;
+            optCheckinFromCheckoutPath.Text = "Check in from checked out file";
+            optCheckinFromCheckoutPath.UseVisualStyleBackColor = true;
+            optCheckinFromCheckoutPath.CheckedChanged += optCheckinFromCheckoutPath_CheckedChanged;
             // 
             // chkNewVersion
             // 
-            this.chkNewVersion.AutoSize = true;
-            this.chkNewVersion.Checked = true;
-            this.chkNewVersion.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkNewVersion.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkNewVersion.Location = new System.Drawing.Point(13, 13);
-            this.chkNewVersion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.chkNewVersion.Name = "chkNewVersion";
-            this.chkNewVersion.Size = new System.Drawing.Size(143, 20);
-            this.chkNewVersion.TabIndex = 20;
-            this.chkNewVersion.Text = "Create new version";
-            this.chkNewVersion.UseVisualStyleBackColor = true;
+            chkNewVersion.AutoSize = true;
+            chkNewVersion.Checked = true;
+            chkNewVersion.CheckState = CheckState.Checked;
+            chkNewVersion.Dock = DockStyle.Top;
+            chkNewVersion.ImeMode = ImeMode.NoControl;
+            chkNewVersion.Location = new Point(10, 10);
+            chkNewVersion.Margin = new Padding(4);
+            chkNewVersion.Name = "chkNewVersion";
+            chkNewVersion.Padding = new Padding(0, 0, 0, 10);
+            chkNewVersion.Size = new Size(464, 29);
+            chkNewVersion.TabIndex = 20;
+            chkNewVersion.Text = "Create new version";
+            chkNewVersion.UseVisualStyleBackColor = true;
             // 
-            // cmdCancel
+            // panel2
             // 
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdCancel.Location = new System.Drawing.Point(121, 259);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(100, 28);
-            this.cmdCancel.TabIndex = 19;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            // 
-            // cmdOk
-            // 
-            this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOk.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cmdOk.Location = new System.Drawing.Point(13, 259);
-            this.cmdOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmdOk.Name = "cmdOk";
-            this.cmdOk.Size = new System.Drawing.Size(100, 28);
-            this.cmdOk.TabIndex = 18;
-            this.cmdOk.Text = "Ok";
-            this.cmdOk.UseVisualStyleBackColor = true;
+            panel2.Controls.Add(txtCheckinFile);
+            panel2.Controls.Add(panel6);
+            panel2.Controls.Add(cmdSelectFile);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(10, 77);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(0, 0, 0, 10);
+            panel2.Size = new Size(464, 34);
+            panel2.TabIndex = 52;
             // 
             // txtCheckinFile
             // 
-            this.txtCheckinFile.Enabled = false;
-            this.txtCheckinFile.Location = new System.Drawing.Point(13, 99);
-            this.txtCheckinFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.txtCheckinFile.Name = "txtCheckinFile";
-            this.txtCheckinFile.Size = new System.Drawing.Size(393, 22);
-            this.txtCheckinFile.TabIndex = 17;
-            this.txtCheckinFile.TextChanged += new System.EventHandler(this.txtCheckinFile_TextChanged);
+            txtCheckinFile.Dock = DockStyle.Fill;
+            txtCheckinFile.Enabled = false;
+            txtCheckinFile.Location = new Point(0, 0);
+            txtCheckinFile.Margin = new Padding(4);
+            txtCheckinFile.Name = "txtCheckinFile";
+            txtCheckinFile.Size = new Size(410, 23);
+            txtCheckinFile.TabIndex = 46;
+            txtCheckinFile.TextChanged += txtCheckinFile_TextChanged;
+            // 
+            // panel6
+            // 
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(410, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(10, 24);
+            panel6.TabIndex = 45;
+            // 
+            // cmdSelectFile
+            // 
+            cmdSelectFile.Dock = DockStyle.Right;
+            cmdSelectFile.ImeMode = ImeMode.NoControl;
+            cmdSelectFile.Location = new Point(420, 0);
+            cmdSelectFile.Margin = new Padding(4, 3, 4, 3);
+            cmdSelectFile.Name = "cmdSelectFile";
+            cmdSelectFile.Size = new Size(44, 24);
+            cmdSelectFile.TabIndex = 40;
+            cmdSelectFile.Text = "...";
+            cmdSelectFile.UseVisualStyleBackColor = true;
+            cmdSelectFile.Click += cmdSelectFile_Click;
+            // 
+            // lblFormat
+            // 
+            lblFormat.AutoSize = true;
+            lblFormat.Dock = DockStyle.Top;
+            lblFormat.ImeMode = ImeMode.NoControl;
+            lblFormat.Location = new Point(10, 111);
+            lblFormat.Margin = new Padding(4, 0, 4, 0);
+            lblFormat.Name = "lblFormat";
+            lblFormat.Size = new Size(45, 15);
+            lblFormat.TabIndex = 54;
+            lblFormat.Text = "Format";
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(cmdOk);
+            panel3.Controls.Add(panel4);
+            panel3.Controls.Add(cmdCancel);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(10, 178);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(0, 20, 0, 0);
+            panel3.Size = new Size(464, 45);
+            panel3.TabIndex = 59;
+            // 
+            // cmdOk
+            // 
+            cmdOk.DialogResult = DialogResult.OK;
+            cmdOk.Dock = DockStyle.Right;
+            cmdOk.ImeMode = ImeMode.NoControl;
+            cmdOk.Location = new Point(278, 20);
+            cmdOk.Margin = new Padding(4);
+            cmdOk.Name = "cmdOk";
+            cmdOk.Size = new Size(88, 25);
+            cmdOk.TabIndex = 37;
+            cmdOk.Text = "Ok";
+            cmdOk.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(366, 20);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 25);
+            panel4.TabIndex = 36;
+            // 
+            // cmdCancel
+            // 
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Dock = DockStyle.Right;
+            cmdCancel.ImeMode = ImeMode.NoControl;
+            cmdCancel.Location = new Point(376, 20);
+            cmdCancel.Margin = new Padding(4);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(88, 25);
+            cmdCancel.TabIndex = 12;
+            cmdCancel.Text = "Cancel";
+            cmdCancel.UseVisualStyleBackColor = true;
+            // 
+            // chkUpdateReferences
+            // 
+            chkUpdateReferences.AutoSize = true;
+            chkUpdateReferences.Dock = DockStyle.Top;
+            chkUpdateReferences.ImeMode = ImeMode.NoControl;
+            chkUpdateReferences.Location = new Point(10, 149);
+            chkUpdateReferences.Margin = new Padding(4);
+            chkUpdateReferences.Name = "chkUpdateReferences";
+            chkUpdateReferences.Padding = new Padding(0, 10, 0, 0);
+            chkUpdateReferences.Size = new Size(464, 29);
+            chkUpdateReferences.TabIndex = 58;
+            chkUpdateReferences.Text = "Update all references to latest version";
+            chkUpdateReferences.UseVisualStyleBackColor = true;
+            // 
+            // cboFormat
+            // 
+            cboFormat.Dock = DockStyle.Top;
+            cboFormat.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboFormat.FormattingEnabled = true;
+            cboFormat.Location = new Point(10, 126);
+            cboFormat.Margin = new Padding(4);
+            cboFormat.Name = "cboFormat";
+            cboFormat.Size = new Size(464, 23);
+            cboFormat.Sorted = true;
+            cboFormat.TabIndex = 57;
             // 
             // Checkin
             // 
-            this.AcceptButton = this.cmdOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(460, 300);
-            this.Controls.Add(this.chkUpdateReferences);
-            this.Controls.Add(this.lblFormat);
-            this.Controls.Add(this.cboFormat);
-            this.Controls.Add(this.cmdSelectFile);
-            this.Controls.Add(this.optCheckinFromOtherFile);
-            this.Controls.Add(this.optCheckinFromCheckoutPath);
-            this.Controls.Add(this.chkNewVersion);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOk);
-            this.Controls.Add(this.txtCheckinFile);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "Checkin";
-            this.Text = "Checkin";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AcceptButton = cmdOk;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            CancelButton = cmdCancel;
+            ClientSize = new Size(484, 231);
+            Controls.Add(panel3);
+            Controls.Add(chkUpdateReferences);
+            Controls.Add(cboFormat);
+            Controls.Add(lblFormat);
+            Controls.Add(panel2);
+            Controls.Add(optCheckinFromOtherFile);
+            Controls.Add(optCheckinFromCheckoutPath);
+            Controls.Add(chkNewVersion);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MinimumSize = new Size(500, 0);
+            Name = "Checkin";
+            Padding = new Padding(10);
+            Text = "Checkin";
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        internal System.Windows.Forms.CheckBox chkUpdateReferences;
-        internal System.Windows.Forms.Label lblFormat;
-        internal System.Windows.Forms.ComboBox cboFormat;
-        internal System.Windows.Forms.Button cmdSelectFile;
         internal System.Windows.Forms.RadioButton optCheckinFromOtherFile;
         internal System.Windows.Forms.RadioButton optCheckinFromCheckoutPath;
         internal System.Windows.Forms.CheckBox chkNewVersion;
-        internal System.Windows.Forms.Button cmdCancel;
-        internal System.Windows.Forms.Button cmdOk;
-        internal System.Windows.Forms.TextBox txtCheckinFile;
+        private Panel panel2;
+        internal TextBox txtCheckinFile;
+        private Panel panel6;
+        internal Button cmdSelectFile;
+        internal Label lblFormat;
+        private Panel panel3;
+        internal Button cmdOk;
+        private Panel panel4;
+        internal Button cmdCancel;
+        internal CheckBox chkUpdateReferences;
+        internal ComboBox cboFormat;
     }
 }

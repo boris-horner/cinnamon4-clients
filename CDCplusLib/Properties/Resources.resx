@@ -450,9 +450,6 @@
   <data name="lblSearchResults" xml:space="preserve">
     <value>Search results</value>
   </data>
-  <data name="lblSelectRelation" xml:space="preserve">
-    <value>Select relation type</value>
-  </data>
   <data name="lblSetConfigAsDefault" xml:space="preserve">
     <value>Set column configuration as default</value>
   </data>
@@ -927,5 +924,8 @@ The change will be committed when you click the Save button.</value>
   </data>
   <data name="lblAcl" xml:space="preserve">
     <value>ACL</value>
+  </data>
+  <data name="lblSelectRelationType" xml:space="preserve">
+    <value>Select relation type</value>
   </data>
 </root>

@@ -18,7 +18,7 @@ namespace CDCplusLib.Common.GUI
         public EditStringValue(string title, string valueLabel, string value, string regex=null)
         {
             InitializeComponent();
-            vtxtValue.RegularExpression = regex;
+            vtxtValue.RegularExpression = regex==null?"":regex;
             vtxtValue.Text = value;
             lblValue.Text = valueLabel;
             Text = title;

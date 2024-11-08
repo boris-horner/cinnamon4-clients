@@ -450,9 +450,6 @@
   <data name="lblSearchResults" xml:space="preserve">
     <value>Suchergebnisse</value>
   </data>
-  <data name="lblSelectRelation" xml:space="preserve">
-    <value>Wählen Sie einen Beziehungstyp</value>
-  </data>
   <data name="lblSetConfigAsDefault" xml:space="preserve">
     <value>Spaltenkonfiguration als Standard festlegen</value>
   </data>
@@ -927,5 +924,8 @@ Die Änderung wird gespeichert, wenn Sie auf den Speichern-Button klicken.</valu
   </data>
   <data name="lblAcl" xml:space="preserve">
     <value>ACL</value>
+  </data>
+  <data name="lblSelectRelationType" xml:space="preserve">
+    <value>Beziehungstyp auswählen</value>
   </data>
 </root>

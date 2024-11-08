@@ -29,102 +29,120 @@ namespace CDCplusLib.Common.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblValue = new System.Windows.Forms.Label();
-            this.TableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdOk = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.vtxtValue = new C4GeneralGui.GuiElements.ValidatingTextBox();
-            this.TableLayoutPanel1.SuspendLayout();
-            this.SuspendLayout();
+            lblValue = new Label();
+            vtxtValue = new C4GeneralGui.GuiElements.ValidatingTextBox();
+            panel3 = new Panel();
+            cmdOk = new Button();
+            panel4 = new Panel();
+            cmdCancel = new Button();
+            panel3.SuspendLayout();
+            SuspendLayout();
             // 
             // lblValue
             // 
-            this.lblValue.AutoSize = true;
-            this.lblValue.Location = new System.Drawing.Point(9, 8);
-            this.lblValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(44, 17);
-            this.lblValue.TabIndex = 4;
-            this.lblValue.Text = "Value";
-            // 
-            // TableLayoutPanel1
-            // 
-            this.TableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.TableLayoutPanel1.ColumnCount = 2;
-            this.TableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayoutPanel1.Controls.Add(this.cmdOk, 0, 0);
-            this.TableLayoutPanel1.Controls.Add(this.cmdCancel, 1, 0);
-            this.TableLayoutPanel1.Location = new System.Drawing.Point(12, 75);
-            this.TableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.TableLayoutPanel1.Name = "TableLayoutPanel1";
-            this.TableLayoutPanel1.RowCount = 1;
-            this.TableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.TableLayoutPanel1.Size = new System.Drawing.Size(195, 36);
-            this.TableLayoutPanel1.TabIndex = 3;
-            // 
-            // cmdOk
-            // 
-            this.cmdOk.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cmdOk.Location = new System.Drawing.Point(4, 4);
-            this.cmdOk.Margin = new System.Windows.Forms.Padding(4);
-            this.cmdOk.Name = "cmdOk";
-            this.cmdOk.Size = new System.Drawing.Size(89, 28);
-            this.cmdOk.TabIndex = 0;
-            this.cmdOk.Text = "OK";
-            this.cmdOk.Click += new System.EventHandler(this.cmdOk_Click);
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(101, 4);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(4);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(89, 28);
-            this.cmdCancel.TabIndex = 1;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            lblValue.AutoSize = true;
+            lblValue.Dock = DockStyle.Top;
+            lblValue.Location = new Point(10, 10);
+            lblValue.Margin = new Padding(4, 0, 4, 0);
+            lblValue.Name = "lblValue";
+            lblValue.Size = new Size(35, 15);
+            lblValue.TabIndex = 4;
+            lblValue.Text = "Value";
             // 
             // vtxtValue
             // 
-            this.vtxtValue.BackColor = System.Drawing.Color.Yellow;
-            this.vtxtValue.ExternalInvalidColor = System.Drawing.Color.Yellow;
-            this.vtxtValue.ExternalValidation = true;
-            this.vtxtValue.InternalInvalidColor = System.Drawing.Color.Yellow;
-            this.vtxtValue.Location = new System.Drawing.Point(12, 29);
-            this.vtxtValue.Name = "vtxtValue";
-            this.vtxtValue.RegularExpression = "^([^/\\\\]+)$";
-            this.vtxtValue.Size = new System.Drawing.Size(549, 22);
-            this.vtxtValue.TabIndex = 5;
-            this.vtxtValue.ValidColor = System.Drawing.Color.White;
-            this.vtxtValue.TextChanged += new System.EventHandler(this.vtxtValue_TextChanged);
+            vtxtValue.BackColor = Color.White;
+            vtxtValue.BothInvalidColor = Color.Red;
+            vtxtValue.Dock = DockStyle.Top;
+            vtxtValue.ExternalInvalidColor = Color.Orange;
+            vtxtValue.ExternalValidation = null;
+            vtxtValue.InternalInvalidColor = Color.Yellow;
+            vtxtValue.InvalidReadOnlyColor = Color.LightYellow;
+            vtxtValue.Location = new Point(10, 25);
+            vtxtValue.Name = "vtxtValue";
+            vtxtValue.RegularExpression = null;
+            vtxtValue.Size = new Size(481, 23);
+            vtxtValue.TabIndex = 54;
+            vtxtValue.ValidColor = Color.White;
+            vtxtValue.ValidReadOnlyColor = SystemColors.Control;
+            vtxtValue.TextChanged += vtxtValue_TextChanged;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(cmdOk);
+            panel3.Controls.Add(panel4);
+            panel3.Controls.Add(cmdCancel);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(10, 48);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(0, 20, 0, 0);
+            panel3.Size = new Size(481, 45);
+            panel3.TabIndex = 55;
+            // 
+            // cmdOk
+            // 
+            cmdOk.DialogResult = DialogResult.OK;
+            cmdOk.Dock = DockStyle.Right;
+            cmdOk.ImeMode = ImeMode.NoControl;
+            cmdOk.Location = new Point(295, 20);
+            cmdOk.Margin = new Padding(4);
+            cmdOk.Name = "cmdOk";
+            cmdOk.Size = new Size(88, 25);
+            cmdOk.TabIndex = 37;
+            cmdOk.Text = "Ok";
+            cmdOk.UseVisualStyleBackColor = true;
+            cmdOk.Click += cmdOk_Click;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(383, 20);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 25);
+            panel4.TabIndex = 36;
+            // 
+            // cmdCancel
+            // 
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Dock = DockStyle.Right;
+            cmdCancel.ImeMode = ImeMode.NoControl;
+            cmdCancel.Location = new Point(393, 20);
+            cmdCancel.Margin = new Padding(4);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(88, 25);
+            cmdCancel.TabIndex = 12;
+            cmdCancel.Text = "Cancel";
+            cmdCancel.UseVisualStyleBackColor = true;
+            cmdCancel.Click += cmdCancel_Click;
             // 
             // EditStringValue
             // 
-            this.AcceptButton = this.cmdOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(573, 124);
-            this.Controls.Add(this.vtxtValue);
-            this.Controls.Add(this.lblValue);
-            this.Controls.Add(this.TableLayoutPanel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "EditStringValue";
-            this.Text = "EditStringValue";
-            this.TableLayoutPanel1.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AcceptButton = cmdOk;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            CancelButton = cmdCancel;
+            ClientSize = new Size(501, 116);
+            Controls.Add(panel3);
+            Controls.Add(vtxtValue);
+            Controls.Add(lblValue);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MinimumSize = new Size(500, 0);
+            Name = "EditStringValue";
+            Padding = new Padding(10);
+            Text = "EditStringValue";
+            panel3.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         internal System.Windows.Forms.Label lblValue;
-        internal System.Windows.Forms.TableLayoutPanel TableLayoutPanel1;
-        internal System.Windows.Forms.Button cmdOk;
-        internal System.Windows.Forms.Button cmdCancel;
         private C4GeneralGui.GuiElements.ValidatingTextBox vtxtValue;
+        private Panel panel3;
+        internal Button cmdOk;
+        private Panel panel4;
+        internal Button cmdCancel;
     }
 }
