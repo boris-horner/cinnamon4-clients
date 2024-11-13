@@ -188,6 +188,7 @@
             cboOwner.Size = new Size(684, 23);
             cboOwner.Sorted = true;
             cboOwner.TabIndex = 24;
+            cboOwner.SelectedIndexChanged += cboOwner_SelectedIndexChanged;
             // 
             // lblOwner
             // 
@@ -263,6 +264,7 @@
             cboFolderType.Size = new Size(684, 23);
             cboFolderType.Sorted = true;
             cboFolderType.TabIndex = 24;
+            cboFolderType.SelectedIndexChanged += cboFolderType_SelectedIndexChanged;
             // 
             // lblFolderType
             // 
@@ -335,6 +337,7 @@
             txtName.Name = "txtName";
             txtName.Size = new Size(684, 23);
             txtName.TabIndex = 7;
+            txtName.TextChanged += txtName_TextChanged;
             // 
             // lblName
             // 
