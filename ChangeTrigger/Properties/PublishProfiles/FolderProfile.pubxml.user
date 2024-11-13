@@ -3,4 +3,9 @@
 https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Data\Dev.github\public\cinnamon4-clients\ChangeTrigger\bin\Release\net8.0\publish\</_PublishTargetUrl>
+    <History>True|2024-11-12T10:54:14.3274612Z||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
 </Project>
