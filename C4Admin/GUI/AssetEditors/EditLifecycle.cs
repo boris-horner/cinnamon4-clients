@@ -48,14 +48,17 @@ namespace C4Admin.GUI.AssetEditors
 		private void InitStatesListView()
 		{
 			lvwStates.Items.Clear();
-			foreach (C4LifecycleState state in Lifecycle.States.Values)
+			if(Lifecycle!=null)
 			{
-				cboDefaultStateId.Items.Add(state);
-				ListViewItem lvi = lvwStates.Items.Add(state.Id.ToString());
-				lvi.Tag = state;
-				lvi.SubItems.Add(state.Name);
-				lvi.SubItems.Add(state.StateClass);
-				lvi.SubItems.Add(state.LifecycleStateForCopyId == null ? "" : _allStates[(long)state.LifecycleStateForCopyId].Name);
+				foreach (C4LifecycleState state in Lifecycle.States.Values)
+				{
+					cboDefaultStateId.Items.Add(state);
+					ListViewItem lvi = lvwStates.Items.Add(state.Id.ToString());
+					lvi.Tag = state;
+					lvi.SubItems.Add(state.Name);
+					lvi.SubItems.Add(state.StateClass);
+					lvi.SubItems.Add(state.LifecycleStateForCopyId == null ? "" : _allStates[(long)state.LifecycleStateForCopyId].Name);
+				}
 			}
             if (_lvwSort == null) _lvwSort = new ListViewSort(lvwStates);
             _lvwSort.Sort(_lvwSort.LastColumn, _lvwSort.ColumnSortOrder);
