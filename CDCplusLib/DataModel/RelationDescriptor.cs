@@ -17,7 +17,7 @@ using C4ServerConnector.Assets;
 
 namespace CDCplusLib.DataModel
 {
-    class RelationDescriptor
+    public class RelationDescriptor
     {
         public RelationDescriptor(CmnObject leftObject, CmnObject rightObject, C4RelationType relType, XmlDocument metadata, C4Relation rel = null) 
         {
