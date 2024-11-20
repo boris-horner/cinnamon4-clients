@@ -189,8 +189,7 @@ namespace CAE
                                         l.Log(string.Concat("Setting metadata changed on object: id=", o.Id.ToString(), " to ", (bool)metadataChanged?"true":"false"));
                                         l.Log(string.Concat("Setting content changed on object: id=", o.Id.ToString(), " to ", (bool)contentChanged ? "true" : "false"));
 
-                                        // TODO: setting name as a workaround, bug in server seems to break when setting only changed flags
-                                        c4s.UpdateObject(o.Id, null, o.Name, null, null, null, null, objectsEl.GetAttribute("clearmetadatachanged") == "true" ? false : (bool)metadataChanged, objectsEl.GetAttribute("clearcontentchanged") == "true" ? false : (bool)contentChanged);
+                                        c4s.UpdateObject(o.Id, null, null, null, null, null, null, objectsEl.GetAttribute("clearmetadatachanged") == "true" ? false : (bool)metadataChanged, objectsEl.GetAttribute("clearcontentchanged") == "true" ? false : (bool)contentChanged);
                                         c4s.UnlockObject(o.Id);
                                         if (framework) l.Log(string.Concat("Processed object: id=", o.Id.ToString()));
                                     }
