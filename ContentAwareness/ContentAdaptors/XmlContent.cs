@@ -12,13 +12,14 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using C4ServerConnector;
+using ContentAwareness.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 
-namespace ContentAwareness
+namespace ContentAwareness.ContentAdaptors
 {
     public class XmlContent : IContent
     {

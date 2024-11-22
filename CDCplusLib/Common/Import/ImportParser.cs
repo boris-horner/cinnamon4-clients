@@ -14,6 +14,7 @@
 using System.Diagnostics;
 using ContentAwareness;
 using C4ObjectApi.Repository;
+using ContentAwareness.Interfaces;
 
 namespace CDCplusLib.Common.Import
 {

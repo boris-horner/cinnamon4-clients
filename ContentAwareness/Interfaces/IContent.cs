@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Xml;
 using C4ServerConnector;
 
-namespace ContentAwareness
+namespace ContentAwareness.Interfaces
 {
     public interface IContent
     {

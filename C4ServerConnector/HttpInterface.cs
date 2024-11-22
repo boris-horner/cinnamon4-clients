@@ -189,27 +189,62 @@ namespace C4ServerConnector
         }
         public void PostCommandFileDownload(string cmdUrl, XmlDocument requestBody, string contentFn)
         {
-            //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;
-            HttpContent c = new StringContent(requestBody.OuterXml, Encoding.UTF8);
-            if (_sessionLogFn != null) File.AppendAllText(_sessionLogFn, string.Concat("POST ", cmdUrl, Environment.NewLine, requestBody.OuterXml, Environment.NewLine));
-            HttpResponseMessage respMsg = _longTimeoutClient.PostAsync(cmdUrl, c).Result;
-            Stream respStream = respMsg.Content.ReadAsStreamAsync().Result;
-            BinaryReader reader = new BinaryReader(respStream);
-            FileStream fst = new FileStream(contentFn, FileMode.Create, FileAccess.Write);
-            BinaryWriter wrt = new BinaryWriter(fst);
-            int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
-            while (bufSize > 0)
+            // Add ticket if needed to the request body
+            // requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;
+
+            HttpContent content = new StringContent(requestBody.OuterXml, Encoding.UTF8);
+
+            if (_sessionLogFn != null)
             {
-                byte[] buffer = reader.ReadBytes(bufSize);
-                wrt.Write(buffer);
-                bufSize = buffer.Length;
+                File.AppendAllText(_sessionLogFn, string.Concat("POST ", cmdUrl, Environment.NewLine, requestBody.OuterXml, Environment.NewLine));
             }
-            respStream.Close();
-            wrt.Close();
-            fst.Close();
-            reader.Close();
-            return;
+
+            HttpResponseMessage respMsg = _longTimeoutClient.PostAsync(cmdUrl, content).Result;
+
+            // Ensure response stream and file streams are properly disposed of
+            using (Stream respStream = respMsg.Content.ReadAsStreamAsync().Result)
+            using (BinaryReader reader = new BinaryReader(respStream))
+            using (FileStream fst = new FileStream(contentFn, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (BinaryWriter writer = new BinaryWriter(fst))
+            {
+                int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
+                while (bufSize > 0)
+                {
+                    byte[] buffer = reader.ReadBytes(bufSize);
+                    if (buffer.Length == 0)
+                    {
+                        break; // End of stream
+                    }
+                    writer.Write(buffer);
+                    bufSize = buffer.Length;
+                }
+            }
+
+            // No need to explicitly call Close(), as `using` handles resource cleanup.
         }
+        //public void PostCommandFileDownload(string cmdUrl, XmlDocument requestBody, string contentFn)
+        //{
+        //    //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;
+        //    HttpContent c = new StringContent(requestBody.OuterXml, Encoding.UTF8);
+        //    if (_sessionLogFn != null) File.AppendAllText(_sessionLogFn, string.Concat("POST ", cmdUrl, Environment.NewLine, requestBody.OuterXml, Environment.NewLine));
+        //    HttpResponseMessage respMsg = _longTimeoutClient.PostAsync(cmdUrl, c).Result;
+        //    Stream respStream = respMsg.Content.ReadAsStreamAsync().Result;
+        //    BinaryReader reader = new BinaryReader(respStream);
+        //    FileStream fst = new FileStream(contentFn, FileMode.Create, FileAccess.Write);
+        //    BinaryWriter wrt = new BinaryWriter(fst);
+        //    int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
+        //    while (bufSize > 0)
+        //    {
+        //        byte[] buffer = reader.ReadBytes(bufSize);
+        //        wrt.Write(buffer);
+        //        bufSize = buffer.Length;
+        //    }
+        //    respStream.Close();
+        //    wrt.Close();
+        //    fst.Close();
+        //    reader.Close();
+        //    return;
+        //}
         public Stream PostCommandFileDownloadAsStream(string cmdUrl, XmlDocument requestBody)
         {
             HttpContent content = new StringContent(requestBody.OuterXml, Encoding.UTF8, "application/xml");

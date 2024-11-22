@@ -25,6 +25,7 @@ using System.Text;
 using C4ObjectApi.Global;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
+using ContentAwareness.Interfaces;
 
 namespace C4ObjectApi.Repository
 {
@@ -485,12 +486,12 @@ namespace C4ObjectApi.Repository
                 if (objs.ContainsKey(rel.RightId))
                 {
                     string localPath = objs[rel.RightId];
-                    XmlNode fnN = rel.Metadata.SelectSingleNode("meta/filename");
+                    XmlNode fnN = rel.Metadata.SelectSingleNode("//filename");
                     if (fnN != null)
                     {
-                        string key = fnN.InnerText.Replace(@"\", dirSep).Replace("/", dirSep);
+                        string key = fnN.InnerText; //.Replace(@"\", dirSep).Replace("/", dirSep);
                         if (!result.ContainsKey(key))
-                            result.Add(fnN.InnerText.Replace(@"\", dirSep).Replace("/", dirSep), Path.GetFileName(localPath));
+                            result.Add(key, Path.GetFileName(localPath));
                     }
                 }
             }

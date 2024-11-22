@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -16,6 +16,10 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="IContent.cs" />
+    <Compile Remove="XmlContent.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\C4ServerConnector\C4ServerConnector.csproj" />
   </ItemGroup>

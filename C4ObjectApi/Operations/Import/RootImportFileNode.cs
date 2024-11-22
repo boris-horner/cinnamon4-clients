@@ -19,6 +19,7 @@ using C4ObjectApi.Repository;
 using System.IO;
 using C4ServerConnector.Assets;
 using C4ServerConnector;
+using ContentAwareness.Interfaces;
 
 namespace C4ObjectApi.Operations.Import
 {
@@ -51,7 +52,7 @@ namespace C4ObjectApi.Operations.Import
         private void CollectImportNodes(string parentFn, Dictionary<string, ImportFileNode> children)
         {
             C4Format fmt = _s.SessionConfig.C4Sc.FormatsByExtension[Path.GetExtension(parentFn).Substring(1).ToLower()];
-            ContentAwareness.IContent c = Session.GetContentAwarenessModule(fmt);
+            IContent c = Session.GetContentAwarenessModule(fmt);
             if (!(c == null))
             {
                 try
@@ -106,7 +107,7 @@ namespace C4ObjectApi.Operations.Import
         private void CreateRelations(ImportFileNode ifn)
         {
             C4Format fmt = _s.SessionConfig.C4Sc.FormatsByExtension[Path.GetExtension(ifn.FullFileName).Substring(1).ToLower()];
-            ContentAwareness.IContent c = Session.GetContentAwarenessModule(fmt);
+            IContent c = Session.GetContentAwarenessModule(fmt);
             if (!(c == null))
             {
                 HashSet<C4Relation> relations = new HashSet<C4Relation>();

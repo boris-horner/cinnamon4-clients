@@ -27,6 +27,7 @@ using C4ServerConnector.Assets;
 using System.Reflection;
 using System.Diagnostics;
 using System.IO;
+using ContentAwareness.Interfaces;
 
 namespace C4ObjectApi.Repository
 {
@@ -137,11 +138,19 @@ namespace C4ObjectApi.Repository
                 XmlElement implEl = (XmlElement)contentEl.SelectSingleNode("implementation");
                 System.Reflection.Assembly a = SessionConfig.GetAssembly(implEl.GetAttribute("assembly"));
                 IContent impl = (IContent)a.CreateInstance(implEl.GetAttribute("assembly") + "." + implEl.GetAttribute("type"));
-                impl.Init(contentEl, false);
-                foreach (XmlNode ffN in contentEl.SelectNodes("format_filter"))
+                if (impl == null) 
                 {
-                    if (!_cams.ContainsKey(ffN.InnerText))
-                        _cams.Add(ffN.InnerText, impl);
+                    // TODO: remove this patch after all config entries have been updated with ContentAdaptors namespace
+                    impl = (IContent)a.CreateInstance(implEl.GetAttribute("assembly") + ".ContentAdaptors." + implEl.GetAttribute("type"));
+                }
+                if(impl!=null)
+                {
+                    impl.Init(contentEl, false);
+                    foreach (XmlNode ffN in contentEl.SelectNodes("format_filter"))
+                    {
+                        if (!_cams.ContainsKey(ffN.InnerText))
+                            _cams.Add(ffN.InnerText, impl);
+                    }
                 }
             }
         }
@@ -439,10 +448,10 @@ namespace C4ObjectApi.Repository
             {
                 string[] pathSegs = path.Split('/',StringSplitOptions.RemoveEmptyEntries);
                 string parentPath = path.Substring(0, path.Length - pathSegs[pathSegs.Length - 1].Length - 1);
-                long parentId = GetOrCreateFolder(parentPath, assignFolderType, assignAcl).ParentId;
+                C4Folder f = GetOrCreateFolder(parentPath, assignFolderType, assignAcl);
 
                 HashSet<C4Folder> folders = new HashSet<C4Folder>();
-                folders.Add(new C4Folder(0, pathSegs[pathSegs.Length - 1], (long)User.Id, parentId, (long)(assignAcl == null ? SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id:assignFolderType.Id), (long)(assignAcl==null?SessionConfig.C4Sc.AclsByName["_default_acl"].Id:assignAcl.Id)));
+                folders.Add(new C4Folder(0, pathSegs[pathSegs.Length - 1], (long)User.Id, f.Id, (long)(assignAcl == null ? SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id:assignFolderType.Id), (long)(assignAcl==null?SessionConfig.C4Sc.AclsByName["_default_acl"].Id:assignAcl.Id)));
                 return CommandSession.CreateFolders(folders).Values.First();
             }
             else

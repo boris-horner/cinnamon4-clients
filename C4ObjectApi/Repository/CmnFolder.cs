@@ -22,6 +22,7 @@ using System.IO;
 using ContentAwareness;
 using C4ServerConnector.Assets;
 using C4ServerConnector;
+using ContentAwareness.Interfaces;
 
 namespace C4ObjectApi.Repository
 {
