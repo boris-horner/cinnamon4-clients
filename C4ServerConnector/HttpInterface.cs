@@ -123,7 +123,7 @@ namespace C4ServerConnector
 
             XmlDocument responseXml = new XmlDocument();
             responseXml.LoadXml(responseString);
-            CheckForErrors(responseXml);
+            CheckForErrors(cmdUrl, requestBody, responseXml);
             return responseXml;
         }
 
@@ -147,7 +147,7 @@ namespace C4ServerConnector
                 string responseString = responseMessage.Content.ReadAsStringAsync().Result;
                 XmlDocument responseXml = new XmlDocument();
                 responseXml.LoadXml(responseString);
-                CheckForErrors(responseXml);
+                CheckForErrors(cmdUrl, requestBody, responseXml);
                 return responseXml;
             }
             else
@@ -164,7 +164,7 @@ namespace C4ServerConnector
                     string responseString = responseMessage.Content.ReadAsStringAsync().Result;
                     XmlDocument responseXml = new XmlDocument();
                     responseXml.LoadXml(responseString);
-                    CheckForErrors(responseXml);
+                    CheckForErrors(cmdUrl, requestBody, responseXml);
                     return responseXml;
                 }
 
@@ -178,7 +178,6 @@ namespace C4ServerConnector
 
             XmlDocument resp = new XmlDocument();
             resp.LoadXml(result.Content.ReadAsStringAsync().Result);
-            CheckForErrors(resp);
             if (resp.DocumentElement.SelectSingleNode("disconnectSuccessful").InnerText=="true")
             {
                 Ticket = null;
@@ -254,7 +253,7 @@ namespace C4ServerConnector
             Stream respStream = respMsg.Content.ReadAsStreamAsync().Result;
             return respStream;
         }
-        private void CheckForErrors(XmlDocument resp)
+        private void CheckForErrors(string cmdUrl, XmlDocument requestBody, XmlDocument resp)
         {
             XmlNodeList errors = resp.DocumentElement.SelectNodes("errors/error");
             if(errors.Count == 0) return;
@@ -266,7 +265,7 @@ namespace C4ServerConnector
                 else if (code == "AUTHENTICATION_FAIL_SESSION_EXPIRED") throw new SessionExpiredException(errorEl.SelectSingleNode("message").InnerText);
                 else if (code == "FOLDER_NOT_FOUND") ; /* do nothing*/
                 else if (code == "OBJECT_NOT_FOUND") ; /* do nothing*/
-                else throw new ApplicationException(errorEl.SelectSingleNode("message").InnerText);
+                else throw new ApplicationException(string.Join("\n","Message:" + errorEl.SelectSingleNode("message").InnerText,"Command: "+cmdUrl, "Request: " + requestBody.OuterXml));
             }
             else
             {
