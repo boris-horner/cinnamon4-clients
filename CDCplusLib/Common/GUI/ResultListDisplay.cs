@@ -156,7 +156,16 @@ namespace CDCplusLib.Common.GUI
                             else
                             {
                                 //NodeColumnDefinition colDef = _nodeDataProvider.GetColumnDefinitions()[colName];
-                                lvi.SubItems.Add(_nodeDataProvider.GetValue(ow, colName));
+                                string columnValue = null;
+                                try
+                                {
+                                    columnValue = _nodeDataProvider.GetValue(ow, colName);
+                                }
+                                catch(Exception ex)
+                                {
+                                    columnValue = "";
+                                }
+                                lvi.SubItems.Add(columnValue);
                             }
                         }
 

@@ -19,6 +19,12 @@ using System.Xml;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+string? connectionLimitConfig = builder.Configuration["ConnectionLimit"];
+int connectionLimit = string.IsNullOrEmpty(connectionLimitConfig)
+    ? 100
+    : int.Parse(connectionLimitConfig);
+ServicePointManager.DefaultConnectionLimit = connectionLimit;  
+
 // Configure Serilog early
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
