@@ -11,19 +11,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
-using C4ServerConnector;
 using C4ServerConnector.Assets;
 using ChangeTriggerLib.Interfaces;
 using ChangeTriggerLib.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Serilog;
 using System.Xml;
 
 namespace ChangeTriggerLib.TriggerActionFactories
@@ -64,7 +56,7 @@ namespace ChangeTriggerLib.TriggerActionFactories
             {
                 HashSet<C4Folder> folders = new HashSet<C4Folder>();
 
-                _logger.LogInformation("UserCreateAction: "+requestData.OuterXml);
+                _logger.Information("UserCreateAction: "+requestData.OuterXml);
 
                 foreach (XmlElement userEl in requestData.DocumentElement.SelectNodes("users/user"))
                 {
