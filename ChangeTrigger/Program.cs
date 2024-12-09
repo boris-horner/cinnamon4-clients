@@ -19,16 +19,16 @@ using System.Xml;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-string? connectionLimitConfig = builder.Configuration["ConnectionLimit"];
-int connectionLimit = string.IsNullOrEmpty(connectionLimitConfig)
-    ? 100
-    : int.Parse(connectionLimitConfig);
-ServicePointManager.DefaultConnectionLimit = connectionLimit;  
+XmlDocument config = new XmlDocument();
+string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+config.Load(Path.Combine(assemblyPath, "ct.config.xml"));
+string logFn = config.DocumentElement.SelectSingleNode("logfile").InnerText;
+if(!Directory.Exists(Path.GetDirectoryName(logFn))) Directory.CreateDirectory(Path.GetDirectoryName(logFn));
 
 // Configure Serilog early
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.Console()
+    .WriteTo.File(Path.Combine(Path.GetTempPath(), logFn), rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 // Register Serilog
@@ -60,18 +60,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-XmlDocument config = new XmlDocument();
-string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-config.Load(Path.Combine(assemblyPath, "ct.config.xml"));
 
-builder.Services.AddSingleton<TriggerActionService>(serviceProvider =>
-{
-    var logger = serviceProvider.GetRequiredService<ILogger<TriggerActionService>>();
-    var triggerActionService = new TriggerActionService(config, logger);
-    triggerActionService.InitCustomServices();
-    triggerActionService.InitFactories();
-    return triggerActionService;
-});
+var triggerActionService = new TriggerActionService(config, Log.Logger); // Use Serilog directly here
+triggerActionService.InitCustomServices();
+triggerActionService.InitFactories();
+
+builder.Services.AddSingleton(triggerActionService);
 
 // Add other custom singleton services here
 

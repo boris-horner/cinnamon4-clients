@@ -14,11 +14,9 @@
 using C4ServerConnector.Assets;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Xml;
 
 namespace C4ServerConnector
@@ -1802,6 +1800,21 @@ namespace C4ServerConnector
             }
             return;
         }
+        public void GetContentToStream(long id, Stream outputStream)
+        {
+            try
+            {
+                XmlDocument requestBody = new XmlDocument();
+                requestBody.AppendChild(requestBody.CreateElement("idRequest"));
+                requestBody.DocumentElement.AppendChild(requestBody.CreateElement("id")).InnerText = id.ToString();
+                _http.PostCommandFileDownloadToStream(string.Concat(BaseUrl, "/api/osd/getContent"), requestBody, outputStream);
+            }
+            catch (WebException ex)
+            {
+                ThrowException(ex);
+            }
+        }
+        // TODO: SetContentFromStream
         public void SetContent(long id, long formatId, string contentFn)
         {
             try

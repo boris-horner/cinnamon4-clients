@@ -12,12 +12,7 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using ChangeTriggerLib.Services;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Serilog;
 using System.Xml;
 
 namespace ChangeTriggerLib.Interfaces

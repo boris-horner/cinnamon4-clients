@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Data\Dev.github\public\cinnamon4-clients\ChangeTrigger\bin\Release\net8.0\publish\</_PublishTargetUrl>
-    <History>True|2024-12-04T09:44:44.6509437Z||;True|2024-11-22T15:37:30.7088307+01:00||;True|2024-11-19T11:25:11.7405313+01:00||;True|2024-11-19T11:22:27.9831144+01:00||;True|2024-11-12T11:54:14.3274612+01:00||;</History>
+    <History>True|2024-12-05T12:24:12.5133641Z||;True|2024-12-05T12:36:40.1278062+01:00||;True|2024-12-05T12:35:45.8648992+01:00||;True|2024-11-22T15:37:30.7088307+01:00||;True|2024-11-19T11:25:11.7405313+01:00||;True|2024-11-19T11:22:27.9831144+01:00||;True|2024-11-12T11:54:14.3274612+01:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>
