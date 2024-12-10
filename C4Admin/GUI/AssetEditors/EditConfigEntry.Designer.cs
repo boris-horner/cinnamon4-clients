@@ -146,6 +146,7 @@ namespace C4Admin.GUI.AssetEditors
             // xtxtConfig
             // 
             xtxtConfig.Dock = DockStyle.Fill;
+            xtxtConfig.Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             xtxtConfig.Location = new Point(5, 143);
             xtxtConfig.Name = "xtxtConfig";
             xtxtConfig.Size = new Size(1085, 828);

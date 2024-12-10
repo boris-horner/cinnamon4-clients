@@ -668,6 +668,21 @@ namespace C4ServerConnector
                 C4Folder f = new C4Folder(folderEl);
                 result.Add(f.Id, f);
             }
+            foreach (XmlElement linkEl in resp.DocumentElement.SelectNodes("links/link[type='FOLDER']"))
+            {
+                C4Link l = new C4Link(linkEl);
+                XmlElement refEl = resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement;
+                if (refEl != null)
+                {
+                    C4Folder f = new C4Folder(refEl);
+                    f.Link = l;
+                    result.Add(f.Id, f);
+                }
+                else
+                {
+                    // TODO: error handling
+                }
+            }
             return result;
         }
         public XmlDocument SetFolderSummary(long id, XmlElement summaryEl)       // summaryEl.Name must be summary, no further check
@@ -1972,8 +1987,21 @@ namespace C4ServerConnector
                 C4Object o = new C4Object(osdEl);
                 result.Add(o.Id, o);
             }
-            // TODO: read links
-            // TODO: read references
+            foreach (XmlElement linkEl in resp.DocumentElement.SelectNodes("links/link[type='OBJECT']"))
+            {
+                C4Link l = new C4Link(linkEl);
+                XmlElement refEl = resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement;
+                if(refEl!=null)
+                {
+                    C4Object o = new C4Object(refEl);
+                    o.Link = l;
+                    result.Add(o.Id, o);
+                }
+                else
+                {
+                    // TODO: error handling
+                }
+            }
             return result;
         }
 

@@ -25,6 +25,7 @@ namespace C4ServerConnector
         long AclId { get; set; }
         long ParentId { get; set; }
         long TypeId { get; set; }
+        C4Link Link { get; set; }
         bool MetadataChanged { get; set; }
         C4Metadata Metadata { get; set; }
         //Dictionary<string, XmlElement> Metasets { get; set; }

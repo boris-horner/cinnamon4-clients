@@ -63,6 +63,7 @@ namespace C4ObjectApi.Repository
         {
             Session = session;
             C4O = c4o;
+            if (c4o.Link != null) Link = new CmnLink(session, c4o.Link);
             // TODO: read permissions only when actually needed
             Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[C4O.AclId], Session.User.Id == C4O.OwnerId, Session.IsSuperuser);
             LocalPath = Locked != null ? (Session.LocksMgr.Locks.ContainsKey(Id)?Session.LocksMgr.Locks[Id].ContentFilename:null) : "" ;

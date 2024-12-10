@@ -46,6 +46,7 @@ namespace C4ObjectApi.Repository
         {
             Session = session;
             C4F = c4f;
+            if(c4f.Link!=null) Link = new CmnLink(session, c4f.Link);
             Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[C4F.AclId], (long)Session.User.Id == c4f.OwnerId, Session.IsSuperuser);
         }
 

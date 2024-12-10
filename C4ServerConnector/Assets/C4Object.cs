@@ -41,6 +41,7 @@ namespace C4ServerConnector.Assets
         public bool MetadataChanged { get; set; }
         public string Version { get; set; }
         public long? LifecycleStateId { get; set; }
+        public C4Link Link { get; set; }
         public C4Metadata Metadata { get; set; }
         //public Dictionary<string, XmlElement> Metasets { get; set; }
         public XmlElement Summary { get; set; }

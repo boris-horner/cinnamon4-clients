@@ -36,7 +36,7 @@ builder.Host.UseSerilog(Log.Logger);
 
 Log.Information("Application starting up");
 
-string pfxFile = (builder.Configuration["Https:Pfx"].Length == 0 ? null : Path.Combine(Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath), builder.Configuration["Https:Pfx"]));
+string pfxFile = string.IsNullOrEmpty(builder.Configuration["Https:Pfx"]) ? null : Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), builder.Configuration["Https:Pfx"]); 
 string pfxSecret = (builder.Configuration["Https:Secret"].Length == 0 ? null : builder.Configuration["Https:Secret"]);
 int httpsPort = (builder.Configuration["Https:Port"].Length == 0 ? 8080 : int.Parse(builder.Configuration["Https:Port"]));
 
