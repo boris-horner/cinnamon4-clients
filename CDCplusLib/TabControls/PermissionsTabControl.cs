@@ -279,7 +279,7 @@ namespace CDCplusLib.TabControls
             lvwAclEntries.Items.Clear();
             foreach(C4AclGroup aclGroup in selAcl.AclGroups.Values)
             {
-                ListViewItem li = lvwAclEntries.Items.Add(_s.SessionConfig.C4Sc.GroupsById[aclGroup.GroupId].Name);
+                ListViewItem li = lvwAclEntries.Items.Add(_s.SessionConfig.C4Sc.GroupsById[aclGroup.GroupId].LocalizedName);
                 li.Tag = aclGroup;
                 li.SubItems.Add(Properties.Resources.lblGroup);     // TODO: obsolete
                 li.SubItems.Add(GetPermissionString(aclGroup.Permissions));     // Permissions

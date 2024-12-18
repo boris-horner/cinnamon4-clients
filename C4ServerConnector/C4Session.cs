@@ -675,8 +675,11 @@ namespace C4ServerConnector
                 if (refEl != null)
                 {
                     C4Folder f = new C4Folder(refEl);
-                    f.Link = l;
-                    result.Add(f.Id, f);
+                    if(!result.ContainsKey(f.Id))
+                    {
+                        f.Link = l;
+                        result.Add(f.Id, f);
+                    }
                 }
                 else
                 {
@@ -1994,8 +1997,11 @@ namespace C4ServerConnector
                 if(refEl!=null)
                 {
                     C4Object o = new C4Object(refEl);
-                    o.Link = l;
-                    result.Add(o.Id, o);
+                    if (!result.ContainsKey(o.Id))
+                    {
+                        o.Link = l;
+                        result.Add(o.Id, o);
+                    }
                 }
                 else
                 {

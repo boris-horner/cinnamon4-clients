@@ -38,7 +38,7 @@ namespace C4ServerConnector.Assets
             XmlNode idN = assetEl.SelectSingleNode("id");
             if (idN == null) Id = null;
             else Id = long.Parse(idN.InnerText);
-            ParentId = long.Parse(assetEl.SelectSingleNode("aclId").InnerText);
+            AclId = long.Parse(assetEl.SelectSingleNode("aclId").InnerText);
             ParentId = long.Parse(assetEl.SelectSingleNode("parentId").InnerText);
             OwnerId = long.Parse(assetEl.SelectSingleNode("ownerId").InnerText);
             LinkType = assetEl.SelectSingleNode("type").InnerText=="OBJECT"?LinkTypes.Object:LinkTypes.Folder;

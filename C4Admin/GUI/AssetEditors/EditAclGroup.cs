@@ -1,6 +1,7 @@
 ﻿using C4Admin.Global;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
+using System;
 
 namespace C4Admin.GUI.AssetEditors
 {
@@ -247,6 +248,32 @@ namespace C4Admin.GUI.AssetEditors
             bool valid = cboAcl.SelectedItem != null && cboGroup.SelectedItem != null;
             cmdOk.Enabled = valid;
             cmdSaveAs.Enabled = valid;
+        }
+
+        private void cmdCheckAll_Click(object sender, EventArgs e)
+        {
+            HashSet<int> indexes = new HashSet<int>();
+            foreach (PermissionEntry item in clbPermissions.Items)
+            {
+                indexes.Add(clbPermissions.Items.IndexOf(item));
+            }
+            foreach (int index in indexes)
+            {
+                clbPermissions.SetItemChecked(index, true);
+            }
+        }
+
+        private void cmdUncheckAll_Click(object sender, EventArgs e)
+        {
+            HashSet<int> indexes = new HashSet<int>();
+            foreach (PermissionEntry item in clbPermissions.Items)
+            {
+                indexes.Add(clbPermissions.Items.IndexOf(item));
+            }
+            foreach (int index in indexes)
+            {
+                clbPermissions.SetItemChecked(index, false);
+            }
         }
     }
 
