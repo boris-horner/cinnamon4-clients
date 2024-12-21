@@ -371,8 +371,8 @@ public void SetChangedStatus(bool metadataChanged)
             HashSet<C4Link> links = new HashSet<C4Link>();
             foreach(IRepositoryNode target in targets.Values)
             {
-                if(target.GetType() == typeof(CmnObject)) links.Add(new C4Link(Id, (long)linkAcl.Id, (long)Session.User.Id, C4Link.LinkTypes.Object, target.Id));
-                else links.Add(new C4Link(Id, (long)linkAcl.Id, (long)Session.User.Id, C4Link.LinkTypes.Folder, target.Id));
+                if(target.GetType() == typeof(CmnObject)) links.Add(new C4Link((long)linkAcl.Id, Id, (long)Session.User.Id, C4Link.LinkTypes.Object, target.Id));
+                else links.Add(new C4Link((long)linkAcl.Id, Id, (long)Session.User.Id, C4Link.LinkTypes.Folder, target.Id));
             }
             Dictionary<long, C4Link> createdLinks = Session.CommandSession.CreateLinks(links);
         }

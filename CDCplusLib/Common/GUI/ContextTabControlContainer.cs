@@ -73,7 +73,7 @@ namespace CDCplusLib.Common.GUI
             try
             {
                 CheckForUnsavedChanges();
-                if (tabContext.SelectedTab is object)
+                if (tabContext.SelectedTab!=null && tabContext.SelectedTab.Controls.Count>0)
                 {
                     IGenericControl listGc = (IGenericControl)tabContext.SelectedTab.Controls[0];
                     listGc.Init(_context, null);
@@ -85,6 +85,10 @@ namespace CDCplusLib.Common.GUI
             }
             // for the time being, ignore
             // TODO: think of a better solution (clear control, remove tab, ...)
+            catch (NullReferenceException ex)
+            {
+                // ignore
+            }
             catch (Exception ex)
             {
                 StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this,ex);
@@ -254,7 +258,8 @@ namespace CDCplusLib.Common.GUI
                 }
                 catch (Exception ex)
                 {
-                    StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
+                    // this was commented out, because the msg doesn't help anything here
+                    //StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
                 }
                 finally
                 {

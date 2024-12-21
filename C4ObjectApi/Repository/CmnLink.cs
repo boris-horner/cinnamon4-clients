@@ -26,7 +26,12 @@ namespace C4ObjectApi.Repository
         public CmnLink(CmnSession s, C4Link c4l)
         {
             _s = s;
-            _c4l = c4l;        }
+            _c4l = c4l;
+            Id = (long)c4l.Id;
+            Acl = _s.SessionConfig.C4Sc.AclsById[c4l.AclId];
+            Owner = _s.SessionConfig.C4Sc.UsersById[c4l.OwnerId];
+            ParentId = c4l.ParentId;
+        }
 
         public long Id { get; }
         public C4Acl Acl { get { return _s.SessionConfig.C4Sc.AclsById[_c4l.AclId]; } set { _c4l.AclId = (long)value.Id; } }
