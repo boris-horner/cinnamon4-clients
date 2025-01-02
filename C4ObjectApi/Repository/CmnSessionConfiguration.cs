@@ -71,7 +71,21 @@ namespace C4ObjectApi.Repository
                 //foreach (long permissionId in _permissionsByAclId[(long)acl.Id].PermissionNamesById.Keys) 
                 //    if (!_ownerPermissionsByAclId[(long)acl.Id].PermissionNamesById.ContainsKey(permissionId)) _ownerPermissionsByAclId[(long)acl.Id].SetPermission(_permissionsByAclId[(long)acl.Id].PermissionNamesById[permissionId], true);
             }   
-            return owner? _ownerPermissionsByAclId[(long)acl.Id] : _permissionsByAclId[(long)acl.Id];
+            return owner? OrPermissions(_permissionsByAclId[(long)acl.Id], _ownerPermissionsByAclId[(long)acl.Id]) : _permissionsByAclId[(long)acl.Id];
+        }
+        public C4Permissions OrPermissions(C4Permissions perm, C4Permissions ownerPerm)
+        {
+            //C4Permissions result = new C4Permissions(true, this);
+            C4Permissions result = new C4Permissions(false, _allPermissions);
+            foreach (string permissionName in _allPermissions.PermissionIdsByName.Keys)
+            {
+                if(perm.PermissionIdsByName.ContainsKey(permissionName) || ownerPerm.PermissionIdsByName.ContainsKey(permissionName))
+                {
+                    result.PermissionIdsByName.Add(permissionName, _allPermissions.PermissionIdsByName[permissionName]);
+                    result.PermissionNamesById.Add(_allPermissions.PermissionIdsByName[permissionName], permissionName);
+                }
+            }
+            return result;
         }
 
         public string GetLocalizedLabel(string sysName, string category)

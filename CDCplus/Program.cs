@@ -11,7 +11,9 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
+using C4GeneralGui.GuiElements;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Windows.Forms;
 
@@ -25,6 +27,21 @@ namespace CDCplus
         [STAThread]
         static void Main()
         {
+            // Add global exception handlers
+            Application.ThreadException += (sender, args) =>
+            {
+                // Log or handle thread-specific exceptions
+                Debug.WriteLine($"ThreadException: {args.Exception}");
+                //StandardMessage.ShowMessage("An unexpected error occurred.", StandardMessage.Severity.ErrorMessage, null, args.Exception);
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                // Log or handle app domain-level unhandled exceptions
+                Debug.WriteLine($"UnhandledException: {args.ExceptionObject}");
+                // Optional: Show a message or log the error
+            };
+
             ServicePointManager.DefaultConnectionLimit = 20;
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
