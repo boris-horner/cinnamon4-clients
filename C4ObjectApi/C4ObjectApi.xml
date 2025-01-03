@@ -23,7 +23,7 @@
             </summary>
             <remarks>Causes a command to be send to the server</remarks>
         </member>
-        <member name="M:C4ObjectApi.Repository.CmnFolder.CreateSubfolder(System.String)">
+        <member name="M:C4ObjectApi.Repository.CmnFolder.CreateSubfolder(System.String,C4ServerConnector.Assets.C4FolderType,C4ServerConnector.Assets.C4Acl)">
             <summary>
             Creates a subfolder to this folder in the repository.
             </summary>

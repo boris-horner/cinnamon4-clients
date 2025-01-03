@@ -476,10 +476,9 @@ namespace C4ObjectApi.Repository
             return new CmnObject(this, c4o);
         }
 
-        public CmnFolder CreateSubfolder(CmnFolder parent, string name, C4FolderType type = null)
+        public CmnFolder CreateSubfolder(CmnFolder parent, string name, C4FolderType type = null, C4Acl acl = null)
         {
-            HashSet<C4Folder> folders = new HashSet<C4Folder>();
-            folders.Add(new C4Folder(0, name, (long)User.Id, parent == null ? RootFolder.Id : parent.Id, type == null ? (long)SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id : (long)type.Id, (long)SessionConfig.C4Sc.AclsByName["_default_acl"].Id));
+            HashSet<C4Folder> folders = new HashSet<C4Folder> { new C4Folder(0, name, (long)User.Id, parent == null ? RootFolder.Id : parent.Id, type == null ? (long)SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id : (long)type.Id, acl == null ? (long)SessionConfig.C4Sc.AclsByName["_default_acl"].Id : (long)acl.Id) };
             return new CmnFolder(this, CommandSession.CreateFolders(folders).Values.First());
         }
         public CmnFolder RootFolder

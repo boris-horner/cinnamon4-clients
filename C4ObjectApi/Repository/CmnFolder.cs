@@ -174,9 +174,9 @@ public void SetChangedStatus(bool metadataChanged)
         /// <param name="name">the name of the subfolder</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public CmnFolder CreateSubfolder(string name)
+        public CmnFolder CreateSubfolder(string name, C4FolderType type = null, C4Acl acl = null)
         {
-            return Session.CreateSubfolder(this, name);
+            return Session.CreateSubfolder(this, name, type, acl);
         }
 
 
