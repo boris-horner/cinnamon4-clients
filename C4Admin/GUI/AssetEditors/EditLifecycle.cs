@@ -60,7 +60,7 @@ namespace C4Admin.GUI.AssetEditors
 					lvi.SubItems.Add(state.LifecycleStateForCopyId == null ? "" : _allStates[(long)state.LifecycleStateForCopyId].Name);
 				}
 			}
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwStates);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwStates, false);
             _lvwSort.Sort(_lvwSort.LastColumn, _lvwSort.ColumnSortOrder);
         }
 

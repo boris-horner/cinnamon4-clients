@@ -30,7 +30,7 @@ namespace C4Admin.GUI.AssetLists
                 lvi.SubItems.Add(a.ParentId==null?"":_assets[(long)a.ParentId].ToString());
                 lvi.Tag = a;
             }
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw, false);
             _lvwSort.Sort(_lvwSort.LastColumn,_lvwSort.ColumnSortOrder);
         }
 

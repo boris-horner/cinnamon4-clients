@@ -60,13 +60,15 @@ namespace CDCplusLib.Common
 
         private ListView _lvw;
         private bool _active;
+        private bool _uniqueIds;
         private readonly Form _frm;
         public SortOrder ColumnSortOrder = SortOrder.Ascending;
         public int LastColumn;
 
-        public ListViewSort(ListView lvw, bool sortByColumnClickAutomatic = true, bool setNumericColumsRightAlign = true)
+        public ListViewSort(ListView lvw, bool uniqueIds, bool sortByColumnClickAutomatic = true, bool setNumericColumsRightAlign = true)
         {
             Active = false;
+            _uniqueIds = uniqueIds;
             LastColumn = -1;
             lvw_ = lvw;
             _frm = lvw.FindForm();
@@ -78,7 +80,6 @@ namespace CDCplusLib.Common
             }
             Active = true;
         }
-
         public void ReSort()
         {
             if (LastColumn != -1)
@@ -138,22 +139,19 @@ namespace CDCplusLib.Common
             lvw_.ListViewItemSorter = null;
             if (Active)
             {
-                if (get_IsEmptyColumn(ci))
+                if (get_IsDateColumn(ci))
                 {
-                }
-                // nothing to do
-                else if (get_IsDateColumn(ci))
-                {
-                    lvw_.ListViewItemSorter = new ListViewSorterDate(ci, ColumnSortOrder);
+                    lvw_.ListViewItemSorter = new ListViewSorterDate(ci, ColumnSortOrder, _uniqueIds);
                 }
                 else if (get_IsNumericColumn(ci, false))
                 {
-                    lvw_.ListViewItemSorter = new ListViewSorterDecimal(ci, ColumnSortOrder);
+                    lvw_.ListViewItemSorter = new ListViewSorterDecimal(ci, ColumnSortOrder, _uniqueIds);
                 }
                 else
                 {
-                    lvw_.ListViewItemSorter = new ListViewSorterString(ci, ColumnSortOrder);
+                    lvw_.ListViewItemSorter = new ListViewSorterString(ci, ColumnSortOrder, _uniqueIds);
                 }
+
             }
 
             SortOrderIconShow(ci);
@@ -297,11 +295,13 @@ namespace CDCplusLib.Common
     {
         private readonly int col_;
         private readonly SortOrder sortOrder_;
+        private readonly bool useUniqueIds;
 
-        public ListViewSorterString(int columnIndex, SortOrder sortOrder)
+        public ListViewSorterString(int columnIndex, SortOrder sortOrder, bool uniqueIds)
         {
             col_ = columnIndex;
             sortOrder_ = sortOrder;
+            useUniqueIds = uniqueIds;
         }
 
         public int Compare(object x, object y)
@@ -322,7 +322,7 @@ namespace CDCplusLib.Common
             }
 
             int result = string.Compare(xS, yS, StringComparison.CurrentCulture);
-            if (result == 0) // If equal, sort by Key
+            if (result == 0 && useUniqueIds) // If equal and uniqueIds is true, sort by Key
             {
                 long xKey = long.TryParse(xItem.Name, out var xLong) ? xLong : 0;
                 long yKey = long.TryParse(yItem.Name, out var yLong) ? yLong : 0;
@@ -337,11 +337,13 @@ namespace CDCplusLib.Common
     {
         private readonly int col_;
         private readonly SortOrder sortOrder_;
+        private readonly bool useUniqueIds;
 
-        public ListViewSorterDate(int columnIndex, SortOrder sortOrder)
+        public ListViewSorterDate(int columnIndex, SortOrder sortOrder, bool uniqueIds)
         {
             col_ = columnIndex;
             sortOrder_ = sortOrder;
+            useUniqueIds = uniqueIds;
         }
 
         public int Compare(object x, object y)
@@ -353,7 +355,7 @@ namespace CDCplusLib.Common
             DateTime.TryParse(col_ == 0 ? yItem.Text : yItem.SubItems[col_].Text, out var yD);
 
             int result = DateTime.Compare(xD, yD);
-            if (result == 0) // If equal, sort by Key
+            if (result == 0 && useUniqueIds) // If equal and uniqueIds is true, sort by Key
             {
                 long xKey = long.TryParse(xItem.Name, out var xLong) ? xLong : 0;
                 long yKey = long.TryParse(yItem.Name, out var yLong) ? yLong : 0;
@@ -368,11 +370,13 @@ namespace CDCplusLib.Common
     {
         private readonly int col_;
         private readonly SortOrder sortOrder_;
+        private readonly bool useUniqueIds;
 
-        public ListViewSorterDecimal(int columnIndex, SortOrder sortOrder)
+        public ListViewSorterDecimal(int columnIndex, SortOrder sortOrder, bool uniqueIds)
         {
             col_ = columnIndex;
             sortOrder_ = sortOrder;
+            useUniqueIds = uniqueIds;
         }
 
         public int Compare(object x, object y)
@@ -384,7 +388,7 @@ namespace CDCplusLib.Common
             decimal.TryParse(col_ == 0 ? yItem.Text : yItem.SubItems[col_].Text, out var yD);
 
             int result = decimal.Compare(xD, yD);
-            if (result == 0) // If equal, sort by Key
+            if (result == 0 && useUniqueIds) // If equal and uniqueIds is true, sort by Key
             {
                 long xKey = long.TryParse(xItem.Name, out var xLong) ? xLong : 0;
                 long yKey = long.TryParse(yItem.Name, out var yLong) ? yLong : 0;

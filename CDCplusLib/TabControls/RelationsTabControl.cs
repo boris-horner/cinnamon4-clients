@@ -621,8 +621,8 @@ namespace CDCplusLib.TabControls
                 lvwParents.Columns.Add(tp, label, int.Parse(w), HorizontalAlignment.Left, -1);
                 lvwChildren.Columns.Add(tp, label, int.Parse(w), HorizontalAlignment.Left, -1);
 
-                _lvwParentsSort = new ListViewSort(lvwParents);
-                _lvwChildrenSort = new ListViewSort(lvwChildren);
+                _lvwParentsSort = new ListViewSort(lvwParents, true);
+                _lvwChildrenSort = new ListViewSort(lvwChildren, true);
             }
 
             _iconService = (IIconService)s.GetSessionExtension("icon_service");

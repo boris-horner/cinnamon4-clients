@@ -83,7 +83,7 @@ namespace CDCplusLib.Common.GUI
             XmlNode customEventsN = customConfigEl.SelectSingleNode("events");  // detect legacy config
             if(_keyEvents==null) _keyEvents = new KeyEventTable(customEventsN==null?(XmlElement)rldConfigEl.SelectSingleNode("key_events"):customConfigEl); // these are only loaded for the first time since they are global
 
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList, true);
 
             if (_nodeDataProvider.GetDefaultSortColumn() != null)
             {
