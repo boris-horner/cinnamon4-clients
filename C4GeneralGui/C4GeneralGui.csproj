@@ -21,4 +21,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y /R /D /E /I &quot;$(TargetDir)*&quot; &quot;$(SolutionDir)..\..\..\public\cinnamon4-clients\CDCplus\bin\$(Configuration)\$(TargetFramework)\&quot;" />
+  </Target>
 </Project>

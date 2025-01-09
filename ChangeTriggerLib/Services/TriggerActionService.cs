@@ -22,6 +22,7 @@ namespace ChangeTriggerLib.Services
     public class TriggerActionService
     {
         private Dictionary<string, ITriggerActionFactory> _factories;
+        private Dictionary<string, ITriggerActionFactory> _nopFactories;
         private Dictionary<string, ICustomService> _customServices;
         private XmlDocument _config;
         public ILogger Logger;
@@ -78,6 +79,7 @@ namespace ChangeTriggerLib.Services
         public void InitFactories()
         {
             _factories = new Dictionary<string, ITriggerActionFactory>();
+            _nopFactories = new Dictionary<string, ITriggerActionFactory>();
 
             Logger.Information("InitFactories");
             foreach(XmlElement triggerActionFactoryEl in _config.DocumentElement.SelectNodes("trigger_action_factories/trigger_action_factory"))
@@ -85,13 +87,15 @@ namespace ChangeTriggerLib.Services
                 string name = triggerActionFactoryEl.GetAttribute("name");
                 string assembly = triggerActionFactoryEl.GetAttribute("assembly");
                 string type = triggerActionFactoryEl.GetAttribute("type");
+                bool nopFactory = triggerActionFactoryEl.HasAttribute("mode") && triggerActionFactoryEl.GetAttribute("mode") == "nop";
                 Assembly asm = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), assembly + ".dll"));
                 Logger.Information("Loading: "+ Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), assembly + ".dll"));
                 Logger.Information("Assembly is "+(asm==null?"null":"not null"));
                 ITriggerActionFactory? factory = (ITriggerActionFactory)asm.CreateInstance(assembly + "." + type);
                 Logger.Information("Factory is " + (factory == null ? "null" : "not null"));
                 factory.Init(triggerActionFactoryEl, this);
-                _factories.Add(name, factory);
+                if(nopFactory) _nopFactories.Add(name, factory);
+                else _factories.Add(name, factory);
                 Logger.Information("Added: "+name);
             }
 
@@ -100,8 +104,6 @@ namespace ChangeTriggerLib.Services
         public ITriggerAction GetAction(string command, ILogger logger)
         {
             Logger.Information($"Getting action for command: {command}");
-            if(_factories==null) Logger.Information($"_factories is null");
-            Logger.Information($"Factories: {_factories.Count}");
             if (_factories.TryGetValue(command, out ITriggerActionFactory? factory))
             {
                 return factory.CreateAction(logger);
@@ -109,6 +111,17 @@ namespace ChangeTriggerLib.Services
 
             throw new ArgumentException($"No action found for command: {command}", nameof(command));
         }
+        public ITriggerAction GetNopAction(string command, ILogger logger)
+        {
+            Logger.Information($"Getting action for command: {command}");
+            if (_nopFactories.TryGetValue(command, out ITriggerActionFactory? factory))
+            {
+                return factory.CreateAction(logger);
+            }
+
+            throw new ArgumentException($"No action found for command: {command}", nameof(command));
+        }
+
         public ICustomService GetCustomService(string name)
         {
             if (_customServices.ContainsKey(name)) return _customServices[name];

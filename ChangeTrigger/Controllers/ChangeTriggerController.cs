@@ -79,20 +79,39 @@ public class ChangeTriggerController : ControllerBase
 
             _logger.Information($"Ticket: {ticketHeader}");
             if(requestToCinnamon==null) _logger.Information($"CinnamonRequest: missing");
-            else 
-            _logger.Information($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
+            else _logger.Information($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
 
             XmlDocument resp = null;
-            try
+            if(actionParameter=="nop")
             {
-                resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                // actionParameter passed by the change trigger config in Cinnamon is "nop". Then, trigger_request has attribute "type" - NopAction is chosen by that type parameter
+                string reqType = requestToCinnamon.DocumentElement.GetAttribute("type");
+                try
+                {
+                    resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
+                catch (SessionExpiredException ex)
+                {
+                    _logger.Error(ex, "Session expired - trying to reconnect.");
+                    _triggerActionService.ReconnectServiceSession();
+                    resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
             }
-            catch(SessionExpiredException ex)
+            else
             {
-                _logger.Error(ex, "Session expired - trying to reconnect.");
-                _triggerActionService.ReconnectServiceSession();
-                resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                // actionParameter passed by the change trigger config in Cinnamon is not "nop", so the trigger request is some standard Cinnamon API structure - Action is chosen by the action parameter of the URL in the change trigger config
+                try
+                {
+                    resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
+                catch(SessionExpiredException ex)
+                {
+                    _logger.Error(ex, "Session expired - trying to reconnect.");
+                    _triggerActionService.ReconnectServiceSession();
+                    resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
             }
+
 
             // TODO: evaluate response for success
             _logger.Information($"Trigger action response: {resp.OuterXml}");
