@@ -371,7 +371,11 @@ namespace C4ObjectApi.Repository
             //if (parent == null) return new Dictionary<long, CmnFolder>();
             Dictionary<long, C4Folder> c4fs = parent==null || parent.Id==0? CommandSession.GetSubFolders(RootFolder.Id) :CommandSession.GetSubFolders(parent.Id);
             Dictionary<long, CmnFolder> result = new Dictionary<long, CmnFolder>();
-            foreach (long id in c4fs.Keys) result[id] = new CmnFolder(this, c4fs[id]);
+            foreach (long id in c4fs.Keys)
+            {
+                CmnFolder subF = new CmnFolder(this, c4fs[id]);
+                if (subF.Link == null || subF.Link.ParentId == parent.Id) result[id] = subF;
+            }
             return result;
         }
         public CmnFolder GetFolder(string path)
