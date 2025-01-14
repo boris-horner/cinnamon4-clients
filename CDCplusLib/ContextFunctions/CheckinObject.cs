@@ -203,19 +203,19 @@ namespace CDCplusLib.ContextFunctions
             XmlElement dvbEl = (XmlElement)_configEl.SelectSingleNode("custom/default_versioning_behaviour");
             if (dvbEl is null)
                 throw new ApplicationException(GetType().ToString() + "\nRequired configuration custom/default_versioning_behaviour\nContact your system administrator.");
-            if (dvbEl.HasAttribute("checked_out_file") & dvbEl.HasAttribute("other_file"))
+            if (dvbEl.HasAttribute("checked_out_file") && dvbEl.HasAttribute("other_file"))
             {
                 // new versioning behaviour
                 _checkinFromCheckoutDefaultOverwrite = dvbEl.GetAttribute("checked_out_file") == "write";
                 _checkinFromOtherDefaultOverwrite = dvbEl.GetAttribute("other_file") == "write";
             }
-            else
-            {
-                if (!dvbEl.HasAttribute("value"))
-                    throw new ApplicationException(GetType().ToString() + "\nNeither new or legacy checkin configuration was found.\nContact your system administrator.");
-                _checkinFromCheckoutDefaultOverwrite = dvbEl.GetAttribute("value") == "write";
-                _checkinFromOtherDefaultOverwrite = dvbEl.GetAttribute("value") == "write";
-            }
+            //else
+            //{
+            //    if (!dvbEl.HasAttribute("value"))
+            //        throw new ApplicationException(GetType().ToString() + "\nNeither new or legacy checkin configuration was found.\nContact your system administrator.");
+            //    _checkinFromCheckoutDefaultOverwrite = dvbEl.GetAttribute("value") == "write";
+            //    _checkinFromOtherDefaultOverwrite = dvbEl.GetAttribute("value") == "write";
+            //}
         }
     }
 }

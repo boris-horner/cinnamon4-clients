@@ -371,7 +371,11 @@ namespace C4ObjectApi.Repository
             //if (parent == null) return new Dictionary<long, CmnFolder>();
             Dictionary<long, C4Folder> c4fs = parent==null || parent.Id==0? CommandSession.GetSubFolders(RootFolder.Id) :CommandSession.GetSubFolders(parent.Id);
             Dictionary<long, CmnFolder> result = new Dictionary<long, CmnFolder>();
-            foreach (long id in c4fs.Keys) result[id] = new CmnFolder(this, c4fs[id]);
+            foreach (long id in c4fs.Keys)
+            {
+                CmnFolder subF = new CmnFolder(this, c4fs[id]);
+                if (subF.Link == null || subF.Link.ParentId == parent.Id) result[id] = subF;
+            }
             return result;
         }
         public CmnFolder GetFolder(string path)
@@ -402,7 +406,8 @@ namespace C4ObjectApi.Repository
                 HashSet<long> ids = new HashSet<long>();
                 ids.Add(id);
                 Dictionary<long, C4Folder> c4fs = CommandSession.GetFoldersById(ids);
-                if(c4fs.Count==0) throw new ApplicationException("Folder not found: "+id.ToString());
+                if(c4fs.Count==0) 
+                    throw new ApplicationException("Folder not found: "+id.ToString());
                 C4Folder c4f = CommandSession.GetFoldersById(ids).Values.First();
                 CmnFolder result = new CmnFolder(this, c4f);
                 CmnFolder currFolder = result;
@@ -475,10 +480,9 @@ namespace C4ObjectApi.Repository
             return new CmnObject(this, c4o);
         }
 
-        public CmnFolder CreateSubfolder(CmnFolder parent, string name, C4FolderType type = null)
+        public CmnFolder CreateSubfolder(CmnFolder parent, string name, C4FolderType type = null, C4Acl acl = null)
         {
-            HashSet<C4Folder> folders = new HashSet<C4Folder>();
-            folders.Add(new C4Folder(0, name, (long)User.Id, parent == null ? RootFolder.Id : parent.Id, type == null ? (long)SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id : (long)type.Id, (long)SessionConfig.C4Sc.AclsByName["_default_acl"].Id));
+            HashSet<C4Folder> folders = new HashSet<C4Folder> { new C4Folder(0, name, (long)User.Id, parent == null ? RootFolder.Id : parent.Id, type == null ? (long)SessionConfig.C4Sc.FolderTypesByName["_default_folder_type"].Id : (long)type.Id, acl == null ? (long)SessionConfig.C4Sc.AclsByName["_default_acl"].Id : (long)acl.Id) };
             return new CmnFolder(this, CommandSession.CreateFolders(folders).Values.First());
         }
         public CmnFolder RootFolder

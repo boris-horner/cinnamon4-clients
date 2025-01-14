@@ -73,7 +73,7 @@ namespace CDCplusLib.Common.GUI
             try
             {
                 CheckForUnsavedChanges();
-                if (tabContext.SelectedTab is object)
+                if (tabContext.SelectedTab!=null && tabContext.SelectedTab.Controls.Count>0)
                 {
                     IGenericControl listGc = (IGenericControl)tabContext.SelectedTab.Controls[0];
                     listGc.Init(_context, null);
@@ -85,6 +85,10 @@ namespace CDCplusLib.Common.GUI
             }
             // for the time being, ignore
             // TODO: think of a better solution (clear control, remove tab, ...)
+            catch (NullReferenceException ex)
+            {
+                // ignore
+            }
             catch (Exception ex)
             {
                 StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this,ex);
@@ -188,6 +192,10 @@ namespace CDCplusLib.Common.GUI
                 try
                 {
                     tabContext.SuspendLayout();
+
+                    // Temporarily disable the SelectedIndexChanged event to avoid redundant calls
+                    tabContext.SelectedIndexChanged -= tabContext_SelectedIndexChanged;
+
                     _context = context;
 
                     string newTabFingerprint = null;
@@ -250,13 +258,97 @@ namespace CDCplusLib.Common.GUI
                 }
                 catch (Exception ex)
                 {
-                    StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
+                    // this was commented out, because the msg doesn't help anything here
+                    //StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
                 }
                 finally
                 {
+                    tabContext.SelectedIndexChanged += tabContext_SelectedIndexChanged;
                     tabContext.ResumeLayout();
                 }
             }
-        }
+        }        //public void UpdateTabControl(Dictionary<long, IRepositoryNode> context, IGenericControl.ContextType ct, IClientMessage msg)
+        //{
+        //    if (InvokeRequired)
+        //    {
+        //        Invoke((MethodInvoker)(() => UpdateTabControl(context, ct, msg)));
+        //        return;
+        //    }
+
+        //    lock (_tabContextLock)
+        //    {
+        //        try
+        //        {
+        //            tabContext.SuspendLayout();
+        //            _context = context;
+
+        //            string newTabFingerprint = null;
+        //            foreach (string k in _tabPages.Keys)
+        //            {
+        //                TabPage tp = _tabPages[k];
+        //                if (tp.Controls.Count > 0)
+        //                {
+        //                    IGenericControl ctl = tp.Controls[0] as IGenericControl;
+        //                    if (ctl != null && ctl.IsValid(_context, ct))
+        //                    {
+        //                        if (newTabFingerprint == null)
+        //                        {
+        //                            newTabFingerprint = k;
+        //                        }
+        //                        else
+        //                        {
+        //                            newTabFingerprint += "#" + k;
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            TabPage sel = tabContext.SelectedTab;
+        //            if (sel != null) _lastSelectedTabName = sel.Name;
+
+        //            if (_currentTabFingerprint != newTabFingerprint)
+        //            {
+        //                tabContext.TabPages.Clear();
+        //                foreach (string k in _tabPages.Keys)
+        //                {
+        //                    TabPage tp = _tabPages[k];
+        //                    if (tp.Controls.Count > 0)
+        //                    {
+        //                        IGenericControl ctl = tp.Controls[0] as IGenericControl;
+        //                        if (ctl != null && ctl.IsValid(_context, ct))
+        //                        {
+        //                            tabContext.TabPages.Add(tp);
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            if (tabContext.TabPages.ContainsKey(_lastSelectedTabName))
+        //            {
+        //                tabContext.SelectTab(_lastSelectedTabName);
+        //            }
+        //            else if (tabContext.TabPages.Count > 0)
+        //            {
+        //                tabContext.SelectTab(0);
+        //            }
+
+        //            if (tabContext.SelectedTab != null && tabContext.SelectedTab.Controls.Count > 0)
+        //            {
+        //                IGenericControl ctl = tabContext.SelectedTab.Controls[0] as IGenericControl;
+        //                ctl?.Init(_context, msg);
+        //            }
+
+        //            _currentTabFingerprint = newTabFingerprint;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
+        //        }
+        //        finally
+        //        {
+        //            tabContext.ResumeLayout();
+        //        }
+        //    }
+        //}
     }
 }

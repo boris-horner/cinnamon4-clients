@@ -25,6 +25,7 @@ namespace C4ServerConnector.Assets
         public long TypeId { get; set; }
         public bool HasSubfolders { get; }
         public bool MetadataChanged { get; set; }
+        public C4Link Link { get; set; }
         public C4Metadata Metadata { get; set; }
         public XmlElement Summary { get; set; }
         public C4Session.NodeType NodeType { get; private set; }

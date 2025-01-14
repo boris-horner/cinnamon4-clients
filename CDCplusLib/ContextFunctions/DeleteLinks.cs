@@ -16,6 +16,7 @@ using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
+using CDCplusLib.Messages;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -42,11 +43,17 @@ namespace CDCplusLib.ContextFunctions
         }
         public void Execute(Dictionary<long, IRepositoryNode> l)
         {
+            ObjectsDeletedMessage msg = new ObjectsDeletedMessage();
             if (l is not null)
             {
                 foreach (IRepositoryNode ow in l.Values)
+                {
                     ow.Link.Delete();
+                    msg.DeletedObjects.Add(ow.Id, ow);
+                }
             }
+            if (msg.DeletedObjects.Count > 0)
+                MessageSent?.Invoke(msg);
         }
         public bool IsValid(Dictionary<long, IRepositoryNode> dict)
         {

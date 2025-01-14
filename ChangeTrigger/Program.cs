@@ -19,10 +19,16 @@ using System.Xml;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+XmlDocument config = new XmlDocument();
+string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+config.Load(Path.Combine(assemblyPath, "ct.config.xml"));
+string logFn = config.DocumentElement.SelectSingleNode("logfile").InnerText;
+if(!Directory.Exists(Path.GetDirectoryName(logFn))) Directory.CreateDirectory(Path.GetDirectoryName(logFn));
+
 // Configure Serilog early
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.Console()
+    .WriteTo.File(Path.Combine(Path.GetTempPath(), logFn), rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 // Register Serilog
@@ -30,7 +36,7 @@ builder.Host.UseSerilog(Log.Logger);
 
 Log.Information("Application starting up");
 
-string pfxFile = (builder.Configuration["Https:Pfx"].Length == 0 ? null : Path.Combine(Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath), builder.Configuration["Https:Pfx"]));
+string pfxFile = string.IsNullOrEmpty(builder.Configuration["Https:Pfx"]) ? null : Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), builder.Configuration["Https:Pfx"]); 
 string pfxSecret = (builder.Configuration["Https:Secret"].Length == 0 ? null : builder.Configuration["Https:Secret"]);
 int httpsPort = (builder.Configuration["Https:Port"].Length == 0 ? 8080 : int.Parse(builder.Configuration["Https:Port"]));
 
@@ -54,18 +60,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-XmlDocument config = new XmlDocument();
-string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-config.Load(Path.Combine(assemblyPath, "ct.config.xml"));
 
-builder.Services.AddSingleton<TriggerActionService>(serviceProvider =>
-{
-    var logger = serviceProvider.GetRequiredService<ILogger<TriggerActionService>>();
-    var triggerActionService = new TriggerActionService(config, logger);
-    triggerActionService.InitCustomServices();
-    triggerActionService.InitFactories();
-    return triggerActionService;
-});
+var triggerActionService = new TriggerActionService(config, Log.Logger); // Use Serilog directly here
+triggerActionService.InitCustomServices();
+triggerActionService.InitFactories();
+
+builder.Services.AddSingleton(triggerActionService);
 
 // Add other custom singleton services here
 

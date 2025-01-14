@@ -96,10 +96,11 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="8.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\C4Admin\C4Admin.csproj" />
+    <ProjectReference Include="..\C4GeneralGui\C4GeneralGui.csproj" />
     <ProjectReference Include="..\C4ObjectApi\C4ObjectApi.csproj" />
     <ProjectReference Include="..\CDCplusLib\CDCplusLib.csproj" />
   </ItemGroup>

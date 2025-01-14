@@ -203,6 +203,40 @@ namespace CDCplusLib.ContextFunctions
                     if (!ocm.CreatedObjects.ContainsKey(targetF.Id) && targetF!=_lastFolder) ocm.CreatedObjects.Add(targetF.Id, targetF);
                     //fir.Object = s.Create(targetF.Id, fir.ObjectName, fir.AbsoluteFilename, fir.Format.Id, fir.Language.Id, fir.ObjectType.Id, null, null);
                     fir.Object = s.Create(targetF.Id, fir.ObjectName, fir.AbsoluteFilename, fir.Format.Id, fir.Language.Id, fir.ObjectType.Id, null, s.SessionConfig.C4Sc.AclsByName["_default_acl"].Id);   // TODO: let user assign ACL
+
+                    // import metadata, if a file named <filename>.metadata.xml is present in the folder of the content file
+                    string mdFn = string.Join(".", fir.AbsoluteFilename, "metadata.xml");
+                    if(File.Exists(mdFn))
+                    {
+                        // several things can go wrong with md files not matching the configured metasets etc. Avoid breaking the whole import
+                        try
+                        {
+                            XmlDocument mdDoc = new XmlDocument();
+                            mdDoc.Load(mdFn);
+                            HashSet<C4Metaset> metasets = new HashSet<C4Metaset>();
+                            foreach(XmlElement msEl in mdDoc.DocumentElement.SelectNodes("metaset"))
+                            {
+                                string msTypeName = msEl.GetAttribute("type");
+                                if(_s.SessionConfig.C4Sc.MetasetTypesByName.ContainsKey(msTypeName))
+                                {
+                                    C4Metaset ms = new C4Metaset((long)_s.SessionConfig.C4Sc.MetasetTypesByName[msTypeName].Id, fir.Object.Id, msEl);
+                                    metasets.Add(ms);
+                                }
+                            }
+                            if(metasets.Count() > 0)
+                            {
+                                Dictionary<long, HashSet<C4Metaset>> metasetsByObjId = new Dictionary<long, HashSet<C4Metaset>>();
+                                metasetsByObjId.Add(fir.Object.Id, metasets);
+                                _s.CommandSession.CreateObjectMeta(metasetsByObjId);
+                            }
+                        }
+                        catch(Exception mdEx)
+                        {
+                            // TODO: collect errors and display them
+                        }
+                    }
+
+
                     if (!ocm.CreatedObjects.ContainsKey(fir.Object.Id)) ocm.CreatedObjects.Add(fir.Object.Id, fir.Object);
                     Debug.Print("Imported " + fir.ObjectName);
 

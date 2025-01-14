@@ -46,6 +46,7 @@ namespace C4ObjectApi.Repository
         {
             Session = session;
             C4F = c4f;
+            if(c4f.Link!=null) Link = new CmnLink(session, c4f.Link);
             Permissions = Session.SessionConfig.GetCombinedPermissions(Session.SessionConfig.C4Sc.AclsById[C4F.AclId], (long)Session.User.Id == c4f.OwnerId, Session.IsSuperuser);
         }
 
@@ -173,9 +174,9 @@ public void SetChangedStatus(bool metadataChanged)
         /// <param name="name">the name of the subfolder</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public CmnFolder CreateSubfolder(string name)
+        public CmnFolder CreateSubfolder(string name, C4FolderType type = null, C4Acl acl = null)
         {
-            return Session.CreateSubfolder(this, name);
+            return Session.CreateSubfolder(this, name, type, acl);
         }
 
 
@@ -370,8 +371,8 @@ public void SetChangedStatus(bool metadataChanged)
             HashSet<C4Link> links = new HashSet<C4Link>();
             foreach(IRepositoryNode target in targets.Values)
             {
-                if(target.GetType() == typeof(CmnObject)) links.Add(new C4Link(Id, (long)linkAcl.Id, (long)Session.User.Id, C4Link.LinkTypes.Object, target.Id));
-                else links.Add(new C4Link(Id, (long)linkAcl.Id, (long)Session.User.Id, C4Link.LinkTypes.Folder, target.Id));
+                if(target.GetType() == typeof(CmnObject)) links.Add(new C4Link((long)linkAcl.Id, Id, (long)Session.User.Id, C4Link.LinkTypes.Object, target.Id));
+                else links.Add(new C4Link((long)linkAcl.Id, Id, (long)Session.User.Id, C4Link.LinkTypes.Folder, target.Id));
             }
             Dictionary<long, C4Link> createdLinks = Session.CommandSession.CreateLinks(links);
         }

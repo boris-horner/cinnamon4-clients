@@ -310,10 +310,12 @@
             // vtxtVariableName
             // 
             vtxtVariableName.BackColor = SystemColors.Control;
+            vtxtVariableName.BothInvalidColor = Color.Red;
             vtxtVariableName.Dock = DockStyle.Top;
             vtxtVariableName.ExternalInvalidColor = Color.Yellow;
             vtxtVariableName.ExternalValidation = true;
             vtxtVariableName.InternalInvalidColor = Color.Yellow;
+            vtxtVariableName.InvalidReadOnlyColor = Color.LightYellow;
             vtxtVariableName.Location = new Point(4, 22);
             vtxtVariableName.Margin = new Padding(4, 3, 4, 3);
             vtxtVariableName.Name = "vtxtVariableName";
@@ -322,6 +324,7 @@
             vtxtVariableName.Size = new Size(268, 23);
             vtxtVariableName.TabIndex = 1;
             vtxtVariableName.ValidColor = Color.White;
+            vtxtVariableName.ValidReadOnlyColor = SystemColors.Control;
             vtxtVariableName.TextChanged += VtxtVariableName_TextChanged;
             // 
             // chkVariable

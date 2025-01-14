@@ -47,7 +47,7 @@ namespace C4Admin.GUI.AssetLists
                 lvi.SubItems.Add(a.PasswordExpired ? "X" : "");
                 lvi.Tag = a;
             }
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw, false);
             _lvwSort.Sort(_lvwSort.LastColumn,_lvwSort.ColumnSortOrder);
         }
 

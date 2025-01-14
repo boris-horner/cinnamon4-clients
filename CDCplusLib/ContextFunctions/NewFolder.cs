@@ -20,6 +20,7 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector;
+using C4ServerConnector.Assets;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -27,6 +28,8 @@ namespace CDCplusLib.ContextFunctions
     {
         private GlobalApplicationData _globalAppData;
         private CmnSession _s;
+        private XmlElement _configEl;
+        private C4Acl _newFolderAcl;
 
         public string GetMenuText()
         {
@@ -58,7 +61,7 @@ namespace CDCplusLib.ContextFunctions
             else 
             {
                 CmnFolder f = DictionaryHelper.GetSingleFolder(dict);
-                if (esv.ShowDialog() == DialogResult.OK) newF = f.CreateSubfolder(esv.Value);
+                if (esv.ShowDialog() == DialogResult.OK) newF = f.CreateSubfolder(esv.Value, null, _newFolderAcl==null?f.Acl:_newFolderAcl);
             }
             if(newF!=null)
             {
@@ -94,6 +97,11 @@ namespace CDCplusLib.ContextFunctions
         {
             _globalAppData = globalAppData;
             _s = s;
+            _configEl = configEl;
+            XmlElement aclEl = _configEl.SelectSingleNode("custom/acl") as XmlElement;
+            if (aclEl == null) _newFolderAcl = s.SessionConfig.C4Sc.AclsByName["_default_acl"];
+            else if (aclEl.GetAttribute("mode") == "inherit_from_parent") _newFolderAcl = null;
+            else _newFolderAcl = s.SessionConfig.C4Sc.AclsByName[aclEl.InnerText];
         }
     }
 }

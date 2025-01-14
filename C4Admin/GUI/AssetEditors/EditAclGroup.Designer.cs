@@ -29,6 +29,7 @@ namespace C4Admin.GUI.AssetEditors
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditAclGroup));
             panel7 = new Panel();
             pCancel = new Panel();
             cmdCancel = new Button();
@@ -38,6 +39,9 @@ namespace C4Admin.GUI.AssetEditors
             cmdOk = new Button();
             pData = new Panel();
             clbPermissions = new CheckedListBox();
+            panel1 = new Panel();
+            cmdUncheckAll = new Button();
+            cmdCheckAll = new Button();
             lblPermissions = new Label();
             cboGroup = new ComboBox();
             lblGroup = new Label();
@@ -50,6 +54,7 @@ namespace C4Admin.GUI.AssetEditors
             pSaveAs.SuspendLayout();
             pSave.SuspendLayout();
             pData.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel7
@@ -131,6 +136,7 @@ namespace C4Admin.GUI.AssetEditors
             // pData
             // 
             pData.Controls.Add(clbPermissions);
+            pData.Controls.Add(panel1);
             pData.Controls.Add(lblPermissions);
             pData.Controls.Add(cboGroup);
             pData.Controls.Add(lblGroup);
@@ -150,11 +156,46 @@ namespace C4Admin.GUI.AssetEditors
             clbPermissions.CheckOnClick = true;
             clbPermissions.Dock = DockStyle.Fill;
             clbPermissions.FormattingEnabled = true;
-            clbPermissions.Location = new Point(5, 162);
+            clbPermissions.Location = new Point(5, 193);
             clbPermissions.Name = "clbPermissions";
-            clbPermissions.Size = new Size(560, 677);
-            clbPermissions.TabIndex = 14;
-            clbPermissions.ItemCheck += clbPermissions_ItemCheck;
+            clbPermissions.Size = new Size(560, 646);
+            clbPermissions.TabIndex = 16;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(cmdUncheckAll);
+            panel1.Controls.Add(cmdCheckAll);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(5, 162);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(560, 31);
+            panel1.TabIndex = 15;
+            // 
+            // cmdUncheckAll
+            // 
+            cmdUncheckAll.Dock = DockStyle.Left;
+            cmdUncheckAll.FlatAppearance.BorderSize = 0;
+            cmdUncheckAll.FlatStyle = FlatStyle.Flat;
+            cmdUncheckAll.Image = (Image)resources.GetObject("cmdUncheckAll.Image");
+            cmdUncheckAll.Location = new Point(25, 0);
+            cmdUncheckAll.Name = "cmdUncheckAll";
+            cmdUncheckAll.Size = new Size(25, 31);
+            cmdUncheckAll.TabIndex = 1;
+            cmdUncheckAll.UseVisualStyleBackColor = true;
+            cmdUncheckAll.Click += cmdUncheckAll_Click;
+            // 
+            // cmdCheckAll
+            // 
+            cmdCheckAll.Dock = DockStyle.Left;
+            cmdCheckAll.FlatAppearance.BorderSize = 0;
+            cmdCheckAll.FlatStyle = FlatStyle.Flat;
+            cmdCheckAll.Image = (Image)resources.GetObject("cmdCheckAll.Image");
+            cmdCheckAll.Location = new Point(0, 0);
+            cmdCheckAll.Name = "cmdCheckAll";
+            cmdCheckAll.Size = new Size(25, 31);
+            cmdCheckAll.TabIndex = 0;
+            cmdCheckAll.UseVisualStyleBackColor = true;
+            cmdCheckAll.Click += cmdCheckAll_Click;
             // 
             // lblPermissions
             // 
@@ -176,6 +217,7 @@ namespace C4Admin.GUI.AssetEditors
             cboGroup.Location = new Point(5, 115);
             cboGroup.Name = "cboGroup";
             cboGroup.Size = new Size(560, 23);
+            cboGroup.Sorted = true;
             cboGroup.TabIndex = 11;
             cboGroup.SelectedIndexChanged += cboGroup_SelectedIndexChanged;
             // 
@@ -199,6 +241,7 @@ namespace C4Admin.GUI.AssetEditors
             cboAcl.Location = new Point(5, 68);
             cboAcl.Name = "cboAcl";
             cboAcl.Size = new Size(560, 23);
+            cboAcl.Sorted = true;
             cboAcl.TabIndex = 5;
             cboAcl.SelectedIndexChanged += cboAcl_SelectedIndexChanged;
             // 
@@ -254,6 +297,7 @@ namespace C4Admin.GUI.AssetEditors
             pSave.ResumeLayout(false);
             pData.ResumeLayout(false);
             pData.PerformLayout();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -270,10 +314,13 @@ namespace C4Admin.GUI.AssetEditors
         private System.Windows.Forms.Button cmdSaveAs;
         private System.Windows.Forms.Panel pSave;
         private System.Windows.Forms.Button cmdOk;
-        private System.Windows.Forms.CheckedListBox clbPermissions;
         private System.Windows.Forms.Label lblPermissions;
         private System.Windows.Forms.ComboBox cboGroup;
         private System.Windows.Forms.Label lblGroup;
         private System.Windows.Forms.ComboBox cboAcl;
+        private CheckedListBox clbPermissions;
+        private Panel panel1;
+        private Button cmdUncheckAll;
+        private Button cmdCheckAll;
     }
 }

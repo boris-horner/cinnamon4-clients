@@ -20,6 +20,7 @@ using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
+using System.CodeDom;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -224,9 +225,13 @@ namespace CDCplusLib.Common.GUI
                 {
                     Text = Properties.Resources.lblCDCplusMainWindow + " - /";
                 }
+                else if (stSession.SelectedNode.Tag is Dictionary<long, CmnObject>)
+                {
+                    Text = Properties.Resources.lblCDCplusMainWindow + " - " + stSession.SelectedNode.Text;
+                }
                 else if (stSession.SelectedNode.Tag is Dictionary<long, IRepositoryNode>)
                 {
-                    Text = Properties.Resources.lblCDCplusMainWindow + " - " + stSession.SelectedNode.Name;
+                    Text = Properties.Resources.lblCDCplusMainWindow + " - " + stSession.SelectedNode.Text;
                 }
             }
             else
@@ -436,6 +441,7 @@ namespace CDCplusLib.Common.GUI
         private void stSession_SelectionChanged(TreeNode selection, IClientMessage msg)
         {
             if (_treeSelectEventsActive) RefreshTree(selection, msg);
+            SetTitle();
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)

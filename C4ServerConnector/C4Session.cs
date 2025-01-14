@@ -14,11 +14,9 @@
 using C4ServerConnector.Assets;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Xml;
 
 namespace C4ServerConnector
@@ -669,6 +667,24 @@ namespace C4ServerConnector
             {
                 C4Folder f = new C4Folder(folderEl);
                 result.Add(f.Id, f);
+            }
+            foreach (XmlElement linkEl in resp.DocumentElement.SelectNodes("links/link[type='FOLDER']"))
+            {
+                C4Link l = new C4Link(linkEl);
+                XmlElement refEl = resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement;
+                if (refEl != null)
+                {
+                    C4Folder f = new C4Folder(refEl);
+                    if(!result.ContainsKey(f.Id))
+                    {
+                        f.Link = l;
+                        result.Add(f.Id, f);
+                    }
+                }
+                else
+                {
+                    // TODO: error handling
+                }
             }
             return result;
         }
@@ -1802,6 +1818,21 @@ namespace C4ServerConnector
             }
             return;
         }
+        public void GetContentToStream(long id, Stream outputStream)
+        {
+            try
+            {
+                XmlDocument requestBody = new XmlDocument();
+                requestBody.AppendChild(requestBody.CreateElement("idRequest"));
+                requestBody.DocumentElement.AppendChild(requestBody.CreateElement("id")).InnerText = id.ToString();
+                _http.PostCommandFileDownloadToStream(string.Concat(BaseUrl, "/api/osd/getContent"), requestBody, outputStream);
+            }
+            catch (WebException ex)
+            {
+                ThrowException(ex);
+            }
+        }
+        // TODO: SetContentFromStream
         public void SetContent(long id, long formatId, string contentFn)
         {
             try
@@ -1959,8 +1990,24 @@ namespace C4ServerConnector
                 C4Object o = new C4Object(osdEl);
                 result.Add(o.Id, o);
             }
-            // TODO: read links
-            // TODO: read references
+            foreach (XmlElement linkEl in resp.DocumentElement.SelectNodes("links/link[type='OBJECT']"))
+            {
+                C4Link l = new C4Link(linkEl);
+                XmlElement refEl = resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement;
+                if(refEl!=null)
+                {
+                    C4Object o = new C4Object(refEl);
+                    if (!result.ContainsKey(o.Id))
+                    {
+                        o.Link = l;
+                        result.Add(o.Id, o);
+                    }
+                }
+                else
+                {
+                    // TODO: error handling
+                }
+            }
             return result;
         }
 

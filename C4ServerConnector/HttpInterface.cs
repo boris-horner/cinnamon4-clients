@@ -12,7 +12,6 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Xml;
@@ -220,6 +219,35 @@ namespace C4ServerConnector
             }
 
             // No need to explicitly call Close(), as `using` handles resource cleanup.
+        }
+        public void PostCommandFileDownloadToStream(string cmdUrl, XmlDocument requestBody, Stream outputStream)
+        {
+            // Add ticket if needed to the request body
+            // requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;
+
+            HttpContent content = new StringContent(requestBody.OuterXml, Encoding.UTF8);
+
+            if (_sessionLogFn != null)
+            {
+                File.AppendAllText(_sessionLogFn, string.Concat("POST ", cmdUrl, Environment.NewLine, requestBody.OuterXml, Environment.NewLine));
+            }
+
+            HttpResponseMessage respMsg = _longTimeoutClient.PostAsync(cmdUrl, content).Result;
+
+            // Ensure response stream and outputStream are properly handled
+            using (Stream respStream = respMsg.Content.ReadAsStreamAsync().Result)
+            {
+                int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
+                byte[] buffer = new byte[bufSize];
+                int bytesRead;
+                while ((bytesRead = respStream.Read(buffer, 0, bufSize)) > 0)
+                {
+                    outputStream.Write(buffer, 0, bytesRead);
+                }
+            }
+
+            // Ensure outputStream is properly flushed if necessary
+            outputStream.Flush();
         }
         //public void PostCommandFileDownload(string cmdUrl, XmlDocument requestBody, string contentFn)
         //{

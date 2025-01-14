@@ -26,17 +26,17 @@ namespace ContentAwareness.ContentAdaptors
     {
         private XmlElement _contentEl;
         private bool _allowLoggingToConsole;
-        private HashSet<string> _regexs;
+        private Dictionary<string, int> _regexsToMatchGroupIndex;
 
         public void Init(XmlElement contentEl, bool allowLoggingToConsole)
         {
             _contentEl = contentEl;
             Name = _contentEl.GetAttribute("id");
             _allowLoggingToConsole = allowLoggingToConsole;
-            _regexs = new HashSet<string>();
+            _regexsToMatchGroupIndex = new Dictionary<string, int>();
             foreach (XmlElement regexEl in _contentEl.SelectNodes("custom/children/regex"))
             {
-                if(!_regexs.Contains(regexEl.InnerText)) _regexs.Add(regexEl.InnerText);
+                if(!_regexsToMatchGroupIndex.ContainsKey(regexEl.InnerText)) _regexsToMatchGroupIndex.Add(regexEl.InnerText, int.Parse(regexEl.GetAttribute("match_group_index")));
             }
 
         }
@@ -48,16 +48,16 @@ namespace ContentAwareness.ContentAdaptors
 
             foreach (string line in lines)
             {
-                foreach (string pattern in _regexs)
+                foreach (string pattern in _regexsToMatchGroupIndex.Keys)
                 {
                     Regex regex = new Regex(pattern);
                     MatchCollection matches = regex.Matches(line);
 
                     foreach (Match match in matches)
                     {
-                        if (match.Groups.Count > 1)
+                        if (match.Groups.Count > _regexsToMatchGroupIndex[pattern])
                         {
-                            string childPath = match.Groups[1].Value;
+                            string childPath = match.Groups[_regexsToMatchGroupIndex[pattern]].Value;
                             result.Add(childPath);
                         }
                     }
@@ -75,16 +75,16 @@ namespace ContentAwareness.ContentAdaptors
             {
                 string updatedLine = line;
 
-                foreach (string pattern in _regexs)
+                foreach (string pattern in _regexsToMatchGroupIndex.Keys)
                 {
                     Regex regex = new Regex(pattern);
                     MatchCollection matches = regex.Matches(line);
 
                     foreach (Match match in matches)
                     {
-                        if (match.Groups.Count > 1)
+                        if (match.Groups.Count > _regexsToMatchGroupIndex[pattern])
                         {
-                            string childPath = match.Groups[1].Value;
+                            string childPath = match.Groups[_regexsToMatchGroupIndex[pattern]].Value;
                             if (lookup.ContainsKey(childPath))
                             {
                                 // Replace the matched path with the value from the lookup dictionary

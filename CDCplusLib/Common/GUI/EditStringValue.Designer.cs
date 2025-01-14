@@ -30,7 +30,6 @@ namespace CDCplusLib.Common.GUI
         private void InitializeComponent()
         {
             lblValue = new Label();
-            vtxtValue = new C4GeneralGui.GuiElements.ValidatingTextBox();
             panel3 = new Panel();
             cmdOk = new Button();
             panel4 = new Panel();
@@ -49,31 +48,13 @@ namespace CDCplusLib.Common.GUI
             lblValue.TabIndex = 4;
             lblValue.Text = "Value";
             // 
-            // vtxtValue
-            // 
-            vtxtValue.BackColor = Color.White;
-            vtxtValue.BothInvalidColor = Color.Red;
-            vtxtValue.Dock = DockStyle.Top;
-            vtxtValue.ExternalInvalidColor = Color.Orange;
-            vtxtValue.ExternalValidation = null;
-            vtxtValue.InternalInvalidColor = Color.Yellow;
-            vtxtValue.InvalidReadOnlyColor = Color.LightYellow;
-            vtxtValue.Location = new Point(10, 25);
-            vtxtValue.Name = "vtxtValue";
-            vtxtValue.RegularExpression = null;
-            vtxtValue.Size = new Size(481, 23);
-            vtxtValue.TabIndex = 54;
-            vtxtValue.ValidColor = Color.White;
-            vtxtValue.ValidReadOnlyColor = SystemColors.Control;
-            vtxtValue.TextChanged += vtxtValue_TextChanged;
-            // 
             // panel3
             // 
             panel3.Controls.Add(cmdOk);
             panel3.Controls.Add(panel4);
             panel3.Controls.Add(cmdCancel);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(10, 48);
+            panel3.Location = new Point(10, 25);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(0, 20, 0, 0);
             panel3.Size = new Size(481, 45);
@@ -124,7 +105,6 @@ namespace CDCplusLib.Common.GUI
             CancelButton = cmdCancel;
             ClientSize = new Size(501, 116);
             Controls.Add(panel3);
-            Controls.Add(vtxtValue);
             Controls.Add(lblValue);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MinimumSize = new Size(500, 0);

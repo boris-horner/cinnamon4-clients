@@ -34,7 +34,7 @@ namespace C4Admin.GUI
                 lvi.SubItems.Add(a.CloneOnRightVersion ? "X" : "");
                 lvi.Tag = a;
             }
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvw, false);
             _lvwSort.Sort(_lvwSort.LastColumn,_lvwSort.ColumnSortOrder);
         }
 

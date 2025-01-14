@@ -29,155 +29,152 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RelationsTabControl));
-            this.panel20 = new System.Windows.Forms.Panel();
-            this.cmdSave = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.lvwParents = new System.Windows.Forms.ListView();
-            this.lblParents = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lvwChildren = new System.Windows.Forms.ListView();
-            this.lblChildren = new System.Windows.Forms.Label();
-            this.panel20.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.SuspendLayout();
+            panel20 = new Panel();
+            cmdSave = new Button();
+            panel1 = new Panel();
+            splitContainer1 = new SplitContainer();
+            panel2 = new Panel();
+            lvwParents = new ListView();
+            lblParents = new Label();
+            panel3 = new Panel();
+            lvwChildren = new ListView();
+            lblChildren = new Label();
+            panel20.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            panel2.SuspendLayout();
+            panel3.SuspendLayout();
+            SuspendLayout();
             // 
             // panel20
             // 
-            this.panel20.Controls.Add(this.cmdSave);
-            this.panel20.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel20.Location = new System.Drawing.Point(0, 469);
-            this.panel20.Name = "panel20";
-            this.panel20.Size = new System.Drawing.Size(821, 40);
-            this.panel20.TabIndex = 0;
+            panel20.Controls.Add(cmdSave);
+            panel20.Dock = DockStyle.Bottom;
+            panel20.Location = new Point(0, 469);
+            panel20.Name = "panel20";
+            panel20.Size = new Size(821, 40);
+            panel20.TabIndex = 0;
             // 
             // cmdSave
             // 
-            this.cmdSave.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cmdSave.Image = ((System.Drawing.Image)(resources.GetObject("cmdSave.Image")));
-            this.cmdSave.Location = new System.Drawing.Point(0, 0);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(40, 40);
-            this.cmdSave.TabIndex = 3;
-            this.cmdSave.UseVisualStyleBackColor = true;
-            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            cmdSave.Dock = DockStyle.Left;
+            cmdSave.Image = (Image)resources.GetObject("cmdSave.Image");
+            cmdSave.Location = new Point(0, 0);
+            cmdSave.Name = "cmdSave";
+            cmdSave.Size = new Size(40, 40);
+            cmdSave.TabIndex = 3;
+            cmdSave.UseVisualStyleBackColor = true;
+            cmdSave.Click += cmdSave_Click;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.splitContainer1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(821, 469);
-            this.panel1.TabIndex = 1;
+            panel1.Controls.Add(splitContainer1);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(821, 469);
+            panel1.TabIndex = 1;
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.panel2);
+            splitContainer1.Panel1.Controls.Add(panel2);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.panel3);
-            this.splitContainer1.Size = new System.Drawing.Size(821, 469);
-            this.splitContainer1.SplitterDistance = 171;
-            this.splitContainer1.TabIndex = 0;
+            splitContainer1.Panel2.Controls.Add(panel3);
+            splitContainer1.Size = new Size(821, 469);
+            splitContainer1.SplitterDistance = 171;
+            splitContainer1.TabIndex = 0;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.lvwParents);
-            this.panel2.Controls.Add(this.lblParents);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(821, 171);
-            this.panel2.TabIndex = 3;
+            panel2.Controls.Add(lvwParents);
+            panel2.Controls.Add(lblParents);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(821, 171);
+            panel2.TabIndex = 3;
             // 
             // lvwParents
             // 
-            this.lvwParents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvwParents.HideSelection = false;
-            this.lvwParents.Location = new System.Drawing.Point(0, 17);
-            this.lvwParents.Name = "lvwParents";
-            this.lvwParents.Size = new System.Drawing.Size(821, 154);
-            this.lvwParents.TabIndex = 2;
-            this.lvwParents.UseCompatibleStateImageBehavior = false;
-            this.lvwParents.View = System.Windows.Forms.View.Details;
-            this.lvwParents.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvwParents_MouseUp);
+            lvwParents.Dock = DockStyle.Fill;
+            lvwParents.Location = new Point(0, 15);
+            lvwParents.Name = "lvwParents";
+            lvwParents.Size = new Size(821, 156);
+            lvwParents.TabIndex = 2;
+            lvwParents.UseCompatibleStateImageBehavior = false;
+            lvwParents.View = View.Details;
+            lvwParents.MouseUp += lvwParents_MouseUp;
             // 
             // lblParents
             // 
-            this.lblParents.AutoSize = true;
-            this.lblParents.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblParents.Location = new System.Drawing.Point(0, 0);
-            this.lblParents.Name = "lblParents";
-            this.lblParents.Size = new System.Drawing.Size(57, 17);
-            this.lblParents.TabIndex = 1;
-            this.lblParents.Text = "Parents";
+            lblParents.AutoSize = true;
+            lblParents.Dock = DockStyle.Top;
+            lblParents.Location = new Point(0, 0);
+            lblParents.Name = "lblParents";
+            lblParents.Size = new Size(46, 15);
+            lblParents.TabIndex = 1;
+            lblParents.Text = "Parents";
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.lvwChildren);
-            this.panel3.Controls.Add(this.lblChildren);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(821, 294);
-            this.panel3.TabIndex = 3;
+            panel3.Controls.Add(lvwChildren);
+            panel3.Controls.Add(lblChildren);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(0, 0);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(821, 294);
+            panel3.TabIndex = 3;
             // 
             // lvwChildren
             // 
-            this.lvwChildren.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvwChildren.HideSelection = false;
-            this.lvwChildren.Location = new System.Drawing.Point(0, 17);
-            this.lvwChildren.Name = "lvwChildren";
-            this.lvwChildren.Size = new System.Drawing.Size(821, 277);
-            this.lvwChildren.TabIndex = 2;
-            this.lvwChildren.UseCompatibleStateImageBehavior = false;
-            this.lvwChildren.View = System.Windows.Forms.View.Details;
-            this.lvwChildren.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvwChildren_MouseUp);
+            lvwChildren.Dock = DockStyle.Fill;
+            lvwChildren.Location = new Point(0, 15);
+            lvwChildren.Name = "lvwChildren";
+            lvwChildren.Size = new Size(821, 279);
+            lvwChildren.TabIndex = 2;
+            lvwChildren.UseCompatibleStateImageBehavior = false;
+            lvwChildren.View = View.Details;
+            lvwChildren.MouseUp += lvwChildren_MouseUp;
             // 
             // lblChildren
             // 
-            this.lblChildren.AutoSize = true;
-            this.lblChildren.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblChildren.Location = new System.Drawing.Point(0, 0);
-            this.lblChildren.Name = "lblChildren";
-            this.lblChildren.Size = new System.Drawing.Size(60, 17);
-            this.lblChildren.TabIndex = 1;
-            this.lblChildren.Text = "Children";
+            lblChildren.AutoSize = true;
+            lblChildren.Dock = DockStyle.Top;
+            lblChildren.Location = new Point(0, 0);
+            lblChildren.Name = "lblChildren";
+            lblChildren.Size = new Size(52, 15);
+            lblChildren.TabIndex = 1;
+            lblChildren.Text = "Children";
             // 
             // RelationsTabControl
             // 
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel20);
-            this.Name = "RelationsTabControl";
-            this.Size = new System.Drawing.Size(821, 509);
-            this.panel20.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.ResumeLayout(false);
-
+            Controls.Add(panel1);
+            Controls.Add(panel20);
+            Name = "RelationsTabControl";
+            Size = new Size(821, 509);
+            panel20.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion

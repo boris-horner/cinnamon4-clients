@@ -38,7 +38,7 @@ namespace C4ServerConnector.Assets
             XmlNode idN = assetEl.SelectSingleNode("id");
             if (idN == null) Id = null;
             else Id = long.Parse(idN.InnerText);
-            ParentId = long.Parse(assetEl.SelectSingleNode("aclId").InnerText);
+            AclId = long.Parse(assetEl.SelectSingleNode("aclId").InnerText);
             ParentId = long.Parse(assetEl.SelectSingleNode("parentId").InnerText);
             OwnerId = long.Parse(assetEl.SelectSingleNode("ownerId").InnerText);
             LinkType = assetEl.SelectSingleNode("type").InnerText=="OBJECT"?LinkTypes.Object:LinkTypes.Folder;
@@ -49,7 +49,7 @@ namespace C4ServerConnector.Assets
         {
             XmlElement assetEl = (XmlElement)parentEl.AppendChild(parentEl.OwnerDocument.CreateElement("link"));
             if (Id != null) assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("id")).InnerText = Id.ToString();
-            assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("aclId")).InnerText = ParentId.ToString();
+            assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("aclId")).InnerText = AclId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("parentId")).InnerText = ParentId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("ownerId")).InnerText = OwnerId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("type")).InnerText = LinkType==LinkTypes.Object?"OBJECT":"FOLDER";

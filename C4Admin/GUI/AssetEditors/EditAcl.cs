@@ -54,7 +54,7 @@ namespace C4Admin.GUI.AssetEditors
 					lvi.SubItems.Add(_groups[(long)(aclGroup.GroupId)].Name);
 				}
 			}
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwAclGroups);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwAclGroups, false);
             _lvwSort.Sort(_lvwSort.LastColumn, _lvwSort.ColumnSortOrder);
         }
 

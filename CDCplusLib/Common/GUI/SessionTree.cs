@@ -251,7 +251,7 @@ namespace CDCplusLib.Common.GUI
                                 _selectEventActive = true;
                                 return;
                             }
-                            else if (f.FolderPath.StartsWith(subF.FolderPath))
+                            else if (f.FolderPath.StartsWith(subF.FolderPath) && tn!=subN)
                             {
                                 OpenAndSelectPath(subN, f);
                                 break;

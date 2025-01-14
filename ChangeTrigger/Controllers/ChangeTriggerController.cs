@@ -15,9 +15,7 @@ using C4ServerConnector.Exceptions;
 using ChangeTriggerLib.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Serilog;
 
@@ -26,9 +24,9 @@ using Serilog;
 public class ChangeTriggerController : ControllerBase
 {
     private readonly TriggerActionService _triggerActionService;
-    private readonly ILogger<ChangeTriggerController> _logger;
+    private readonly Serilog.ILogger _logger;
 
-    public ChangeTriggerController(TriggerActionService triggerActionService, ILogger<ChangeTriggerController> logger)
+    public ChangeTriggerController(TriggerActionService triggerActionService, Serilog.ILogger logger)
     {
         _triggerActionService = triggerActionService;
         _logger = logger;
@@ -39,16 +37,16 @@ public class ChangeTriggerController : ControllerBase
     {
         try
         {
-            _logger.LogInformation($"Entered POST");
+            _logger.Information($"Entered POST");
             string actionParameter = HttpContext.Request.Query["action"].ToString();
-            _logger.LogInformation($"Action: {actionParameter}");
+            _logger.Information($"Action: {actionParameter}");
 
             string requestBody = string.Empty;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 requestBody = await reader.ReadToEndAsync();
             }
-            _logger.LogInformation($"Request body: {requestBody}");
+            _logger.Information($"Request body: {requestBody}");
             XmlDocument requestData = null;
             if(requestBody.Length>0)
             {
@@ -63,7 +61,7 @@ public class ChangeTriggerController : ControllerBase
             XmlDocument requestToCinnamon = null;
             if (Request.Headers.TryGetValue("cinnamon-request", out StringValues cinnamonRequestHeader))
             {
-                _logger.LogInformation($"CinnamonRequest: {cinnamonRequestHeader}");
+                _logger.Information($"CinnamonRequest: {cinnamonRequestHeader}");
                 if (cinnamonRequestHeader.ToString().Trim().Length>0)
                 {
                     try
@@ -73,39 +71,58 @@ public class ChangeTriggerController : ControllerBase
                     }
                     catch (XmlException ex)
                     {
-                        _logger.LogError(ex, "Invalid XML in cinnamon-request header.");
+                        _logger.Error(ex, "Invalid XML in cinnamon-request header.");
                         return BadRequest("Invalid XML in cinnamon-request header.");
                     }
                 }
             }
 
-            _logger.LogInformation($"Ticket: {ticketHeader}");
-            if(requestToCinnamon==null) _logger.LogInformation($"CinnamonRequest: missing");
-            else 
-            _logger.LogInformation($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
+            _logger.Information($"Ticket: {ticketHeader}");
+            if(requestToCinnamon==null) _logger.Information($"CinnamonRequest: missing");
+            else _logger.Information($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
 
             XmlDocument resp = null;
-            try
+            if(actionParameter=="nop")
             {
-                resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                // actionParameter passed by the change trigger config in Cinnamon is "nop". Then, trigger_request has attribute "type" - NopAction is chosen by that type parameter
+                string reqType = requestToCinnamon.DocumentElement.GetAttribute("type");
+                try
+                {
+                    resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
+                catch (SessionExpiredException ex)
+                {
+                    _logger.Error(ex, "Session expired - trying to reconnect.");
+                    _triggerActionService.ReconnectServiceSession();
+                    resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
             }
-            catch(SessionExpiredException ex)
+            else
             {
-                _logger.LogError(ex, "Session expired - trying to reconnect.");
-                _triggerActionService.ReconnectServiceSession();
-                resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                // actionParameter passed by the change trigger config in Cinnamon is not "nop", so the trigger request is some standard Cinnamon API structure - Action is chosen by the action parameter of the URL in the change trigger config
+                try
+                {
+                    resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
+                catch(SessionExpiredException ex)
+                {
+                    _logger.Error(ex, "Session expired - trying to reconnect.");
+                    _triggerActionService.ReconnectServiceSession();
+                    resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                }
             }
+
 
             // TODO: evaluate response for success
-            _logger.LogInformation($"Trigger action response: {resp.OuterXml}");
+            _logger.Information($"Trigger action response: {resp.OuterXml}");
 
-            _logger.LogInformation("Successfully processed request.");
+            _logger.Information("Successfully processed request.");
             return Ok(resp.OuterXml);
 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing request.");
+            _logger.Error(ex, "Error processing request.");
             return BadRequest();
         }
     }

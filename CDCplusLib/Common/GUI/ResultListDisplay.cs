@@ -83,7 +83,7 @@ namespace CDCplusLib.Common.GUI
             XmlNode customEventsN = customConfigEl.SelectSingleNode("events");  // detect legacy config
             if(_keyEvents==null) _keyEvents = new KeyEventTable(customEventsN==null?(XmlElement)rldConfigEl.SelectSingleNode("key_events"):customConfigEl); // these are only loaded for the first time since they are global
 
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList);
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList, true);
 
             if (_nodeDataProvider.GetDefaultSortColumn() != null)
             {
@@ -156,7 +156,16 @@ namespace CDCplusLib.Common.GUI
                             else
                             {
                                 //NodeColumnDefinition colDef = _nodeDataProvider.GetColumnDefinitions()[colName];
-                                lvi.SubItems.Add(_nodeDataProvider.GetValue(ow, colName));
+                                string columnValue = null;
+                                try
+                                {
+                                    columnValue = _nodeDataProvider.GetValue(ow, colName);
+                                }
+                                catch(Exception ex)
+                                {
+                                    columnValue = "";
+                                }
+                                lvi.SubItems.Add(columnValue);
                             }
                         }
 

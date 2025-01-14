@@ -32,9 +32,9 @@
             optAll = new RadioButton();
             optSelectedOnly = new RadioButton();
             panel1 = new Panel();
-            cmdCancel = new Button();
-            panel4 = new Panel();
             cmdOk = new Button();
+            panel4 = new Panel();
+            cmdCancel = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -93,27 +93,6 @@
             panel1.Size = new Size(369, 45);
             panel1.TabIndex = 14;
             // 
-            // cmdCancel
-            // 
-            cmdCancel.DialogResult = DialogResult.Cancel;
-            cmdCancel.Dock = DockStyle.Right;
-            cmdCancel.ImeMode = ImeMode.NoControl;
-            cmdCancel.Location = new Point(281, 20);
-            cmdCancel.Margin = new Padding(4);
-            cmdCancel.Name = "cmdCancel";
-            cmdCancel.Size = new Size(88, 25);
-            cmdCancel.TabIndex = 12;
-            cmdCancel.Text = "Cancel";
-            cmdCancel.UseVisualStyleBackColor = true;
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(271, 20);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(10, 25);
-            panel4.TabIndex = 36;
-            // 
             // cmdOk
             // 
             cmdOk.DialogResult = DialogResult.OK;
@@ -127,11 +106,34 @@
             cmdOk.Text = "Ok";
             cmdOk.UseVisualStyleBackColor = true;
             // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(271, 20);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 25);
+            panel4.TabIndex = 36;
+            // 
+            // cmdCancel
+            // 
+            cmdCancel.DialogResult = DialogResult.Cancel;
+            cmdCancel.Dock = DockStyle.Right;
+            cmdCancel.ImeMode = ImeMode.NoControl;
+            cmdCancel.Location = new Point(281, 20);
+            cmdCancel.Margin = new Padding(4);
+            cmdCancel.Name = "cmdCancel";
+            cmdCancel.Size = new Size(88, 25);
+            cmdCancel.TabIndex = 12;
+            cmdCancel.Text = "Cancel";
+            cmdCancel.UseVisualStyleBackColor = true;
+            // 
             // SelectDeleteVersions
             // 
+            AcceptButton = cmdOk;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
+            CancelButton = cmdCancel;
             ClientSize = new Size(389, 150);
             Controls.Add(panel1);
             Controls.Add(chkDeleteProtectedRelations);
