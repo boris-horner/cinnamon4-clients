@@ -485,6 +485,10 @@ namespace C4ServerConnector
                 return _configEntries;
             }
         }
+        public void ResetConfigEntries()
+        {
+            _configEntries = null;
+        }
 
         public string GetLocalizedLabel(string sysName, string category)
         {
