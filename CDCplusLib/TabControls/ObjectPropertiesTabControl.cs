@@ -210,8 +210,10 @@ namespace CDCplusLib.TabControls
         public bool IsDirty { get; private set; }
         public bool IsValid(Dictionary<long, IRepositoryNode> dict, IGenericControl.ContextType ct)
         {
+            if(dict.Count()!=1) return false;
+            if(!(dict.Values.First() is CmnObject)) return false;
             if (ct != IGenericControl.ContextType.Object) return false;
-            return (DictionaryHelper.GetSingleObject(dict) != null);
+            return true;
         }
         public void MessageReceived(IClientMessage msg)
         {
