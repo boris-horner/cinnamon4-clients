@@ -43,8 +43,6 @@ namespace CDCplusLib.TabControls
         private Dictionary<long, IRepositoryNode> _dict;
         private C4LifecycleState _selectedLcState;
         private bool _lcDirty;
-        private bool _isSuperuser = false;
-        private bool _isSuperuserSet = false;
 
         public event IGenericControl.MessageSentEventHandler MessageSent;
 
@@ -96,8 +94,8 @@ namespace CDCplusLib.TabControls
             {
                 IsDirty = dirty;
                 cmdSave.Enabled = dirty;
-                chkContentChanged.Enabled = _isSuperuser;
-                chkMetadataChanged.Enabled = _isSuperuser;
+                chkContentChanged.Enabled = !_s.User.ChangeTracking;
+                chkMetadataChanged.Enabled = !_s.User.ChangeTracking;
             }
         }
 
@@ -116,11 +114,6 @@ namespace CDCplusLib.TabControls
         {
             _initCompleted = false;
             _dict = dict;
-            if (!_isSuperuserSet)
-            {
-                _isSuperuser = _s.User.GroupIds.Contains((long)_s.SessionConfig.C4Sc.GroupsByName["_superusers"].Id);
-                _isSuperuserSet = true;
-            }
             _lcDirty = false;
             //InitConfig("_default");
             if (dict.Count > 0)
@@ -378,8 +371,8 @@ namespace CDCplusLib.TabControls
                             o.Lock();
 
                         // TODO: combine all this into one statement
-                        bool? metadataChanged = _isSuperuser && metadataChangedValue.HasValue && metadataChangedValue != o.MetadataChanged ? metadataChangedValue : null;
-                        bool? contentChanged = _isSuperuser && contentChangedValue.HasValue && contentChangedValue != o.ContentChanged ? contentChangedValue : null;
+                        bool? metadataChanged = !_s.User.ChangeTracking && metadataChangedValue.HasValue && metadataChangedValue != o.MetadataChanged ? metadataChangedValue : null;
+                        bool? contentChanged = !_s.User.ChangeTracking && contentChangedValue.HasValue && contentChangedValue != o.ContentChanged ? contentChangedValue : null;
                         long? ownerId = (o.Permissions.Node_Owner_Write && cboOwner.SelectedIndex > 0 && o.Owner != (C4User)cboOwner.SelectedItem) ? ((C4User)cboOwner.SelectedItem).Id : null;
                         long? objTypeId = (o.Permissions.Node_Type_Write && cboObjType.SelectedIndex > 0 && o.ObjectType != (C4ObjectType)cboObjType.SelectedItem) ? ((C4ObjectType)cboObjType.SelectedItem).Id : null;
                         long? langId = (o.Permissions.Object_Language_Write && cboLanguage.SelectedIndex > 0 && o.Language != (C4Language)cboLanguage.SelectedItem) ? ((C4Language)cboLanguage.SelectedItem).Id : null;

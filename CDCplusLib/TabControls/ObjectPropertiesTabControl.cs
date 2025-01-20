@@ -41,8 +41,6 @@ namespace CDCplusLib.TabControls
         private bool _lockObjType;
         private C4LifecycleState _selectedLcState;
         private Dictionary<long, IRepositoryNode> _dict;
-        private bool _isSuperuser = false;
-        private bool _isSuperuserSet = false;
 
         //public ISynchronizeInvoke EventSyncInvoke { get; set; }
         public event IGenericControl.MessageSentEventHandler MessageSent;
@@ -52,10 +50,10 @@ namespace CDCplusLib.TabControls
             InitializeComponent();
             _enableEvents = false;
             _o = null;
-            _enableEvents = true;
             _initCompleted = false;
             LocalizeGui();
-            SetControlsEnabledState(false);
+            //SetControlsEnabledState(false);
+            _enableEvents = true;
         }
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }
@@ -114,8 +112,8 @@ namespace CDCplusLib.TabControls
                 cboOwner.Enabled = writable && _o.Permissions.Node_Owner_Write;
                 cboLanguage.Enabled = writable && _o.Permissions.Object_Language_Write;
                 cmdSelectLifecycle.Enabled = writable && _o.Permissions.Object_LifecycleState_Write;
-                chkContentChanged.Enabled = _isSuperuser;
-                chkMetadataChanged.Enabled = _isSuperuser;
+                chkContentChanged.Enabled = !_s.User.ChangeTracking;
+                chkMetadataChanged.Enabled = !_s.User.ChangeTracking;
             }
         }
 
@@ -181,13 +179,9 @@ namespace CDCplusLib.TabControls
         }
         public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
         {
+            _enableEvents = false;
             _dict = dict;
             _o = (CmnObject)((dict != null && dict.Count > 0) ? dict.Values.First() : null);
-            if (!_isSuperuserSet)
-            {
-                _isSuperuser = _o.Session.User.GroupIds.Contains((long)_o.Session.SessionConfig.C4Sc.GroupsByName["_superusers"].Id);
-                _isSuperuserSet = true;
-            }
             IsDirty = false;
             if (_o == null)
             {
