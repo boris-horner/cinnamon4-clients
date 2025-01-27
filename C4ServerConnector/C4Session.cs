@@ -1993,7 +1993,9 @@ namespace C4ServerConnector
             foreach (XmlElement linkEl in resp.DocumentElement.SelectNodes("links/link[type='OBJECT']"))
             {
                 C4Link l = new C4Link(linkEl);
-                XmlElement refEl = resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement;
+                XmlElement refEl = l.ResolverType==C4Link.ResolverTypes.Fixed? 
+                                   resp.DocumentElement.SelectSingleNode("references/reference[id='" + l.RepositoryNodeId + "']") as XmlElement:
+                                   resp.DocumentElement.SelectSingleNode("references/reference[rootId='" + l.RepositoryNodeId + "']") as XmlElement;
                 if(refEl!=null)
                 {
                     C4Object o = new C4Object(refEl);

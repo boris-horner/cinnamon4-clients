@@ -15,6 +15,7 @@ using C4ObjectApi.Interfaces;
 using System.Xml;
 using C4ServerConnector.Assets;
 using System.Collections.Generic;
+using static C4ServerConnector.Assets.C4Link;
 
 namespace C4ObjectApi.Repository
 {
@@ -44,10 +45,10 @@ namespace C4ObjectApi.Repository
             linkIds.Add(Id);
             XmlDocument respDoc = _s.CommandSession.DeleteLinks(linkIds, true);
         }
-        public void Update(bool fixedVersion, C4Acl newAcl = null, C4User newOwner = null, CmnFolder newParentFolder = null, IRepositoryNode newTarget = null)
+        public void Update(ResolverTypes resolverType, C4Acl newAcl = null, C4User newOwner = null, CmnFolder newParentFolder = null, IRepositoryNode newTarget = null)
         {
             HashSet<C4Link> links = new HashSet<C4Link>();
-            _c4l = new C4Link((long)(newAcl == null ? Acl.Id : newAcl.Id), newParentFolder == null ? ParentId : newParentFolder.Id, (long)(newOwner == null ? Owner.Id : newOwner.Id), _c4l.LinkType, newTarget == null ? _c4l.RepositoryNodeId : newTarget.Id, Id);
+            _c4l = new C4Link((long)(newAcl == null ? Acl.Id : newAcl.Id), newParentFolder == null ? ParentId : newParentFolder.Id, (long)(newOwner == null ? Owner.Id : newOwner.Id), _c4l.LinkType, resolverType, newTarget == null ? _c4l.RepositoryNodeId : newTarget.Id, Id);
             links.Add(_c4l);
             _s.CommandSession.UpdateLinks(links);
         }

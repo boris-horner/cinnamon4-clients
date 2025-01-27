@@ -18,6 +18,7 @@ using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
+using static C4ServerConnector.Assets.C4Link;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -55,11 +56,11 @@ namespace CDCplusLib.ContextFunctions
                 //CmnObject newO = null;
                 if (vs.FixedVersion)
                 {
-                    o.Link.Update(true, newTarget: vs.SelectedVersion);
+                    o.Link.Update(ResolverTypes.Fixed, newTarget: vs.SelectedVersion);
                 }
                 else
                 {
-                    o.Link.Update(false);
+                    o.Link.Update(ResolverTypes.LatestHead);
                 }
 
 

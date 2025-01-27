@@ -51,7 +51,7 @@
             <param name="fnToObj">a dictionary containing all dependencies for the file</param>
             <remarks></remarks>
         </member>
-        <member name="M:C4ObjectApi.Repository.CmnFolder.CreateLinks(System.Collections.Generic.Dictionary{System.Int64,C4ObjectApi.Interfaces.IRepositoryNode},C4ServerConnector.Assets.C4Acl)">
+        <member name="M:C4ObjectApi.Repository.CmnFolder.Equals(C4ObjectApi.Repository.CmnFolder)">
             <summary>
             Set name and or description of an folder.
             currently accepted fields

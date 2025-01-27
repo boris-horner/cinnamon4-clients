@@ -18,19 +18,22 @@ namespace C4ServerConnector.Assets
     public class C4Link
     {
         public enum LinkTypes { Object, Folder }
+        public enum ResolverTypes { Folder, Fixed, LatestHead }
         public long? Id { get; private set; }
         public long AclId { get; set; }
         public long ParentId { get; set; }
         public long OwnerId { get; set; }
         public long RepositoryNodeId { get;  set; }
         public LinkTypes LinkType { get; private set; }
-        public C4Link(long aclId, long parentId, long ownerId, LinkTypes linkType, long repositoryNodeId, long? id=null) 
+        public ResolverTypes ResolverType { get; private set; }
+        public C4Link(long aclId, long parentId, long ownerId, LinkTypes linkType, ResolverTypes resolverType, long repositoryNodeId, long? id=null) 
         {
             Id = id;
             AclId = aclId;
             ParentId = parentId;
             OwnerId = ownerId;
-            LinkType = linkType;   
+            LinkType = linkType;
+            ResolverType = resolverType;
             RepositoryNodeId = repositoryNodeId;
         }
         public C4Link(XmlElement assetEl)
@@ -42,6 +45,7 @@ namespace C4ServerConnector.Assets
             ParentId = long.Parse(assetEl.SelectSingleNode("parentId").InnerText);
             OwnerId = long.Parse(assetEl.SelectSingleNode("ownerId").InnerText);
             LinkType = assetEl.SelectSingleNode("type").InnerText=="OBJECT"?LinkTypes.Object:LinkTypes.Folder;
+            ResolverType = LinkType == LinkTypes.Object ? (assetEl.SelectSingleNode("resolver").InnerText == "FIXED" ? ResolverTypes.Fixed : ResolverTypes.LatestHead) : ResolverTypes.Folder;
             if(LinkType==LinkTypes.Object) RepositoryNodeId = long.Parse(assetEl.SelectSingleNode("objectId").InnerText);
             else RepositoryNodeId = long.Parse(assetEl.SelectSingleNode("folderId").InnerText);
         }
@@ -53,6 +57,7 @@ namespace C4ServerConnector.Assets
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("parentId")).InnerText = ParentId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("ownerId")).InnerText = OwnerId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("type")).InnerText = LinkType==LinkTypes.Object?"OBJECT":"FOLDER";
+            if(LinkType == LinkTypes.Object) assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("resolver")).InnerText = ResolverType == ResolverTypes.Fixed ? "FIXED" : "LATEST_HEAD";
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("folderId")).InnerText = LinkType == LinkTypes.Object ? "" : RepositoryNodeId.ToString();
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("objectId")).InnerText = LinkType == LinkTypes.Object ? RepositoryNodeId.ToString() : "";
         }
