@@ -12,12 +12,17 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using ChangeTriggerLib.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
 using System.Net;
 using System.Reflection;
 using System.Xml;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestHeadersTotalSize = 1048576; // Increase to 1 MB
+});
 
 XmlDocument config = new XmlDocument();
 string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -56,6 +61,10 @@ if (!string.IsNullOrEmpty(pfxFile) && !string.IsNullOrEmpty(pfxSecret))
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
 
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = null;
+}); 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
