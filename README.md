@@ -1,8 +1,8 @@
 # Summary
 Cinnamon 4 (as the successor of Cinnamon 3) is an open source, general purpose, client/server content and document management platform. Cinnamon 4 can be used out of the box with the server and 
-Windows Desktop Client installed, but it can also be used with less, more or different client applications, like custom web frontends and the like.
+Windows Desktop Client installed, but it can also be used with less, more or different client modules and components, like custom web frontends and the like.
 
-Cinnamon 4 is highly modular and flexibkle and integrates easily with third party software with APIs.
+Cinnamon 4 is highly modular and flexible and integrates easily with third party software with APIs.
 
 Cinnamon 4, client and server, provide a complete open source system that can be used right away without purchasing licenses. There are vendors, particularly, the project's main contributor 
 [texolution](https://texolution.eu), selling modules that extend or replace open source components to provide functionality for various use cases. Here are some examples:
