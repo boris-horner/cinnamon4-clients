@@ -1,8 +1,3 @@
-# Server software
-Cinnamon 4 server is a separate project maintained in close cooperation with the Cinnamon 4 clients project. Cinnamon 4 server is required to use the various clients in this project.
-
-Find code, documentation and more details [here](https://github.com/dewarim/cinnamon4).
-
 # Summary
 Cinnamon 4 (as the successor of Cinnamon 3) is an open source, general purpose, client/server content and document management platform. Cinnamon 4 can be used out of the box with the server and 
 Windows Desktop Client installed, but it can also be used with less, more or different client applications, like custom web frontends and the like.
@@ -16,6 +11,11 @@ Enterprise Package features module-based and version sensitive translation manag
 * Smart AI Hub is a web-based, configurable and extensible middleware managing AI prompts and models and providing flexible RAG (Retrieval Augmented Generation) based on your own and public data sources.
 * Further applications include high-end, automatic publication of investment banking reports, or management of technical supplier documentation requests in plant engineering.
 * And apart from that, you can use the platform as-is or supplemented by commercial add-ons to build your custom applications on it.
+
+# Server software
+Cinnamon 4 server is a separate project maintained in close cooperation with the Cinnamon 4 clients project. Cinnamon 4 server is required to use the various clients in this project.
+
+Find code, documentation and more details [here](https://github.com/dewarim/cinnamon4).
 
 # Client projects and applications
 The cinnamon4-clients repository contains several projects for libraries, and they are combined to three applications available as VisualStudio solutions in the source code:
