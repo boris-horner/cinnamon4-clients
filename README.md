@@ -1,10 +1,9 @@
-# Cinnamon 4 clients
-## Server software
+# Server software
 Cinnamon 4 server is a separate project maintained in close cooperation with the Cinnamon 4 clients project. Cinnamon 4 server is required to use the various clients in this project.
 
 Find code, documentation and more details [here](https://github.com/dewarim/cinnamon4).
 
-## Summary
+# Summary
 Cinnamon 4 (as the successor of Cinnamon 3) is an open source, general purpose, client/server content and document management platform. Cinnamon 4 can be used out of the box with the server and 
 Windows Desktop Client installed, but it can also be used with less, more or different client applications, like custom web frontends and the like.
 
