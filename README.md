@@ -22,3 +22,18 @@ The cinnamon4-clients repository contains several projects for libraries, and th
 * **C4CDCplus:** Cinnamon Desktop Client, a .net 8 application for Windows, enabling access to the server with a GUI resembling Windows File Explorer.
 * **C4CAE:** Cinnamon Asynchronous Engine, a .net 8 core application running on the server (thus, typically on Linux). CAE is a framework to run plugins to create summaries from metadata (open source). Commercial plugins as part of Enterprise Package or other products provide translation management, DITA Open Toolkit integration, Workflow Management and other functionality. Custom plugins can be added that, for example, connect to third party systems to fetch data.
 * **C4ChangeTrigger:** Change triggers implement .net 8 core based microservice plugins that run in the ChangeTrigger framework. The Cinnamon server can be configured to call such microservices before or after any API command, or after its commit. Apart from some system functions implemented as Change Triggers by standard, and some extensions like the billing and LLM integration in Smart AI Hub, custom functions can easily be added.
+
+# Installing binaries
+**NOTE:** Binary download links coming soon.
+
+# Compiling from source
+**NOTE:** More detailed instructions coming soon.
+
+You can compile all applications on Windows. You need Windows 10 or 11 and VisualStudio 2022 (community edition is sufficient), and a Git client. 
+
+Compiling the applications:
+* Clone the repository.
+* On your Windows development system, navigate to the Solutions folder.
+* Open the application you want to build in VisualStudio 2022.
+* Build the Release (Any CPU).
+* In case of Change Trigger, you also need to publish to a folder profile. 
