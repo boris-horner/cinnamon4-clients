@@ -130,7 +130,7 @@
     <ProjectReference Include="..\ContentAwareness\ContentAwareness.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.1" />
     <PackageReference Include="System.ServiceModel.Federation" Version="8.1.1" />
   </ItemGroup>
 </Project>
