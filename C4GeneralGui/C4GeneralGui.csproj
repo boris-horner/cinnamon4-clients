@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
+    <BaseOutputPath>$(SolutionDir)$(SolutionName)\bin\</BaseOutputPath>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
@@ -21,7 +22,4 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y /R /D /E /I &quot;$(TargetDir)*&quot; &quot;$(SolutionDir)$(StartupProjectPath)bin\$(Configuration)\$(TargetFramework)\&quot;" />
-  </Target>
 </Project>
