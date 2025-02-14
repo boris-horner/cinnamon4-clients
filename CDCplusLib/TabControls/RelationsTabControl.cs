@@ -36,6 +36,7 @@ namespace CDCplusLib.TabControls
         private bool _allowRelationEditOnLockedObjects;
         private bool _enableEvents;
         private CmnObject _o;
+        private Dictionary<long, IRepositoryNode> _dict;
         private GlobalApplicationData _gad;
         private XmlElement _configEl;
         private IIconService _iconService;
@@ -52,6 +53,7 @@ namespace CDCplusLib.TabControls
             _enableEvents = false;
             //lblAuthor.Text = Resources.lblAuthor;
             _o = null;
+            _dict = null;
             _delRelIds = new HashSet<long>();
 
             _enableEvents = true;
@@ -532,6 +534,7 @@ namespace CDCplusLib.TabControls
 
         public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
         {
+            _dict = dict;
             _o = DictionaryHelper.GetSingleObject(dict);
             IsDirty = false;
             // TODO: read permissions and enable / disable controls --> method SetControlStatus
@@ -680,10 +683,13 @@ namespace CDCplusLib.TabControls
                      ids.Add(delRelId);
                 }
                 if(ids.Count>0) _o.Session.CommandSession.DeleteRelations(ids, true);
-                if (relations.Count > 0) _o.Session.CommandSession.CreateRelations(relations);
-
-                _delRelIds.Clear();
-                SetControlsEnabledState(false);
+                if (relations.Count > 0) 
+                {
+                    Dictionary<long, C4Relation> createdRels = _o.Session.CommandSession.CreateRelations(relations);
+                }
+                Init(_dict, null);
+                //_delRelIds.Clear();
+                //SetControlsEnabledState(false);
             }
             catch(Exception ex)
             {

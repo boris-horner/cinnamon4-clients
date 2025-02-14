@@ -335,14 +335,14 @@ namespace CDCplusLib.Common
 
     public class ListViewSorterDate : IComparer
     {
-        private readonly int col_;
-        private readonly SortOrder sortOrder_;
+        private readonly int _col;
+        private readonly SortOrder _sortOrder;
         private readonly bool _uniqueIds;
 
         public ListViewSorterDate(int columnIndex, SortOrder sortOrder, bool uniqueIds)
         {
-            col_ = columnIndex;
-            sortOrder_ = sortOrder;
+            _col = columnIndex;
+            _sortOrder = sortOrder;
             _uniqueIds = uniqueIds;
         }
 
@@ -351,8 +351,8 @@ namespace CDCplusLib.Common
             var xItem = (ListViewItem)x;
             var yItem = (ListViewItem)y;
 
-            DateTime.TryParse(col_ == 0 ? xItem.Text : xItem.SubItems[col_].Text, out var xD);
-            DateTime.TryParse(col_ == 0 ? yItem.Text : yItem.SubItems[col_].Text, out var yD);
+            DateTime.TryParse(_col == 0 || xItem.SubItems.Count <= _col ? xItem.Text : xItem.SubItems[_col].Text, out var xD);
+            DateTime.TryParse(_col == 0 || yItem.SubItems.Count <= _col ? yItem.Text : yItem.SubItems[_col].Text, out var yD);
 
             int result = DateTime.Compare(xD, yD);
             if (result == 0 && _uniqueIds) // If equal and uniqueIds is true, sort by Key
@@ -362,7 +362,7 @@ namespace CDCplusLib.Common
                 result = xKey.CompareTo(yKey);
             }
 
-            return sortOrder_ == SortOrder.Ascending ? result : -result;
+            return _sortOrder == SortOrder.Ascending ? result : -result;
         }
     }
 
