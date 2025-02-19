@@ -4,6 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
+
     <_PublishTargetUrl>C:\Data\Dev.github\private\merida-bikes-cinnamon4-clients\Solutions\meridaBikes_C4ChangeTrigger\bin\Release\net8.0\publish\</_PublishTargetUrl>
     <History>True|2025-02-11T12:53:34.7487015Z||;True|2025-02-11T13:53:01.2212823+01:00||;</History>
     <LastFailureDetails />

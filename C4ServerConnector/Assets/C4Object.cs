@@ -51,7 +51,8 @@ namespace C4ServerConnector.Assets
         {
             NodeType = C4Session.NodeType.Object;
             Id = long.Parse(assetEl.SelectSingleNode("id").InnerText);
-            ContentHash = assetEl.SelectSingleNode("contentHash").InnerText;
+            XmlNode chNode = assetEl.SelectSingleNode("contentHash");
+            ContentHash = chNode==null?"":chNode.InnerText;
             string contentSize = assetEl.SelectSingleNode("contentSize").InnerText;
             ContentSize = contentSize.Length == 0 ? 0 : long.Parse(contentSize);
             Name = assetEl.SelectSingleNode("name").InnerText;
