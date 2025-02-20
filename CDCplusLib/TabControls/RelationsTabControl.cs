@@ -42,7 +42,8 @@ namespace CDCplusLib.TabControls
         private IIconService _iconService;
         private ListViewSort _lvwParentsSort, _lvwChildrenSort;
         private readonly HashSet<long> _delRelIds;
-
+        private Dictionary<long, C4Relation> _childRels;
+        private Dictionary<long, C4Relation> _parentRels;
 
         public ISynchronizeInvoke EventSyncInvoke { get; set; }
         public event IGenericControl.MessageSentEventHandler MessageSent;
@@ -97,27 +98,27 @@ namespace CDCplusLib.TabControls
 
             Dictionary<long, C4Relation> allRels = _o.Session.GetRelations(true, null, _o.Id, _o.Id);
 
-            Dictionary<long, C4Relation> childRels = new Dictionary<long, C4Relation>();
-            Dictionary<long, C4Relation> parentRels = new Dictionary<long, C4Relation>();
+            _childRels = new Dictionary<long, C4Relation>();
+            _parentRels = new Dictionary<long, C4Relation>();
 
             foreach(long id in allRels.Keys)
             {
                 C4Relation rel = allRels[id];
-                if (rel.LeftId == _o.Id) childRels.Add(id, rel);
-                else parentRels.Add(id, rel);
+                if (rel.LeftId == _o.Id) _childRels.Add(id, rel);
+                else _parentRels.Add(id, rel);
             }
 
             HashSet<long> refIds=new HashSet<long>();
-            foreach (C4Relation rel in childRels.Values)
+            foreach (C4Relation rel in _childRels.Values)
             {
                 if (!refIds.Contains(rel.RightId)) refIds.Add(rel.RightId);
             }
-            foreach (C4Relation rel in parentRels.Values)
+            foreach (C4Relation rel in _parentRels.Values)
             {
                 if (!refIds.Contains(rel.LeftId)) refIds.Add(rel.LeftId);
             }
             Dictionary<long, CmnObject> refObjs = _o.Session.GetObjects(refIds, false);
-            AddRelationsToLv(ref childRels, ref parentRels, ref refObjs);
+            AddRelationsToLv(ref _childRels, ref _parentRels, ref refObjs);
         }
 
         private void AddRelationToLv(ListView lvw, C4RelationType rt, CmnObject relO, object tag)
@@ -644,58 +645,55 @@ namespace CDCplusLib.TabControls
             }
 
         }
-
+        private string GetRelKey(C4Relation rel)
+        {
+            return string.Join("#", rel.TypeId.ToString(), rel.LeftId.ToString(), rel.RightId.ToString());
+        }
         public void Save()
         {
             try
             {
-                HashSet<C4Relation> relations = new HashSet<C4Relation>();
+                Dictionary<string, C4Relation> existingRelations = new Dictionary<string, C4Relation>();
+                foreach (C4Relation rel in _parentRels.Values) existingRelations.Add(GetRelKey(rel), rel);
+                foreach (C4Relation rel in _childRels.Values) existingRelations.Add(GetRelKey(rel), rel);
+
+                Dictionary<string, C4Relation> requiredRelations = new Dictionary<string, C4Relation>();
                 foreach (ListViewItem lvi in lvwParents.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    if (rd.Relation == null) relations.Add(new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, null));
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, null);
+                    requiredRelations.Add(GetRelKey(rel),rel);
                 }
-
-                // TODO: what happens when object is checked out / open in the editor and relations are replaced? To be tested
-                Dictionary<long, CmnObject> objs = new Dictionary<long, CmnObject>();
-                bool exportNewChildren = (_o.Locked == _o.Session.User && _o.LocalPath.Length > 0);
                 foreach (ListViewItem lvi in lvwChildren.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    if (rd.Relation == null)
-                    {
-                        relations.Add(new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata));
-                        if (exportNewChildren && !objs.ContainsKey(rd.RightObject.Id))
-                        {
-                            rd.RightObject.Export(CmnObject.ChildExportPolicy.ObjectOnly, true);
-                            _o.Session.LocksMgr.Locks[_o.Id].AddChild(rd.RightObject.Id, rd.RightObject.LocalPath);
-
-                            objs.Add(rd.RightObject.Id, rd.RightObject);
-                        }
-
-                    }
-                    else _delRelIds.Remove((long)rd.Relation.Id);
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, null);
+                    string relKey = GetRelKey(rel);
+                    requiredRelations.Add(relKey, rel);
                 }
 
-                HashSet<long> ids = new HashSet<long>();
-                foreach (long delRelId in _delRelIds)
+                HashSet<long> deleteRelationIds = new HashSet<long>();
+                foreach (string relKey in existingRelations.Keys)
                 {
-                     ids.Add(delRelId);
+                    if (!requiredRelations.ContainsKey(relKey)) deleteRelationIds.Add((long)existingRelations[relKey].Id);
                 }
-                if(ids.Count>0) _o.Session.CommandSession.DeleteRelations(ids, true);
-                if (relations.Count > 0) 
+                if (deleteRelationIds.Count > 0) _o.Session.CommandSession.DeleteRelations(deleteRelationIds, true);
+
+                Dictionary<string, C4Relation> createRelations = new Dictionary<string, C4Relation>();
+                foreach(string relKey in requiredRelations.Keys)
                 {
-                    Dictionary<long, C4Relation> createdRels = _o.Session.CommandSession.CreateRelations(relations);
+                    if (!existingRelations.ContainsKey(relKey)) createRelations.Add(relKey, requiredRelations[relKey]);
                 }
+                _o.Session.CommandSession.CreateRelations(createRelations.Values.ToHashSet<C4Relation>());
+
                 Init(_dict, null);
-                //_delRelIds.Clear();
-                //SetControlsEnabledState(false);
             }
             catch(Exception ex)
             {
                 StandardMessage.ShowMessage("Caught Exception", StandardMessage.Severity.ErrorMessage, this, ex);
             }
         }
+
 
         public string GetStandardColumnTitle(string tp)
         {
