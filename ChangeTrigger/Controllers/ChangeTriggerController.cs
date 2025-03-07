@@ -46,7 +46,7 @@ public class ChangeTriggerController : ControllerBase
             {
                 requestBody = await reader.ReadToEndAsync();
             }
-            _logger.Information($"Request body: {requestBody}");
+            //_logger.Information($"Request body: {requestBody}");
             XmlDocument requestData = null;
             if(requestBody.Length>0)
             {
@@ -79,7 +79,7 @@ public class ChangeTriggerController : ControllerBase
 
             _logger.Information($"Ticket: {ticketHeader}");
             if(requestToCinnamon==null) _logger.Information($"CinnamonRequest: missing");
-            else _logger.Information($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
+            //else _logger.Information($"Request to Cinnamon: {requestToCinnamon.OuterXml}");
 
             XmlDocument resp = null;
             if(actionParameter=="nop")
