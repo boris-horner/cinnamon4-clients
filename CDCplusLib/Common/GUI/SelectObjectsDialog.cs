@@ -16,7 +16,7 @@ using System.Xml;
 using C4ObjectApi.Interfaces;
 using CDCplusLib.Interfaces;
 using CDCplusLib.DataModel;
-using CDCplusLib.Messages;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -32,6 +32,9 @@ namespace CDCplusLib.Common.GUI
         private ResultListDisplay _rldNodes;
         private INodeDataProvider _nodeDataProvider;
         private GlobalApplicationData _gad;
+
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
         public SelectObjectsDialog(CmnSession s, XmlElement configEl, SelectionModes sm, CmnFolder initialFolder, string title, GlobalApplicationData gad)
         {
             InitializeComponent();
@@ -78,11 +81,17 @@ namespace CDCplusLib.Common.GUI
         private void SelectObjectsDialog_Shown(object sender, EventArgs e)
         {
             _rldNodes = new ResultListDisplay();
+            _rldNodes.TreeSelectionChanged += new TreeSelectionChangedEventHandler(rldNodes_TreeSelectionChanged);
             splHor.Panel1.Controls.Add(_rldNodes);
             _rldNodes.Dock = DockStyle.Fill;
-            _rldNodes.MessageSent += new IGenericControl.MessageSentEventHandler(rldNodes_MessageSent);
+            //_rldNodes.TreeSelectionChanged += new ISessionWindow.TreeSelectionChangedEventHandler();
             _rldNodes.Init(_s, _configEl, _rldConfigEl, _nodeDataProvider);
             ctccListContext.Init(_s, true, _gad);
+            AssignNodeList();
+        }
+        private void rldNodes_TreeSelectionChanged(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            _f = wsd.SelectedFolder;
             AssignNodeList();
         }
         public Dictionary<long, IRepositoryNode> Selection
@@ -174,24 +183,6 @@ namespace CDCplusLib.Common.GUI
         {
             DialogResult = DialogResult.OK;
             Close();
-        }
-
-        private void rldNodes_MessageSent(IClientMessage msg)
-        {
-            if (msg.GetType() == typeof(FolderChangeMessage))
-            {
-                Cursor = Cursors.WaitCursor;
-                FolderChangeMessage fcm = (FolderChangeMessage)msg;
-                _f = fcm.ChangeToFolder;
-                AssignNodeList();
-                Cursor = null;
-            }
-            else if (msg.GetType() == typeof(ListSelectionChangeMessage))
-            {
-                Cursor = Cursors.WaitCursor;
-                ctccListContext.UpdateTabControl(_rldNodes.Selection, IGenericControl.ContextType.Folder, msg);
-                Cursor = null;
-            }
         }
 
     }

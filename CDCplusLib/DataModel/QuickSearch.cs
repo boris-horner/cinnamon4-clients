@@ -12,12 +12,12 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using System.Xml;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Operations.Search;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
+using C4ObjectApi.Interfaces;
 
 namespace CDCplusLib.DataModel
 {
@@ -25,7 +25,7 @@ namespace CDCplusLib.DataModel
     {
         private const long SEARCH_BATCH_SIZE = 500L;
 
-        public event ISessionWindow.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
 
         private HashSet<string> _quickSearchFields;
         private int _maxQuickSearchResultCount;
@@ -46,19 +46,14 @@ namespace CDCplusLib.DataModel
 
         public void Search(string text)
         {
-            SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-            ResultListSessionWindowRequestData msgData = new ResultListSessionWindowRequestData();
-            // msg.Source = "CDCplusLegacyLib.MainWindow"
-            msg.Session = _s;
             string searchText = text.ToLower().Trim();
-
 
 
             // Search for ID?
             long id;
+            Dictionary<long, IRepositoryNode> results = null;
             if (searchText.StartsWith("#"))
             {
-                Dictionary<long, CmnObject> objs = null;
                 try
                 {
                     HashSet<long> ids = new HashSet<long>();
@@ -84,8 +79,11 @@ namespace CDCplusLib.DataModel
 
                     }
 
-                    objs = ids.Count()>0?_s.GetObjects(ids, false) :new Dictionary<long, CmnObject>();
-                    msgData.ResultListTitle = Properties.Resources.lblId + ": " + objs.Count.ToString() + " search result(s)";
+                    Dictionary<long, CmnObject> objs = ids.Count()>0?_s.GetObjects(ids, false) :new Dictionary<long, CmnObject>();
+                    results = objs.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRepositoryNode)kvp.Value
+                    );
                 }
                 catch (Exception ex)
                 {
@@ -95,7 +93,6 @@ namespace CDCplusLib.DataModel
                     return;
                 }
 
-                msgData.ResultListObjects = objs;
             }
             // msgData.ResultListFolders = o_.Session.SearchFolders(lsb.GetQuery(searchMs))
             else
@@ -118,27 +115,33 @@ namespace CDCplusLib.DataModel
                     sm.AddButton("ok", Properties.Resources.lblOk, false, true);
                     sm.AddButton("cancel", Properties.Resources.lblCancel, true, false);
                     sm.ShowDialog();
+                    Dictionary<long, CmnObject> objs = null;
                     if (sm.ExitButtonKey == "ok")
                     {
-                        msgData.ResultListObjects = soo.GetObjects(0L, -1L, SEARCH_BATCH_SIZE);
+                        objs = soo.GetObjects(0L, -1L, SEARCH_BATCH_SIZE);
                     }
                     else
                     {
-                        msgData.ResultListObjects = soo.GetObjects(0L, _maxQuickSearchResultCount, SEARCH_BATCH_SIZE);
+                        objs = soo.GetObjects(0L, _maxQuickSearchResultCount, SEARCH_BATCH_SIZE);
                     }
-                    {
-
-                    }
+                    results = objs.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRepositoryNode)kvp.Value
+                    );
                 }
                 else
                 {
-                    msgData.ResultListObjects = soo.GetObjects(batchSize: SEARCH_BATCH_SIZE);
+                    Dictionary<long, CmnObject> objs = soo.GetObjects(batchSize: SEARCH_BATCH_SIZE);
+                    results = objs.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRepositoryNode)kvp.Value
+                    );
                 }
             }
 
-            msg.SessionWindowRequestData = msgData;
-            msg.WindowType = "CDCplusLib.Common.GUI.MainWindow";
-            MessageSent?.Invoke(msg);
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.Selection = results;
+            SessionWindowRequest?.Invoke(wsd);
         }
     }
 }

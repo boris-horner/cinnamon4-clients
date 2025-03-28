@@ -16,11 +16,12 @@ using CDCplusLib.Interfaces;
 using CDCplusLib.Common;
 using CDCplusLib.Common.Import;
 using System.Diagnostics;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -34,9 +35,10 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
             ToolStripMenuItem tsmi = new ToolStripMenuItem(Properties.Resources.lblFiles);
             tsmi.Tag = "files";
@@ -57,7 +59,7 @@ namespace CDCplusLib.ContextFunctions
                 {
                     ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
                     string key = (string)tsmi.Tag;
-                    ObjectsCreatedMessage ocm = new ObjectsCreatedMessage();
+                    WindowSelectionData wsd = new WindowSelectionData();
                     switch (key)
                     {
                         // TODO: find a solution to select multiple files and / or folders, as required
@@ -95,7 +97,7 @@ namespace CDCplusLib.ContextFunctions
                                         if (dr == DialogResult.OK)
                                         {
                                             Cursor.Current = Cursors.WaitCursor;
-                                            ImportRequests(_f.Session, firsByAbsFn, ocm);
+                                            ImportRequests(_f.Session, firsByAbsFn, wsd);
                                             cont = false;
                                             Cursor.Current = Cursors.Default;
 
@@ -137,7 +139,7 @@ namespace CDCplusLib.ContextFunctions
                                         if (dr == DialogResult.OK)
                                         {
                                             Cursor.Current = Cursors.WaitCursor;
-                                            ImportRequests(_f.Session, firsByAbsFn, ocm);
+                                            ImportRequests(_f.Session, firsByAbsFn, wsd);
                                             cont = false;
                                             Cursor.Current = Cursors.Default;
 
@@ -161,7 +163,7 @@ namespace CDCplusLib.ContextFunctions
                             break;
 
                     }
-                    MessageSent?.Invoke(ocm);
+                    NodesModified?.Invoke(wsd);
                 }
 
             }
@@ -192,7 +194,7 @@ namespace CDCplusLib.ContextFunctions
             return (_f != null);
         }
 
-        private void ImportRequests(CmnSession s, Dictionary<string, FileImportRequest> firsByAbsFn, ObjectsCreatedMessage ocm)
+        private void ImportRequests(CmnSession s, Dictionary<string, FileImportRequest> firsByAbsFn, WindowSelectionData wsd)
         {
             // pass 1: import files
             foreach(FileImportRequest fir in firsByAbsFn.Values)
@@ -200,7 +202,7 @@ namespace CDCplusLib.ContextFunctions
                 try
                 {
                     CmnFolder targetF = new CmnFolder(s, s.GetOrCreateFolder(fir.TargetPath));
-                    if (!ocm.CreatedObjects.ContainsKey(targetF.Id) && targetF!=_lastFolder) ocm.CreatedObjects.Add(targetF.Id, targetF);
+                    if (!wsd.Selection.ContainsKey(targetF.Id) && targetF!=_lastFolder) wsd.Selection.Add(targetF.Id, targetF);
                     //fir.Object = s.Create(targetF.Id, fir.ObjectName, fir.AbsoluteFilename, fir.Format.Id, fir.Language.Id, fir.ObjectType.Id, null, null);
                     fir.Object = s.Create(targetF.Id, fir.ObjectName, fir.AbsoluteFilename, fir.Format.Id, fir.Language.Id, fir.ObjectType.Id, null, s.SessionConfig.C4Sc.AclsByName["_default_acl"].Id);   // TODO: let user assign ACL
 
@@ -237,7 +239,7 @@ namespace CDCplusLib.ContextFunctions
                     }
 
 
-                    if (!ocm.CreatedObjects.ContainsKey(fir.Object.Id)) ocm.CreatedObjects.Add(fir.Object.Id, fir.Object);
+                    if (!wsd.Selection.ContainsKey(fir.Object.Id)) wsd.Selection.Add(fir.Object.Id, fir.Object);
                     Debug.Print("Imported " + fir.ObjectName);
 
                 }
@@ -312,7 +314,7 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.lblImportDots;
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return true;
         }

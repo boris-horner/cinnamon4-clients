@@ -180,7 +180,12 @@ namespace CDCplusLib.TabControls
             this.rldNodes.Size = new System.Drawing.Size(969, 492);
             this.rldNodes.TabIndex = 4;
             this.rldNodes.View = System.Windows.Forms.View.LargeIcon;
-            this.rldNodes.MessageSent += new IGenericControl.MessageSentEventHandler(this.rldNodes_MessageSent);
+            this.rldNodes.ListSelectionChanged += new ListSelectionChangedEventHandler(this.rldNodes_ListSelectionChanged);
+            this.rldNodes.TreeSelectionChanged += new TreeSelectionChangedEventHandler(this.rldNodes_TreeSelectionChanged);
+            this.rldNodes.ContextMenuRequest += new ContextMenuRequestEventHandler(this.rldNodes_ContextMenuRequest);
+            this.rldNodes.FunctionRequest += new FunctionRequestEventHandler(this.rldNodes_FunctionRequest);
+            this.rldNodes.KeyPressedEvent += new KeyPressedEventHandler(this.rldNodes_KeyPressedEvent);
+            this.rldNodes.RefreshRequest += new RefreshRequestEventHandler(this.rldNodes_RefreshRequest);
             // 
             // cboColumnSettings
             // 

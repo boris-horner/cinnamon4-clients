@@ -16,6 +16,6 @@ namespace CDCplusLib.Interfaces
     public interface IClientMessage
     {
         // Property Source() As String
-        bool Handled { get; set; }
+
     }
 }

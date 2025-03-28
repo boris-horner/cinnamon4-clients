@@ -13,7 +13,6 @@
 // the License.
 using System.Xml;
 using C4ObjectApi.Repository;
-using C4ServerConnector.Assets;
 using CDCplusLib.Common;
 
 namespace CDCplusLib.Interfaces

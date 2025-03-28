@@ -438,6 +438,9 @@
   <data name="lblSearch" xml:space="preserve">
     <value>Suchen</value>
   </data>
+  <data name="lblSearchWithPreview" xml:space="preserve">
+    <value>Suchen mit Vorschau</value>
+  </data>
   <data name="lblSearchEditor" xml:space="preserve">
     <value>Suche</value>
   </data>
@@ -927,5 +930,8 @@ Die Änderung wird gespeichert, wenn Sie auf den Speichern-Button klicken.</valu
   </data>
   <data name="lblSelectRelationType" xml:space="preserve">
     <value>Beziehungstyp auswählen</value>
+  </data>
+  <data name="lblNumResultsFound" xml:space="preserve">
+    <value>{0} Suchergebnisse</value>
   </data>
 </root>

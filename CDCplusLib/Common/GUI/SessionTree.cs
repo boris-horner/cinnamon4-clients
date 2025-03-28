@@ -13,17 +13,19 @@
 // the License.
 using CDCplusLib.Common.KeyboardEvents;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using System.Collections;
 using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
+using Windows.Media.Audio;
 
 namespace CDCplusLib.Common.GUI
 {
     public partial class SessionTree : UserControl
     {
+        public enum RootNodeTypes { Session, Home, Searches, Locked, Tasks, Results, Undefined }
         public const string NODE_SESSION = "00_session";
         public const string NODE_HOME = "01_home";
         public const string NODE_SEARCHES = "02_searches";
@@ -33,22 +35,27 @@ namespace CDCplusLib.Common.GUI
         public const string DUMMY_FOLDER = "";  // assign empty string, otherwise it shows the name defined here when building the folder view
         private CmnSession _s;
         private XmlElement _configEl;
-        private bool _selectEventActive;
+        //private bool _selectEventActive;
         private KeyEventTable _keyEvents;
 
-        public event ISessionWindow.MessageSentEventHandler MessageSent;
-        public event SelectionChangedEventHandler SelectionChanged;
-        public delegate void SelectionChangedEventHandler(TreeNode selection, IClientMessage msg);
-        public TreeNode SelectedNode
-        {
-            get { return tvwSession.SelectedNode; }
-            set { tvwSession.SelectedNode = value; }
-        }
+        public SessionWindowRequestEventHandler SessionWindowRequest;
+        public TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public ContextMenuRequestEventHandler ContextMenuRequest;
+        public FunctionRequestEventHandler FunctionRequest;
+        public NodesModifiedEventHandler NodesModified;
+        public event KeyEventTable.KeyPressedEventHandler KeyPressedEvent;
         public SessionTree()
         {
             // image list is filled by code because serializing the image list in designer wouldn't work without further changes
             InitializeComponent();
-            _selectEventActive = true;
+            EventsActive = false;
+            //_selectEventActive = true;
+        }
+        public bool EventsActive { get; set; }
+        public TreeNode SelectedNode
+        {
+            get { return tvwSession.SelectedNode; }
+            set { tvwSession.SelectedNode = value; }
         }
         public void InitTreeView(CmnSession s)
         {
@@ -56,8 +63,8 @@ namespace CDCplusLib.Common.GUI
             tvwSession.BeginUpdate();
             _s = s;
             _configEl = (XmlElement)_s.UserConfig.DocumentElement.SelectSingleNode("classes/session_tree");
-            _keyEvents = new KeyEventTable((XmlElement)_configEl.SelectSingleNode("key_events"));
-            _keyEvents.MessageSent += KeyMessageSentHandler;
+            _keyEvents = new KeyEventTable((XmlElement)_configEl.SelectSingleNode("key_events"), KeyEventTable.Modes.Tree);
+            _keyEvents.KeyPressedEvent += KeyPressedEventHandler;
 
             tvwSession.ImageList = new ImageList();
             tvwSession.ImageList.ColorDepth=ColorDepth.Depth24Bit;
@@ -119,12 +126,37 @@ namespace CDCplusLib.Common.GUI
                 throw new NotImplementedException(string.Concat("Type: ", n.Tag.GetType().ToString(), " is not supported in tree selection."));
             }
         }
-        protected virtual void KeyMessageSentHandler(IClientMessage msg)
+        protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
         {
-            MessageSent?.Invoke(msg);
+            SessionWindowRequest?.Invoke(wsd);
+        }
+        protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            TreeSelectionChanged?.Invoke(wsd, sw);
         }
 
-        private void UpdateFolderNode(TreeNode n)
+        protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
+        {
+            ContextMenuRequest?.Invoke(wsd, position);
+        }
+
+        protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type)
+        {
+            FunctionRequest?.Invoke(wsd, assembly, type);
+        }
+
+        protected virtual void NodesModifiedEventHandler(WindowSelectionData wsd)
+        {
+            NodesModified?.Invoke(wsd);
+        }
+        protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
+        }
+
+
+
+        public void UpdateFolderNode(TreeNode n)
         {
             CmnFolder f = null;
             if (n.Tag.GetType() == typeof(CmnFolder))
@@ -137,6 +169,7 @@ namespace CDCplusLib.Common.GUI
             }
             if (f != null)
             {
+                //_selectEventActive = false;
                 if (n.IsExpanded)
                 {
                     Dictionary<long, CmnFolder> subfolders = f.GetSubfolders();
@@ -180,6 +213,7 @@ namespace CDCplusLib.Common.GUI
                     }
 
                 }
+                //_selectEventActive = true;
             }
         }
 
@@ -192,46 +226,62 @@ namespace CDCplusLib.Common.GUI
             tvwSession.EndUpdate();
             tvwSession.ResumeLayout(true);
         }
-        public void SetSelection(CmnFolder f)
+        public void SetSelection(WindowSelectionData wsd)
         {
             tvwSession.SuspendLayout();
             tvwSession.BeginUpdate();
-            if (f == null)
+            switch (wsd.RootNodeType)
             {
-                // nothing to do
-            }
-            else
-            {
-                if (f.FolderPath.StartsWith(_s.SessionConfig.HomeFolder.FolderPath))
-                {
-                    OpenAndSelectPath(tvwSession.Nodes[NODE_HOME], f);
-                }
-                else if (f.FolderPath.StartsWith(_s.SessionConfig.SearchesFolder.FolderPath))
-                {
-                    OpenAndSelectPath(tvwSession.Nodes[NODE_SEARCHES], f);
-                }
-                else
-                {
-                    // folder not under one of the special folders - open in session structure
-                    OpenAndSelectPath(tvwSession.Nodes[NODE_SESSION], f);
-                }
-                SelectedNode = tvwSession.SelectedNode;
+                //case SessionTree.RootNodeTypes.Session:
+                //    break;
+                //case SessionTree.RootNodeTypes.Home:
+                //    break;
+                //case SessionTree.RootNodeTypes.Searches:
+                //    break;
+                case RootNodeTypes.Locked:
+                case RootNodeTypes.Tasks:
+                    throw new NotImplementedException();
+                    break;
+                case RootNodeTypes.Results:
+                    tvwSession.SuspendLayout();
+                    tvwSession.BeginUpdate();
+                    tvwSession.Nodes[NODE_RESULTS].Tag = wsd.ResultList;
+                    // TODO: if wsd.Selection has content, select the objects / folders
+                    tvwSession.SelectedNode = tvwSession.Nodes[NODE_RESULTS];
+                    tvwSession.EndUpdate();
+                    tvwSession.ResumeLayout(true);
+                    break;
+                default:
+                    TreeNode rootNode = null;
+                    if(wsd.RootNodeType==RootNodeTypes.Results) rootNode = tvwSession.Nodes[NODE_RESULTS];
+                    else if(wsd.SelectedFolder!=null)
+                    {
+                        if (wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.HomeFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_HOME];
+                        else if (wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.SearchesFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_SEARCHES];
+                        else rootNode = tvwSession.Nodes[NODE_SESSION];
+                    }
+                    else rootNode = tvwSession.Nodes[NODE_SESSION];
+
+                    if(wsd.SelectedFolder!=null) OpenAndSelectPath(rootNode, wsd.SelectedFolder);
+                    else tvwSession.SelectedNode = rootNode;
+                    break;
 
             }
+            SelectedNode = tvwSession.SelectedNode;
             tvwSession.EndUpdate();
             tvwSession.ResumeLayout(true);
         }
-        private void OpenAndSelectPath(TreeNode tn, CmnFolder f)
+        public void OpenAndSelectPath(TreeNode tn, CmnFolder f)
         {
             if (tn.Tag is CmnFolder || tn.Tag is CmnSession)
             {
                 // _s is already defined
                 if (tn.Tag is CmnFolder && f.FolderPath == ((CmnFolder)tn.Tag).FolderPath)
                 {
-                    _selectEventActive = false;
+                    //_selectEventActive = false;
                     UpdateFolderNode(tn);
                     tvwSession.SelectedNode = tn;
-                    _selectEventActive = true;
+                    //_selectEventActive = true;
                     return;
                 }
                 else
@@ -246,9 +296,9 @@ namespace CDCplusLib.Common.GUI
                             CmnFolder subF = (CmnFolder)subN.Tag;
                             if (f.FolderPath == subF.FolderPath)
                             {
-                                _selectEventActive = false;
+                                //_selectEventActive = false;
                                 tvwSession.SelectedNode = subN;
-                                _selectEventActive = true;
+                                //_selectEventActive = true;
                                 return;
                             }
                             else if (f.FolderPath.StartsWith(subF.FolderPath) && tn!=subN)
@@ -275,24 +325,64 @@ namespace CDCplusLib.Common.GUI
 
         private void tvwSession_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (_selectEventActive)
+            if (EventsActive)
             {
-                SelectionChangedEventHandler handler = SelectionChanged;
-                handler?.Invoke(SelectedNode, null);
+                EventsActive = false;
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.RootNodeType = GetRoodNodeType(tvwSession.SelectedNode);
+                if (wsd.RootNodeType==RootNodeTypes.Results) wsd.SelectedFolder = null;
+                else if (wsd.RootNodeType == RootNodeTypes.Tasks) wsd.SelectedFolder = null;
+                else if (wsd.RootNodeType == RootNodeTypes.Locked) wsd.SelectedFolder = null;
+                else if (tvwSession.SelectedNode.Tag is CmnFolder) wsd.SelectedFolder = tvwSession.SelectedNode.Tag as CmnFolder;
+                else wsd.SelectedFolder = (tvwSession.SelectedNode.Tag as CmnSession).RootFolder;
+
+                TreeSelectionChanged?.Invoke(wsd, null);
+                EventsActive = true;
             }
         }
 
+        private RootNodeTypes GetRoodNodeType(TreeNode tn)
+        {
+            if(tn==null) return RootNodeTypes.Undefined;
+
+            // Walk up to the top-level parent
+            while (tn.Parent != null)
+            {
+                tn = tn.Parent;
+            }
+
+            // Now tn is a direct child of tvwSession.Nodes — i.e., a root node
+            switch (tn.Name)
+            {
+                case "00_session":
+                    return RootNodeTypes.Session;
+                case "01_home":
+                    return RootNodeTypes.Home;
+                case "02_searches":
+                    return RootNodeTypes.Searches;
+                case "03_locked":
+                    return RootNodeTypes.Locked;
+                case "04_tasks":
+                    return RootNodeTypes.Tasks;
+                case "05_results":
+                    return RootNodeTypes.Results;
+                default:
+                    return RootNodeTypes.Undefined;
+            }
+        }
         private void tvwSession_AfterExpand(object sender, TreeViewEventArgs e)
         {
             tvwSession.SuspendLayout();
             tvwSession.BeginUpdate();
-            _selectEventActive = false;
+            //bool selectEventActiveBuf = _selectEventActive;
+            //_selectEventActive = false;
             //NodeExpandedEventHandler neHandler = NodeExpanded;
             //neHandler?.Invoke(e.Node, null);
             UpdateFolderNode(e.Node);
-            _selectEventActive = true;
-            SelectionChangedEventHandler scHandler = SelectionChanged;
-            scHandler?.Invoke(SelectedNode, null);
+            //_selectEventActive = selectEventActiveBuf;
+            //TreeSelectionChangedEventHandler scHandler = TreeSelectionChanged;
+
+            //scHandler?.Invoke(SelectedNode, null);
             tvwSession.EndUpdate();
             tvwSession.ResumeLayout(true);
         }
@@ -311,7 +401,6 @@ namespace CDCplusLib.Common.GUI
             tvwSession.EndUpdate();
             tvwSession.ResumeLayout(true);
         }
-
         private void tvwSession_MouseUp(object sender, MouseEventArgs e)
         {
             try
@@ -320,28 +409,57 @@ namespace CDCplusLib.Common.GUI
                 if (e.Button == MouseButtons.Right)
                 {
                     // context menu
-                    if (tvwSession.SelectedNode != null)
-                    {
-                        TreeNode clickedNode = tvwSession.HitTest(e.Location).Node;
+                    TreeNode clickedNode = tvwSession.HitTest(e.Location).Node;
 
-                        if (clickedNode != null)
+                    if (clickedNode != null)
+                    {
+                        //switch (tvwSession.SelectedNode.Tag.GetType().Name)
+                        WindowSelectionData wsd = new WindowSelectionData();
+                        CmnFolder clickedFolder = clickedNode.Tag as CmnFolder;
+
+                        if (clickedNode.Name== "03_locked")
                         {
-                            SelectionRightClickedMessage msg = new SelectionRightClickedMessage();
-                            //switch (tvwSession.SelectedNode.Tag.GetType().Name)
-                            switch (clickedNode.Tag.GetType().Name)
+                            // ignore for the time being
+                            //wsd.RootNodeType = RootNodeTypes.Locked;
+                            //wsd.SelectedFolder = null;
+                            //ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
+                        }
+                        else if (clickedNode.Name == "04_tasks")
+                        {
+                            // ignore for the time being
+                            //wsd.RootNodeType = RootNodeTypes.Tasks;
+                            //wsd.SelectedFolder = null;
+                            //ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
+                        }
+                        else if (clickedNode.Name == "05_results")
+                        {
+                            // ignore
+                        }
+                        else
+                        {
+                            if (tvwSession.SelectedNode.Tag is CmnFolder)
                             {
-                                case "CmnFolder":
-                                    msg.ListSelection.Add(((CmnFolder)(clickedNode.Tag)).Id, (CmnFolder)(clickedNode.Tag));
-                                    msg.Pos = e.Location;
-                                    msg.ReferenceControl = tvwSession;
-                                    MessageSent?.Invoke(msg);
-                                    break;
-                                case "CmnSession":
-                                    msg.Pos = e.Location;
-                                    msg.ReferenceControl = tvwSession;
-                                    MessageSent?.Invoke(msg);
-                                    break;
-                                    // TODO: support non folder tags for context menu
+                                wsd.SelectedFolder = tvwSession.SelectedNode.Tag as CmnFolder;
+                                wsd.Selection.Add(clickedFolder.Id, clickedFolder);
+                                ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
+                            }
+                            else
+                            {
+                                if (tvwSession.SelectedNode.Tag is Dictionary<long, IRepositoryNode>)
+                                {
+                                    Dictionary<long, IRepositoryNode> dict = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                                    if (dict.Count>0) wsd.Selection = dict;
+                                    else wsd.SelectedFolder = (tvwSession.SelectedNode.Tag as CmnSession).RootFolder;
+                                }
+                                else if(tvwSession.SelectedNode.Tag is Dictionary<long, CmnObject>)
+                                {
+                                    Dictionary<long, IRepositoryNode> dict = (tvwSession.SelectedNode.Tag as Dictionary<long, CmnObject>).ToDictionary(
+                                        kvp => kvp.Key,
+                                        kvp => (IRepositoryNode)kvp.Value
+                                    );
+                                    wsd.Selection = dict;
+                                }
+                                ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
                             }
 
                         }
@@ -357,5 +475,6 @@ namespace CDCplusLib.Common.GUI
                 StandardMessage.ShowMessage("Caught Exception", StandardMessage.Severity.ErrorMessage, this, ex);
             }
         }
+
     }
 }

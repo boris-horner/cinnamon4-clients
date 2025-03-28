@@ -19,7 +19,6 @@ using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Exceptions;
 using System.IO;
-using ContentAwareness;
 using C4ServerConnector.Assets;
 using C4ServerConnector;
 using ContentAwareness.Interfaces;

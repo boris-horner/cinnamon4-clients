@@ -853,6 +853,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} search results.
+        /// </summary>
+        internal static string lblNumResultsFound {
+            get {
+                return ResourceManager.GetString("lblNumResultsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object name.
         /// </summary>
         internal static string lblObjectName {
@@ -1092,6 +1101,15 @@ namespace CDCplusLib.Properties {
         internal static string lblSearchResults {
             get {
                 return ResourceManager.GetString("lblSearchResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search with preview.
+        /// </summary>
+        internal static string lblSearchWithPreview {
+            get {
+                return ResourceManager.GetString("lblSearchWithPreview", resourceCulture);
             }
         }
         

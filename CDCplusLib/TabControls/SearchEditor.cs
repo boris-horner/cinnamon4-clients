@@ -15,8 +15,6 @@ using System.Xml;
 using CDCplusLib.TabControls.SearchEditorNodes;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using CDCplusLib.CommonGui;
 using CDCplusLib.Helpers;
 using C4ObjectApi.Interfaces;
@@ -26,7 +24,8 @@ using C4ObjectApi.Global;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
-using System.Xml.Linq;
+using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.TabControls
 {
@@ -56,6 +55,16 @@ namespace CDCplusLib.TabControls
         private readonly Random _rnd;
         private Dictionary<long, IRepositoryNode> _dict;
         private C4Metadata _meta;
+
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
+
         public SearchEditor()
         {
             InitializeComponent();
@@ -67,6 +76,7 @@ namespace CDCplusLib.TabControls
             ttSearch.SetToolTip(optVersionAll, Properties.Resources.lblShowAllVersions);
             ttSearch.SetToolTip(optSearchObjects, Properties.Resources.lblSearchObjects);
             ttSearch.SetToolTip(optSearchFolders, Properties.Resources.lblSearchFolders);
+            ttSearch.SetToolTip(cmdRunQueryWithPreview, Properties.Resources.lblSearch);
             ttSearch.SetToolTip(cmdRunQuery, Properties.Resources.lblSearch);
             ttSearch.SetToolTip(cmdShowQuery, Properties.Resources.lblShowQuery);
             lblFieldName.Text = Properties.Resources.lblFieldName;
@@ -74,12 +84,24 @@ namespace CDCplusLib.TabControls
             chkAnyTerm.Text = Properties.Resources.lblAny;
             chkVariable.Text = Properties.Resources.lblVariableSpecifyName;
             tlpTerm.Visible = false;
+            SessionWindowRequest += SessionWindowRequestEventHandler;
             _rnd = new Random();
         }
+
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }
         public bool AutoRefresh { get { return true; } }
         public bool ListContext { get { return true; } }
+
+        protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
+        {
+            if(_enableEvents)
+            {
+                _enableEvents = false;
+                SessionWindowRequest?.Invoke(wsd);
+                _enableEvents = true;
+            }
+        }
 
         private void ActivateControls()
         {
@@ -92,13 +114,11 @@ namespace CDCplusLib.TabControls
         public bool IsDirty { get; private set; }
 
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
-
         public string GetTabText()
         {
             return Properties.Resources.lblSearchEditor;
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _o = DictionaryHelper.GetSingleObject(dict);
             _enableEvents = false;
@@ -117,7 +137,6 @@ namespace CDCplusLib.TabControls
                 _meta = _o.Session.CommandSession.GetObjectMeta(_o.Id, typeIds);
                 InitFromMetadata();
             }
-            if (msg != null) MessageReceived(msg);
             IsDirty = false;
             ActivateControls();
             _enableEvents = true;
@@ -319,14 +338,9 @@ namespace CDCplusLib.TabControls
             if (o == null) return false;
             return (o.ObjectType.Name == "_search");
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            //throw new NotImplementedException();
-        }
-
         public void ReInit()
         {
-            Init(_dict, null);
+            Init(_dict);
         }
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
@@ -365,7 +379,7 @@ namespace CDCplusLib.TabControls
             foreach (XmlElement mdoEl in _configEl.SelectNodes("custom/master_data/master_data_object"))
             {
                 string name = mdoEl.GetAttribute("name");
-                switch(mdoEl.GetAttribute("type"))
+                switch (mdoEl.GetAttribute("type"))
                 {
                     case "metaset":
                         {
@@ -442,10 +456,9 @@ namespace CDCplusLib.TabControls
 
             IsDirty = false;
             ActivateControls();
-            ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-            msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.CustomMetadataChanged;
-            msg.ModifiedObjects.Add(_o.Id, _o);
-            MessageSent?.Invoke(msg);
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.Selection.Add(_o.Id, _o);
+            NodesModified?.Invoke(wsd);
             _enableEvents = true;
         }
 
@@ -740,29 +753,38 @@ namespace CDCplusLib.TabControls
             XmlDocument query = LuceneHelper.BuildQuery(tvwSearchDef.Nodes[0], vsb);
             if (query != null)
             {
-                SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-                ResultListSessionWindowRequestData msgData = new ResultListSessionWindowRequestData();
-                msg.Session = _o.Session;
                 int maxResults = 1000;// TODO: softcode max search results
+                SearchResults res = null;
+                Dictionary<long, IRepositoryNode> results;
                 if (optSearchObjects.Checked)    // search objects
                 {
                     SearchObjectsOperation soo = new SearchObjectsOperation(_s, query.OuterXml);
+                    Dictionary<long, CmnObject> objs;
                     if (soo.TotalResultCount > maxResults)
                     {
                         if (MessageBox.Show(String.Format(Properties.Resources.msgMoreThanXResults, soo.TotalResultCount.ToString()), "Search results", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                            msgData.ResultListObjects = soo.GetObjects(-1, -1, SEARCH_BATCH_SIZE);
-                        else msgData.ResultListObjects = soo.GetObjects(0, maxResults, SEARCH_BATCH_SIZE);
+                            objs = soo.GetObjects(-1, -1, SEARCH_BATCH_SIZE);
+                        else objs = soo.GetObjects(0, maxResults, SEARCH_BATCH_SIZE);
                     }
-                    else msgData.ResultListObjects = soo.GetObjects(-1, -1, SEARCH_BATCH_SIZE);
+                    else objs = soo.GetObjects(-1, -1, SEARCH_BATCH_SIZE);
+                    results = objs.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRepositoryNode)kvp.Value
+                    );
                 }
                 else    // search folders
                 {
-                    SearchResults res = _o.Session.SearchFolders(query.InnerXml);
-                    msgData.ResultListFolders = res.Folders;
+                    res = _o.Session.SearchFolders(query.InnerXml);
+                    results = res.Folders.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRepositoryNode)kvp.Value
+                    );
+
                 }
-                msgData.ResultListTitle = Properties.Resources.lblSearchResults + " - " + _o.Name;
-                msg.SessionWindowRequestData = msgData;
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Results;
+                wsd.Selection = results;
+                SessionWindowRequest?.Invoke(wsd);
             }
         }
 
@@ -823,6 +845,41 @@ namespace CDCplusLib.TabControls
         {
             IsDirty = true;
             ActivateControls();
+        }
+
+        private void cmdRunQueryWithPreview_Click(object sender, EventArgs e)
+        {
+            if (tvwSearchDef.Nodes.Count == 0)
+            {
+                StandardMessage.ShowMessage(Properties.Resources.msgEmptySearchDefinition, StandardMessage.Severity.ErrorMessage, this);
+                return;
+            }
+
+            LuceneHelper.VersionSearchBehaviour vsb = optSearchObjects.Checked ? (optVersionAll.Checked ? LuceneHelper.VersionSearchBehaviour.AllVersions : (optVersionLatest.Checked ? LuceneHelper.VersionSearchBehaviour.LatestHead : LuceneHelper.VersionSearchBehaviour.LatestBranches)) : LuceneHelper.VersionSearchBehaviour.Folders;
+            XmlDocument query = LuceneHelper.BuildQuery(tvwSearchDef.Nodes[0], vsb);
+            if (query != null)
+            {
+                if (optSearchObjects.Checked)    // search objects
+                {
+                    HashSet<long> ids = _s.CommandSession.SearchObjectIds(query.OuterXml);
+                    Dictionary<long, C4Object> results = _s.CommandSession.GetObjectsById(ids, false);
+                    SearchResultsPreview srp = new SearchResultsPreview(_s);
+                    srp.SetList(results);
+                    srp.SessionWindowRequest += SessionWindowRequestEventHandler;
+                    srp.ShowDialog(this);
+                    srp.SessionWindowRequest -= SessionWindowRequestEventHandler;
+                }
+                else    // search folders
+                {
+                    HashSet<long> ids = _s.CommandSession.SearchFolderIds(query.OuterXml);
+                    Dictionary<long, C4Folder> results = _s.CommandSession.GetFoldersById(ids);
+                    SearchResultsPreview srp = new SearchResultsPreview(_s);
+                    srp.SetList(results);
+                    srp.SessionWindowRequest += SessionWindowRequestEventHandler;
+                    srp.ShowDialog(this);
+                    srp.SessionWindowRequest -= SessionWindowRequestEventHandler;
+                }
+            }
         }
     }
 }

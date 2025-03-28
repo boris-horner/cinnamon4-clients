@@ -14,12 +14,13 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -33,9 +34,10 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
             ToolStripMenuItem tsmi = new ToolStripMenuItem(Properties.Resources.mnuPasteAllVersions);
             tsmi.Name = "all";
@@ -126,27 +128,29 @@ namespace CDCplusLib.ContextFunctions
                         // find objects with collected root ids
                         // loop through objects and folders and set parent to _f
 
-                        ObjectsMovedMessage omm = new ObjectsMovedMessage();
+                        WindowSelectionData wsd = new WindowSelectionData();
                         foreach (IRepositoryNode ow in _gad.Clipboard.Values)
                         {
                             if (ow.GetType() == typeof(CmnFolder))
                             {
                                 // folder
                                 CmnFolder pasteF = (CmnFolder)ow;
-                                if (pasteF.ParentId != 0 && !omm.OriginalParentFolders.ContainsKey(pasteF.ParentId)) omm.OriginalParentFolders.Add(pasteF.ParentId, pasteF.Parent);
+                                if (pasteF.ParentId != 0 && !wsd.Selection.ContainsKey(pasteF.ParentId)) wsd.Selection.Add(pasteF.ParentId, pasteF.Parent);
 								_s.CommandSession.UpdateFolder(pasteF.Id, _f.Id);
-                                omm.MovedObjects.Add(pasteF.Id, pasteF);
+                                wsd.Selection.Add(pasteF.Id, pasteF);
+                                wsd.Modification.Add(pasteF.Id, pasteF);
                             }
                         }
                         foreach (CmnObject pasteO in selectedObjsAllVersions.Values)
                         {
-                            if (pasteO.ParentId != 0 && !omm.OriginalParentFolders.ContainsKey(pasteO.ParentId)) omm.OriginalParentFolders.Add(pasteO.ParentId, pasteO.Parent);
+                            if (pasteO.ParentId != 0 && !wsd.Selection.ContainsKey(pasteO.ParentId)) wsd.Selection.Add(pasteO.ParentId, pasteO.Parent);
                             pasteO.Lock();
 							_s.CommandSession.UpdateObject(pasteO.Id, _f.Id);
                             pasteO.Unlock();
-                            omm.MovedObjects.Add(pasteO.Id, pasteO);
+                            wsd.Selection.Add(pasteO.Id, pasteO);
+                            wsd.Modification.Add(pasteO.Id, pasteO);
                         }
-                        MessageSent?.Invoke(omm);
+                        NodesModified?.Invoke(wsd);
 
                     }
 
@@ -181,31 +185,32 @@ namespace CDCplusLib.ContextFunctions
                     StandardMessage.Severity.ErrorMessage);
                 else
                 {
-                    ObjectsMovedMessage omm = new ObjectsMovedMessage();
+                    WindowSelectionData wsd = new WindowSelectionData();
                     foreach (IRepositoryNode ow in _gad.Clipboard.Values)
                     {
                         if (ow.GetType() == typeof(CmnFolder))
                         {
                             // folder
                             CmnFolder pasteF = (CmnFolder)ow;
-                            if (pasteF.ParentId != 0 && pasteF.ParentId != _f.Id && !omm.OriginalParentFolders.ContainsKey(pasteF.ParentId)) omm.OriginalParentFolders.Add(pasteF.ParentId, pasteF.Parent);
+                            if (pasteF.ParentId != 0 && pasteF.ParentId != _f.Id && !wsd.Selection.ContainsKey(pasteF.ParentId)) wsd.Selection.Add(pasteF.ParentId, pasteF.Parent);
 
 							_s.CommandSession.UpdateFolder(pasteF.Id, _f.Id);
-							omm.MovedObjects.Add(pasteF.Id, pasteF);
-
+							wsd.Selection.Add(pasteF.Id, pasteF);
+                            wsd.Modification.Add(pasteF.Id, pasteF);
                         }
                         else
                         {
                             // object
                             CmnObject pasteO = (CmnObject)ow;
-                            if (pasteO.ParentId != 0 && pasteO.ParentId != _f.Id && !omm.OriginalParentFolders.ContainsKey(pasteO.ParentId)) omm.OriginalParentFolders.Add(pasteO.ParentId, pasteO.Parent);
+                            if (pasteO.ParentId != 0 && pasteO.ParentId != _f.Id && !wsd.Selection.ContainsKey(pasteO.ParentId)) wsd.Selection.Add(pasteO.ParentId, pasteO.Parent);
                             pasteO.Lock();
 							_s.CommandSession.UpdateObject(pasteO.Id, _f.Id);
 							pasteO.Unlock();
-                            omm.MovedObjects.Add(pasteO.Id, pasteO);
+                            wsd.Selection.Add(pasteO.Id, pasteO);
+                            wsd.Modification.Add(pasteO.Id, pasteO);
                         }
                     }
-                    MessageSent?.Invoke(omm);
+                    NodesModified?.Invoke(wsd);
                 }
             }
             catch (Exception ex)
@@ -321,7 +326,7 @@ namespace CDCplusLib.ContextFunctions
                         else
                         {
                             // pass 3: create folders
-                            ObjectsCreatedMessage ocm = new ObjectsCreatedMessage();
+                            WindowSelectionData wsd = new WindowSelectionData();
                             Dictionary<long, CmnFolder> sourceTargetFLookup = new Dictionary<long, CmnFolder>();
                             foreach (long rootFId in foldersByRoot.Keys)
                             {
@@ -338,7 +343,7 @@ namespace CDCplusLib.ContextFunctions
                                         {
                                             CmnFolder targetSubF = _f.CreateSubfolder(srcF.Name);
                                             sourceTargetFLookup.Add(srcF.Id, targetSubF);
-                                            ocm.CreatedObjects.Add(targetSubF.Id, targetSubF);
+                                            wsd.Selection.Add(targetSubF.Id, targetSubF);
                                         }
                                         else
                                         {
@@ -346,7 +351,7 @@ namespace CDCplusLib.ContextFunctions
                                             {
                                                 CmnFolder targetSubF = sourceTargetFLookup[srcF.ParentId].CreateSubfolder(srcF.Name);
                                                 sourceTargetFLookup.Add(srcF.Id, targetSubF);
-                                                ocm.CreatedObjects.Add(targetSubF.Id, targetSubF);
+                                                wsd.Selection.Add(targetSubF.Id, targetSubF);
                                             }
                                             else
                                             {
@@ -382,7 +387,8 @@ namespace CDCplusLib.ContextFunctions
                                         curO = preO.VersionCmd(null, null, versionO.Name);
                                     }
                                     sourceTargetOLookup.Add(versionO.Id, curO);
-                                    ocm.CreatedObjects.Add(curO.Id, curO);
+                                    wsd.Selection.Add(curO.Id, curO);
+                                    wsd.Modification.Add(curO.Id, curO);
 
                                     // more performant server based copy
                                     curO.Lock();
@@ -429,7 +435,7 @@ namespace CDCplusLib.ContextFunctions
                                 _s.CommandSession.CreateRelations(relations);
                             }
 
-                            MessageSent?.Invoke(ocm);
+                            NodesModified?.Invoke(wsd);
                         }
 
                     }
@@ -485,15 +491,14 @@ namespace CDCplusLib.ContextFunctions
                     {
 
                         // pass 4: create objects
-                        ObjectsCreatedMessage ocm = new ObjectsCreatedMessage();
-
+                        WindowSelectionData wsd = new WindowSelectionData();
                         foreach (IRepositoryNode ow in _gad.Clipboard.Values)
                         {
                             CmnObject curTgtO = ((CmnObject)ow).Copy(_f);   // TODO: move this to create / copytoexisting
-                            ocm.CreatedObjects.Add(curTgtO.Id, curTgtO);
+                            wsd.Selection.Add(curTgtO.Id, curTgtO);
+                            wsd.Modification.Add(curTgtO.Id, curTgtO);
                         }
-
-                        MessageSent?.Invoke(ocm);
+                        NodesModified?.Invoke(wsd);
                     }
 
                 }
@@ -521,7 +526,7 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.mnuPaste;
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return true;
         }

@@ -2,8 +2,8 @@
 using C4ObjectApi.Repository;
 using C4ServerConnector;
 using CDCplusLib.Common;
+using CDCplusLib.EventData;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 
 namespace C4Admin.GUI
 {
@@ -21,9 +21,22 @@ namespace C4Admin.GUI
             }
         }
 
-        public event ISessionWindow.WindowClosedEventHandler WindowClosed;
-        public event ISessionWindow.MessageSentEventHandler MessageSent;
-        public event ISessionWindow.PathChangedEventHandler PathChanged;
+        public event WindowClosedEventHandler WindowClosed;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
+        public string WindowTitle
+        {
+            get
+            {
+                return Text;
+            }
+        }
 
         public C4AMainWindow()
         {
@@ -53,7 +66,7 @@ namespace C4Admin.GUI
             }
         }
 
-        public void ShowSessionWindow(CmnSession s, GlobalApplicationData globalAppData, SessionWindowRequestMessage msg = null)
+        public void ShowSessionWindow(CmnSession s, GlobalApplicationData globalAppData, WindowSelectionData wrd = null)
         {
             _c4s = s.CommandSession;
             Show();

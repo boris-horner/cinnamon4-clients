@@ -15,14 +15,17 @@ using System.Xml;
 using CDCplusLib.Common;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.Interfaces
 {
     public interface IGenericFunction
     {
-        event MessageSentEventHandler MessageSent;
+        event SessionWindowRequestEventHandler SessionWindowRequest;
+        delegate void SessionWindowRequestEventHandler(WindowSelectionData wsd);
 
-        delegate void MessageSentEventHandler(IClientMessage msg);
+        event NodesModifiedEventHandler NodesModified;
+        delegate void NodesModifiedEventHandler(WindowSelectionData wsd);
 
         string GetMenuText();
 
@@ -33,7 +36,7 @@ namespace CDCplusLib.Interfaces
         bool DisplayInMenu(Dictionary<long, IRepositoryNode> dict);
         void Execute(Dictionary<long, IRepositoryNode> dict);
         Image GetIcon();
-        bool HasSubmenuItems();
-        void AppendSubmenu(ToolStripMenuItem cmi);
+        bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict);
+        void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict);
     }
 }

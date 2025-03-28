@@ -14,15 +14,13 @@
 using System.Xml;
 using CDCplusLib.Interfaces;
 using CDCplusLib.Common;
-using CDCplusLib.Messages.SessionWindowRequestData;
-using CDCplusLib.Messages;
 using CDCplusLib.Common.GUI;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
-using System.Xml.Linq;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -44,7 +42,14 @@ namespace CDCplusLib.TabControls
         private C4LifecycleState _selectedLcState;
         private bool _lcDirty;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public delegate void MessageSentEventHandler(IClientMessage msg);
 
@@ -110,7 +115,7 @@ namespace CDCplusLib.TabControls
             return Properties.Resources.lblProperties;
         }
 
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _initCompleted = false;
             _dict = dict;
@@ -319,7 +324,6 @@ namespace CDCplusLib.TabControls
                 txtLifecycleAndState.Text = "";
                 _selectedLcState = null;
             }
-            if (msg != null) MessageReceived(msg);
             _initCompleted = true;
             ActivateControls(false);
         }
@@ -352,9 +356,7 @@ namespace CDCplusLib.TabControls
         public void Save()
         {
             Cursor = Cursors.WaitCursor;
-            ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-            msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.SystemMetadataChanged;
-            // msg.Source = Me.InstanceName
+            WindowSelectionData wsd = new WindowSelectionData();
 
             Dictionary<long, CmnObject> failed = new Dictionary<long, CmnObject>();
             C4User origLock = null;
@@ -425,7 +427,7 @@ namespace CDCplusLib.TabControls
                 }
                 finally
                 {
-                    msg.ModifiedObjects.Add(o.Id, o);
+                    wsd.Selection.Add(o.Id, o);
                     if (origLock == null)
                         o.Unlock();
                 }
@@ -438,26 +440,23 @@ namespace CDCplusLib.TabControls
             }
 
             ActivateControls(false);
-            MessageSent?.Invoke(msg);
+            NodesModified?.Invoke(wsd);
             Cursor = Cursors.Arrow;
         }
 
         public void ReInit()
         {
-            Init(_dict, null);
+            Init(_dict);
         }
 
         private void lnkParentPath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (_f is object)
             {
-                BrowserSessionWindowRequestData msgData = new BrowserSessionWindowRequestData();
-                msgData.Folder = _f;
-                SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-                msg.SessionWindowRequestData = msgData;
-                // msg.Source = Me.InstanceName
-                msg.Session = _f.Session;
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Selection.Add(_f.Id, _f);
+                wsd.Modification.Add(_f.Id, _f);
+                SessionWindowRequest?.Invoke(wsd);
             }
         }
         private void UpdateLifecycleDisplay(bool diffs)
@@ -479,10 +478,6 @@ namespace CDCplusLib.TabControls
             }
         }
 
-        public void MessageReceived(IClientMessage msg)
-        {
-            // Nothing to do
-        }
 
         private void CboObjType_SelectedIndexChanged(object sender, EventArgs e)
         {

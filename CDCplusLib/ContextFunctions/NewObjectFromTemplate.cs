@@ -15,11 +15,12 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.DataModel;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -47,7 +48,7 @@ namespace CDCplusLib.ContextFunctions
             }
         }
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
             InitRootTemplateContainer();
             AppendSubmenuR(cmi, _rootTemplateContainer);
@@ -81,9 +82,10 @@ namespace CDCplusLib.ContextFunctions
                 if (_lastFolder is object)
                 {
                     newO = o.Copy(_lastFolder);
-                    ObjectsCreatedMessage msg = new ObjectsCreatedMessage();
-                    msg.CreatedObjects.Add(newO.Id, newO);
-                    MessageSent?.Invoke(msg);
+                    WindowSelectionData wsd = new WindowSelectionData();
+                    wsd.Selection.Add(newO.Id, newO);
+                    wsd.Modification.Add(newO.Id, newO);
+                    NodesModified?.Invoke(wsd);
                 }
             }
             catch (Exception ex)
@@ -92,7 +94,7 @@ namespace CDCplusLib.ContextFunctions
             }
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return true;
         }
@@ -121,7 +123,8 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

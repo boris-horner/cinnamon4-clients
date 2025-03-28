@@ -16,11 +16,11 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -31,11 +31,11 @@ namespace CDCplusLib.ContextFunctions
         private bool _deleteAllVersionsEnabled;
         private bool _useProgressBar;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -136,7 +136,7 @@ namespace CDCplusLib.ContextFunctions
 
                 if (cnt)
                 {
-                    ObjectsDeletedMessage msg = new ObjectsDeletedMessage();
+                    WindowSelectionData wsd = new WindowSelectionData();
                     // msg.Source = instanceName_
                     if (l.Count > 1)
                     {
@@ -146,7 +146,7 @@ namespace CDCplusLib.ContextFunctions
                             dlgProgress = new ProgressBarPopup(Properties.Resources.lblDelete, 0, l.Count, 0, "");
                             dlgProgress.Show();
                         }
-                        int remaining = DeleteList(l, msg.DeletedObjects, delAllRels, dlgProgress).Count;
+                        int remaining = DeleteList(l, wsd.Modification, delAllRels, dlgProgress).Count;
                         if (_useProgressBar) dlgProgress.Close();
                         if (remaining > 0)
                             StandardMessage.ShowMessage(string.Format(Properties.Resources.msgFailureDeleting, remaining.ToString()), StandardMessage.Severity.ErrorMessage);
@@ -165,16 +165,17 @@ namespace CDCplusLib.ContextFunctions
                                 ((CmnFolder)ow).Delete(false);
                             }
 
-                            msg.DeletedObjects.Add(ow.Id, ow);
+                            wsd.Modification.Add(ow.Id, ow);
                         }
                         catch (Exception ex)
                         {
                             StandardMessage.ShowMessage(string.Format(Properties.Resources.msgFailureDeleting, "1"), StandardMessage.Severity.ErrorMessage);
                         }
                     }
+                  
 
-                    if (msg.DeletedObjects.Count > 0)
-                        MessageSent?.Invoke(msg);
+                    if (wsd.Modification.Count > 0)  NodesModified?.Invoke(wsd);
+                        
                 }
             }
         }
@@ -332,7 +333,8 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {
