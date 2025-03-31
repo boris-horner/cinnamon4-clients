@@ -16,7 +16,6 @@ using System.Xml;
 using CDCplusLib.DataModel;
 using CDCplusLib.Common.GUI;
 using C4ObjectApi.Repository;
-using C4ServerConnector.Assets;
 using CDCplusLib.Common;
 
 namespace CDCplusLib.TabControls.SearchEditorNodes

@@ -14,15 +14,26 @@
 using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
+using C4ServerConnector;
+using C4ServerConnector.Assets;
+using System.Xml;
 
 namespace CDCplusLib.DataModel
 {
     public class DefaultIconService : IIconService, ISessionExtension
     {
-
+        private CmnSession _s;
+        private C4SessionConfiguration _c4sc;
+        private XmlElement _configEl;
         public DefaultIconService()
         {
             LoadImages();
+        }
+        public void Init(CmnSession s, System.Xml.XmlElement configEl)
+        {
+            _s = s;
+            _c4sc = _s.SessionConfig.C4Sc;
+            _configEl = configEl;
         }
 
         private void LoadImages()
@@ -122,6 +133,58 @@ namespace CDCplusLib.DataModel
             }
         }
 
+        public string GetIconKey(IC4Node c4n)
+        {
+            if (c4n is C4Folder)
+            {
+                C4Folder f = (C4Folder)c4n;
+                return "folder";
+            }
+            else
+            {
+                C4Object o = (C4Object)c4n;
+                switch (_c4sc.ObjectTypesById[o.TypeId].Name)
+                {
+                    case "_search":
+                        {
+                            return "find";
+                        }
+
+                    case "_notification":
+                        {
+                            return "notification";
+                        }
+
+                    case "_task":
+                        {
+                            return "notification";   // TODO: define a separate icon
+                        }
+
+                    case "_config":
+                        {
+                            return "config";
+                        }
+
+                    case "translation_task":
+                        {
+                            return "translation";
+                        }
+                }
+
+                if (o.LockedId is null)
+                {
+                    return "document";
+                }
+                else if (o.LockedId == _s.User.Id)
+                {
+                    return "document_locked_self";
+                }
+                else
+                {
+                    return "document_locked_other";
+                }
+            }
+        }
 
         private void AddIcon(string key, string name, string smallImagePath, string largeImagePath, bool loadSmallOnly)
         {
@@ -141,9 +204,5 @@ namespace CDCplusLib.DataModel
 
         public ImageList GlobalSmallImageList { get; private set; }
 
-        public void Init(CmnSession s, System.Xml.XmlElement configEl)
-        {
-            // nothing to do
-        }
     }
 }

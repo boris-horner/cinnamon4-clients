@@ -1,7 +1,6 @@
 ﻿using C4Admin.Global;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
-using System;
 
 namespace C4Admin.GUI.AssetEditors
 {

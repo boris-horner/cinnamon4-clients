@@ -16,7 +16,8 @@ using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
-using CDCplusLib.Messages;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -27,12 +28,12 @@ namespace CDCplusLib.ContextFunctions
         private GlobalApplicationData globalAppData_;
 
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -43,17 +44,17 @@ namespace CDCplusLib.ContextFunctions
         }
         public void Execute(Dictionary<long, IRepositoryNode> l)
         {
-            ObjectsDeletedMessage msg = new ObjectsDeletedMessage();
-            if (l is not null)
+            WindowSelectionData wsd = new WindowSelectionData();
             {
-                foreach (IRepositoryNode ow in l.Values)
+                if (l is not null) foreach (IRepositoryNode ow in l.Values)
                 {
                     ow.Link.Delete();
-                    msg.DeletedObjects.Add(ow.Id, ow);
+                    wsd.Selection.Add(ow.Id, ow);
+                    wsd.Modification.Add(ow.Id, ow);
                 }
             }
-            if (msg.DeletedObjects.Count > 0)
-                MessageSent?.Invoke(msg);
+            if (wsd.Selection.Count > 0)
+                NodesModified?.Invoke(wsd); 
         }
         public bool IsValid(Dictionary<long, IRepositoryNode> dict)
         {
@@ -80,7 +81,8 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

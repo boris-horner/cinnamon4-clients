@@ -20,23 +20,28 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using System.Reflection;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.DataModel
 {
     public class ContextFunctionsContainer
     {
-        public event ISessionWindow.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
+
         private CmnSession _s;
         private GlobalApplicationData _gad;
         private MainWindow _parentWindow;
         public enum MenuType { Object, Folder, List, Session }
         public Dictionary<string, IGenericFunction> Functions { get; private set; }
         public IGenericFunction DefaultObjectFunction { get; }
+        public bool EventsActive { get; set; }
         public ContextFunctionsContainer(CmnSession s, GlobalApplicationData gad, MainWindow parentWindow)
         {
             _s = s;
             _gad = gad;
             _parentWindow = parentWindow;
+            EventsActive = false;
             Functions = new Dictionary<string, IGenericFunction>();
             foreach (XmlElement gfEl in _s.UserConfig.DocumentElement.SelectNodes("classes/functions/function"))
             {
@@ -52,7 +57,8 @@ namespace CDCplusLib.DataModel
                             throw new ApplicationException(string.Format("Function {0}.{1} has not been found.", gfEl.GetAttribute("assembly"), gfEl.GetAttribute("type")));
                         }
 
-                        gf.MessageSent += MessageSentHandler;
+                        gf.SessionWindowRequest += SessionWindowRequestEventHandler;
+                        gf.NodesModified += NodesModifiedEventHandler;
                         gf.Reset(_s, _gad, gfEl);
                         gf.InstanceName = gf.GetType().ToString();
                         Functions.Add(gf.InstanceName, gf);
@@ -69,10 +75,15 @@ namespace CDCplusLib.DataModel
                     StandardMessage.ShowMessage("Failure loading function " + gfEl.GetAttribute("assembly") + "." + gfEl.GetAttribute("type"), StandardMessage.Severity.WarningMessage, null, ex);
                 }
             }
+            EventsActive = true;
         }
-        protected virtual void MessageSentHandler(IClientMessage msg)
+        protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
         {
-            MessageSent?.Invoke(msg); // forward to dispatcher
+            if (EventsActive) SessionWindowRequest?.Invoke(wsd);
+        }
+        protected virtual void NodesModifiedEventHandler(WindowSelectionData wsd)
+        {
+            if (EventsActive) NodesModified?.Invoke(wsd);
         }
         public void ShowContextMenu(Dictionary<long, IRepositoryNode> sel, Control referenceControl, Point pos)
         {
@@ -159,7 +170,7 @@ namespace CDCplusLib.DataModel
                                             if (cmi.Enabled)
                                             {
                                                 cmi.Tag = new ContextFunctionPayload(fn, sel);
-                                                if (fn.HasSubmenuItems()) fn.AppendSubmenu(cmi);
+                                                if (fn.HasSubmenuItems(sel)) fn.AppendSubmenu(cmi, sel);
                                                 cmi.Click += HandleContextMenuClick;
                                             }
                                             break;
@@ -168,7 +179,7 @@ namespace CDCplusLib.DataModel
                                             if (cmi.Enabled)
                                             {
                                                 cmi.Tag = new ContextFunctionPayload(fn, _s);
-                                                if (fn.HasSubmenuItems()) fn.AppendSubmenu(cmi);
+                                                if (fn.HasSubmenuItems(sel)) fn.AppendSubmenu(cmi, sel);
                                                 cmi.Click += HandleContextMenuClick;
                                             }
                                             break;

@@ -14,10 +14,11 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -27,12 +28,12 @@ namespace CDCplusLib.ContextFunctions
 
         private GlobalApplicationData _gad;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -54,11 +55,10 @@ namespace CDCplusLib.ContextFunctions
                 {
                     CmnObject o = (CmnObject)ow;
                     o.CancelCheckout();
-                    ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-                    msg.ModifiedObjects.Add(o.Id, o);
-                    msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.CheckoutCancelled;
-                    // msg.Source = instanceName_
-                    MessageSent?.Invoke(msg);
+                    WindowSelectionData wsd = new WindowSelectionData();
+                    wsd.Selection.Add(o.Id, o);
+                    wsd.Modification.Add(o.Id, o);
+                    NodesModified?.Invoke(wsd);
                 }
             }
         }
@@ -91,7 +91,8 @@ namespace CDCplusLib.ContextFunctions
         }
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

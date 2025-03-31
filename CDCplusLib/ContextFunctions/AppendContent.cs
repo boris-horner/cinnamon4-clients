@@ -15,13 +15,13 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Exceptions;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -31,12 +31,12 @@ namespace CDCplusLib.ContextFunctions
 
         private GlobalApplicationData _gad;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -80,11 +80,11 @@ namespace CDCplusLib.ContextFunctions
                                 newVersion.Lock();
                                 o.CopyToExisting(newVersion, false, o.Session.SessionConfig.CopyMetasetTypeIds);
                                 newVersion.Unlock();
-                                ObjectVersionedMessage msg = new ObjectVersionedMessage();
-                                msg.OldVersion = o;
-                                msg.NewVersion = newVersion;
-                                // msg.Source = instanceName_
-                                MessageSent?.Invoke(msg);
+                                WindowSelectionData wsd = new WindowSelectionData();
+                                wsd.Modification.Add(o.Id, o);
+                                wsd.Selection.Add(newVersion.Id, newVersion);
+                                wsd.Modification.Add(newVersion.Id, newVersion);
+                                NodesModified?.Invoke(wsd);
                             }
 
 
@@ -117,11 +117,10 @@ namespace CDCplusLib.ContextFunctions
                             o.Lock();
                             C4Format fmt = fmtByExtension[ext];
                             o.CheckinFromFile(ci.CheckinFile, fmt, false, ci.ChildUpdateBehavior);
-                            ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-                            msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.Unspecified;
-                            msg.ModifiedObjects.Add(o.Id, o);
-                            // msg.Source = instanceName_
-                            MessageSent?.Invoke(msg);
+                            WindowSelectionData wsd = new WindowSelectionData();
+                            wsd.Modification.Add(o.Id, o);
+                            wsd.Selection.Add(o.Id, o);
+                            NodesModified?.Invoke(wsd);
                         }
                         else
                         {
@@ -158,7 +157,8 @@ namespace CDCplusLib.ContextFunctions
             return o is not null;
         }
         public string InstanceName { get; set; }
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

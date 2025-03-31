@@ -14,14 +14,13 @@
 using System.Xml;
 using CDCplusLib.Interfaces;
 using CDCplusLib.Common;
-using CDCplusLib.Messages.SessionWindowRequestData;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector;
-using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.TabControls
 {
@@ -43,7 +42,14 @@ namespace CDCplusLib.TabControls
         private Dictionary<long, IRepositoryNode> _dict;
 
         //public ISynchronizeInvoke EventSyncInvoke { get; set; }
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public ObjectPropertiesTabControl()
         {
@@ -55,6 +61,7 @@ namespace CDCplusLib.TabControls
             //SetControlsEnabledState(false);
             _enableEvents = true;
         }
+
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }
         public bool AutoRefresh { get { return true; } }
@@ -177,7 +184,7 @@ namespace CDCplusLib.TabControls
             chkContentChanged.Checked = _o.ContentChanged;
             chkMetadataChanged.Checked = _o.MetadataChanged;
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _enableEvents = false;
             _dict = dict;
@@ -203,7 +210,6 @@ namespace CDCplusLib.TabControls
                     ClearGui();
                 }
             }
-            if (msg != null) MessageReceived(msg);
             _enableEvents = true;
             SetControlsEnabledState(false);
         }
@@ -215,15 +221,9 @@ namespace CDCplusLib.TabControls
             if (ct != IGenericControl.ContextType.Object) return false;
             return true;
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            // nothing to do
-        }
-
-
         public void ReInit()
         {
-            Init(_dict, null);
+            Init(_dict);
         }
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, System.Xml.XmlElement configEl)
@@ -286,9 +286,10 @@ namespace CDCplusLib.TabControls
             {
                 if (origLock == null) _o.Unlock();
                 SetControlsEnabledState(false);
-                ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-                msg.ModifiedObjects.Add(_o.Id, _o);
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Selection.Add(_o.Id, _o);
+                wsd.Modification.Add(_o.Id, _o);
+                NodesModified?.Invoke(wsd);
             }
         }
 
@@ -325,12 +326,10 @@ namespace CDCplusLib.TabControls
 
         private void lnkParentPath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            BrowserSessionWindowRequestData msgData = new BrowserSessionWindowRequestData();
-            msgData.Folder = _o.Parent;
-            SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-            msg.SessionWindowRequestData = msgData;
-            msg.Session = _o.Session;
-            MessageSent?.Invoke(msg);
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.Selection.Add(_o.Id, _o);
+            wsd.Modification.Add(_o.Id, _o);
+            SessionWindowRequest?.Invoke(wsd);
         }
 
         private void cmdSelectLifecycle_Click(object sender, EventArgs e)

@@ -12,29 +12,37 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using CDCplusLib.Common;
-using CDCplusLib.Messages;
 using C4ObjectApi.Repository;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.Interfaces
 {
+    public delegate void WindowClosedEventHandler(ISessionWindow sw);
+    public delegate void SessionWindowRequestEventHandler(WindowSelectionData wsd);
+    public delegate void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position);
+    public delegate void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw);
+    public delegate void ListSelectionChangedEventHandler(WindowSelectionData wsd);
+    public delegate void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type);
+    public delegate void NodesModifiedEventHandler(WindowSelectionData wsd);
+    public delegate void RefreshRequestEventHandler();
+    public delegate void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt);
     public interface ISessionWindow
     {
         event WindowClosedEventHandler WindowClosed;
+        event SessionWindowRequestEventHandler SessionWindowRequest;
+        event ContextMenuRequestEventHandler ContextMenuRequest;
+        event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        event ListSelectionChangedEventHandler ListSelectionChanged;
+        event FunctionRequestEventHandler FunctionRequest;
+        event NodesModifiedEventHandler NodesModified;
+        event RefreshRequestEventHandler RefreshRequest;
+        event KeyPressedEventHandler KeyPressedEvent;
 
-        delegate void WindowClosedEventHandler(ISessionWindow sw);
-
-        event MessageSentEventHandler MessageSent;
-
-        delegate void MessageSentEventHandler(IClientMessage msg);
-
-        event PathChangedEventHandler PathChanged;
-
-        delegate void PathChangedEventHandler(string path, ISessionWindow sw);
-
-        void ShowSessionWindow(CmnSession s, GlobalApplicationData globalAppData, SessionWindowRequestMessage msg = null);
+        void ShowSessionWindow(CmnSession s, GlobalApplicationData globalAppData, WindowSelectionData wrd = null);
         void CloseWindow();
         void WindowTop();
 
         string Guid { get; }
+        string WindowTitle { get; }
     }
 }

@@ -14,13 +14,14 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Exceptions;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -40,11 +41,11 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.mnuCreateNewVersion;
         }
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -113,10 +114,11 @@ namespace CDCplusLib.ContextFunctions
                     o.Session.CommandSession.CreateRelations(relations);
                 }
 
-                ObjectVersionedMessage msg = new ObjectVersionedMessage();
-                msg.OldVersion = o;
-                msg.NewVersion = newVersion;
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Modification.Add(o.Id, o);
+                wsd.Selection.Add(newVersion.Id, newVersion);
+                wsd.Modification.Add(newVersion.Id, newVersion);
+                NodesModified?.Invoke(wsd);
             }
             catch (CmnDataModelException ex)
             {
@@ -152,7 +154,8 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

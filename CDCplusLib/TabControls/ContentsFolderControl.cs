@@ -14,12 +14,11 @@
 using CDCplusLib.Interfaces;
 using System.Xml;
 using CDCplusLib.Common;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using CDCplusLib.DataModel;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -30,8 +29,8 @@ namespace CDCplusLib.TabControls
         private CmnFolder _f;
         private GlobalApplicationData _gad;
         private XmlElement _configEl;
-        private bool _initCompleted = false;
         private XmlElement _rldConfigEl;
+        private bool _initializing;
         private Dictionary<string, string> _allowedCustomFields;
         private string _defaultConfigName;
         private CmnSession _s;
@@ -43,10 +42,19 @@ namespace CDCplusLib.TabControls
         //private Dictionary<string, RldColumnConfiguration> _columnConfigurations;
         //private bool _settingsDirty;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
+
         public ContentsFolderControl()
         {
             InitializeComponent();
+            _initializing = true;
             lvseSettings.Visible = false;
             splTranslations.Panel2Collapsed = true;
             _defaultConfigName = null;
@@ -54,6 +62,7 @@ namespace CDCplusLib.TabControls
             _tt.SetToolTip(cmdSettings, Properties.Resources.lblShowSettings);
             _tt.SetToolTip(cmdTranslations, Properties.Resources.lblShowTranslations);
         }
+
         private void InitViewCombo()
         {
             cboView.Items.Clear();
@@ -91,32 +100,22 @@ namespace CDCplusLib.TabControls
             return Properties.Resources.tabShowFolderContents;
         }
 
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _dict = dict;
             CmnFolder f = DictionaryHelper.GetSingleFolder(_dict);
-            if(msg!=null && msg.GetType()==typeof(SessionWindowRequestMessage))
-            {
-                SessionWindowRequestMessage swrm = (SessionWindowRequestMessage)msg;
-                if (swrm.SessionWindowRequestData.GetType()==typeof(BrowserSessionWindowRequestData)) 
-                {
-                    if(((BrowserSessionWindowRequestData)swrm.SessionWindowRequestData).ContainsNonLatestHead)
-                    {
-                        if (_allVersionFilter != null) cboVersionDisplay.SelectedItem = _allVersionFilter;
-                    }
-                }
-            }
             if (f != null)
             {
                 Cursor = Cursors.WaitCursor;
+                rldNodes.EventsActive = false;
+                _initializing = true;
                 _f = f;
-                _initCompleted = false;
                 IFolderFilter filter = (IFolderFilter)cboVersionDisplay.SelectedItem;
                 rldNodes.NodeList = filter.GetNodeList(f);
-                _initCompleted = true;
+                _initializing = false;
+                rldNodes.EventsActive = true;
                 Cursor = null;
             }
-            if (msg != null) MessageReceived(msg);
         }
 
         public bool IsValid(Dictionary<long, IRepositoryNode> dict, IGenericControl.ContextType ct)
@@ -126,44 +125,10 @@ namespace CDCplusLib.TabControls
             CmnFolder f = DictionaryHelper.GetSingleFolder(dict);
             return (f != null);
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            if(msg.GetType()==typeof(ObjectVersionedMessage))
-            {
-                Dictionary<long, IRepositoryNode> sel = new Dictionary<long, IRepositoryNode>();
-                CmnObject newO = ((ObjectVersionedMessage)msg).NewVersion;
-                sel.Add(newO.Id, newO);
-                rldNodes.Selection = sel;
-            }
-            else if (msg.GetType() == typeof(SetTreeContextSelectionMessage))
-            {
-                SetTreeContextSelectionMessage stcsm = (SetTreeContextSelectionMessage)msg;
-                Dictionary<long, IRepositoryNode> sel = new Dictionary<long, IRepositoryNode>();
-                foreach (CmnObject selO in stcsm.SelectedObjects.Values) sel.Add(selO.Id, selO);
-                foreach (CmnFolder selF in stcsm.SelectedFolders.Values) sel.Add(selF.Id, selF);
-                rldNodes.Selection = sel;
-            }
-            else if (msg.GetType() == typeof(ObjectsCreatedMessage))
-            {
-                ObjectsCreatedMessage ocm = (ObjectsCreatedMessage)msg;
-                Dictionary<long, IRepositoryNode> sel = new Dictionary<long, IRepositoryNode>();
-                foreach (IRepositoryNode crOw in ocm.CreatedObjects.Values) sel.Add(crOw.Id, crOw);
-                rldNodes.Selection = sel;
-            }
-            else if (msg.GetType() == typeof(SessionWindowRequestMessage))
-            {
-                SessionWindowRequestMessage swrm = (SessionWindowRequestMessage)msg;
-                if (swrm.SessionWindowRequestData.GetType() == typeof(BrowserSessionWindowRequestData))
-                {
-                    BrowserSessionWindowRequestData bswrd = (BrowserSessionWindowRequestData)swrm.SessionWindowRequestData;
-                    rldNodes.Selection = bswrd.Selection;
-                }
-            }
-        }
 
         public void ReInit()
         {
-            Init(_dict, null);
+            Init(_dict);
         }
 
         public void Reset(CmnSession s, GlobalApplicationData gad, XmlElement configEl)
@@ -266,18 +231,18 @@ namespace CDCplusLib.TabControls
 
         private void cboColumnSettings_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_initCompleted)
+            if (rldNodes.EventsActive && !_initializing)
             {
-                _initCompleted = false;
+                rldNodes.EventsActive = false;
                 Reset(_s, _gad, _configEl);
                 ReInit();
-                _initCompleted = true;
+                rldNodes.EventsActive = true;
             }
         }
 
         private void cboVersionDisplay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_initCompleted) Init(_dict, null);
+            if (rldNodes.EventsActive) Init(_dict);
         }
 
         private void cboView_SelectedIndexChanged(object sender, EventArgs e)
@@ -295,17 +260,31 @@ namespace CDCplusLib.TabControls
                     break;
             }
         }
-        private void rldNodes_MessageSent(IClientMessage msg)
+        private void rldNodes_ListSelectionChanged(WindowSelectionData wsd)
         {
-            if(!splTranslations.Panel2Collapsed)
-            {
-                if(msg.GetType()==typeof(ListSelectionChangeMessage))
-                {
-                    ListSelectionChangeMessage lscm = (ListSelectionChangeMessage)msg;
-                    UpdateTranslations(lscm.ListSelection);
-                }
-            }
-            MessageSent?.Invoke(msg);
+            if (!splTranslations.Panel2Collapsed) UpdateTranslations(wsd.Selection);
+            ListSelectionChanged?.Invoke(wsd);
+        }
+        private void rldNodes_TreeSelectionChanged(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            TreeSelectionChanged?.Invoke(wsd, null);
+        }
+        private void rldNodes_ContextMenuRequest(WindowSelectionData wsd, Point position)
+        {
+            if (wsd.Selection.Count() == 0) wsd.Selection.Add(_f.Id, _f);
+            ContextMenuRequest?.Invoke(wsd, position);
+        }
+        private void rldNodes_FunctionRequest(WindowSelectionData wsd, string assembly, string type)
+        {
+            FunctionRequest?.Invoke(wsd, assembly, type);
+        }
+        private void rldNodes_KeyPressedEvent(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
+        }
+        private void rldNodes_RefreshRequest()
+        {
+            RefreshRequest?.Invoke();
         }
 
         private void cmdSettings_Click(object sender, EventArgs e)

@@ -20,7 +20,6 @@ using CDCplusLib.Common;
 using C4ObjectApi.Repository;
 using CDCplus.Properties;
 using C4GeneralGui.GuiElements;
-using System.Collections.Generic;
 
 namespace CDCplus.Controls
 {

@@ -16,6 +16,7 @@ using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -31,9 +32,15 @@ namespace CDCplusLib.Common.GUI
         private string _lastSelectedTabName;
         private readonly object _tabContextLock = new object();
 
-        public event MessageSentEventHandler MessageSent;
-
-        public delegate void MessageSentEventHandler(IClientMessage msg);
+        public SessionWindowRequestEventHandler SessionWindowRequest;
+        public ListSelectionChangedEventHandler ListSelectionChanged;
+        public TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public ContextMenuRequestEventHandler ContextMenuRequest;
+        public FunctionRequestEventHandler FunctionRequest;
+        public NodesModifiedEventHandler NodesModified;
+        public KeyPressedEventHandler KeyPressedEvent;
+        public RefreshRequestEventHandler RefreshRequest;
+        public bool EventsActive { get; set; }
         public Dictionary<long, IRepositoryNode> ControlSelection
         {
             get
@@ -59,6 +66,7 @@ namespace CDCplusLib.Common.GUI
         public ContextTabControlContainer()
         {
             InitializeComponent();
+            EventsActive = false;
         }
         public void Init(CmnSession s, bool listContext, GlobalApplicationData globalAppData)
         {
@@ -76,7 +84,7 @@ namespace CDCplusLib.Common.GUI
                 if (tabContext.SelectedTab!=null && tabContext.SelectedTab.Controls.Count>0)
                 {
                     IGenericControl listGc = (IGenericControl)tabContext.SelectedTab.Controls[0];
-                    listGc.Init(_context, null);
+                    listGc.Init(_context);
                 }
             }
             catch (NotImplementedException ex)
@@ -113,18 +121,14 @@ namespace CDCplusLib.Common.GUI
 
             Enabled = true;
         }
-
-        public void MessageReceived(IClientMessage msg)
-        {
-            if(tabContext.SelectedTab!=null)
-            {
-                IGenericControl ctl = (IGenericControl)tabContext.SelectedTab.Controls[0];
-                if (ctl is object)
-                {
-                    ctl.MessageReceived(msg);
-                }
-            }
-        }
+        //public SessionWindowRequestEventHandler SessionWindowRequest;
+        //public ListSelectionChangedEventHandler ListSelectionChanged;
+        //public TreeSelectionChangedEventHandler TreeSelectionChanged;
+        //public ContextMenuRequestEventHandler ContextMenuRequest;
+        //public FunctionRequestEventHandler FunctionRequest;
+        //public NodesModifiedEventHandler NodesModified;
+        //public KeyPressedEventHandler KeyPressedEvent;
+        //public RefreshRequestEventHandler RefreshRequest;
 
         protected virtual void InitTabControl()
         {
@@ -146,7 +150,13 @@ namespace CDCplusLib.Common.GUI
                     }
                     if(gc.ListContext==_listContext)
                     {
-                        gc.MessageSent += MessageSentHandler;
+                        gc.SessionWindowRequest += SessionWindowRequestHandler;
+                        gc.ListSelectionChanged += ListSelectionChangedHandler;
+                        gc.TreeSelectionChanged += TreeSelectionChangedHandler;
+                        gc.ContextMenuRequest += ContextMenuRequestEventHandler;
+                        gc.NodesModified += NodesModifiedEventHandler;
+                        //gc.KeyPressed += FunctionRequestEventHandler;
+                        gc.FunctionRequest += FunctionRequestEventHandler;
                         gc.Reset(_s, _gad, ocEl);
                         TabPage tp = new TabPage(gc.GetTabText());
                         tp.Name = i.ToString();
@@ -166,24 +176,44 @@ namespace CDCplusLib.Common.GUI
             _currentTabFingerprint = "";
         }
 
-        protected virtual void MessageSentHandler(IClientMessage msg)
+        protected virtual void SessionWindowRequestHandler(WindowSelectionData wsd)
         {
-            // TODO: define required messages
-            switch (true)
-            {
-                default:
-                    {
-                        MessageSent?.Invoke(msg);
-                        break;
-                    }
-            }
+            if (EventsActive) SessionWindowRequest?.Invoke(wsd);
+        }
+        protected virtual void ListSelectionChangedHandler(WindowSelectionData wsd)
+        {
+            if (EventsActive) ListSelectionChanged?.Invoke(wsd);
+        }
+        protected virtual void TreeSelectionChangedHandler(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            if (EventsActive) TreeSelectionChanged?.Invoke(wsd, null);
+        }
+        protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
+        {
+            if (EventsActive) ContextMenuRequest?.Invoke(wsd, position);
+        }
+        protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type)
+        {
+            if (EventsActive) FunctionRequest?.Invoke(wsd, assembly, type);
+        }
+        protected virtual void NodesModifiedEventHandler(WindowSelectionData wsd)
+        {
+            if (EventsActive) NodesModified?.Invoke(wsd);
+        }
+        protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            if (EventsActive) KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
+        }
+        protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
+        {
+            if (EventsActive) RefreshRequest?.Invoke();
         }
 
-        public void UpdateTabControl(Dictionary<long, IRepositoryNode> context, IGenericControl.ContextType ct, IClientMessage msg)
+        public void UpdateTabControl(Dictionary<long, IRepositoryNode> context, IGenericControl.ContextType ct, WindowSelectionData wsd)
         {
             if (InvokeRequired)
             {
-                Invoke((MethodInvoker)(() => UpdateTabControl(context, ct, msg)));
+                Invoke((MethodInvoker)(() => UpdateTabControl(context, ct, wsd)));
                 return;
             }
 
@@ -251,7 +281,7 @@ namespace CDCplusLib.Common.GUI
                     if (tabContext.SelectedTab != null && tabContext.SelectedTab.Controls.Count > 0)
                     {
                         IGenericControl ctl = tabContext.SelectedTab.Controls[0] as IGenericControl;
-                        ctl?.Init(_context, msg);
+                        ctl?.Init(_context);
                     }
 
                     _currentTabFingerprint = newTabFingerprint;
@@ -267,88 +297,6 @@ namespace CDCplusLib.Common.GUI
                     tabContext.ResumeLayout();
                 }
             }
-        }        //public void UpdateTabControl(Dictionary<long, IRepositoryNode> context, IGenericControl.ContextType ct, IClientMessage msg)
-        //{
-        //    if (InvokeRequired)
-        //    {
-        //        Invoke((MethodInvoker)(() => UpdateTabControl(context, ct, msg)));
-        //        return;
-        //    }
-
-        //    lock (_tabContextLock)
-        //    {
-        //        try
-        //        {
-        //            tabContext.SuspendLayout();
-        //            _context = context;
-
-        //            string newTabFingerprint = null;
-        //            foreach (string k in _tabPages.Keys)
-        //            {
-        //                TabPage tp = _tabPages[k];
-        //                if (tp.Controls.Count > 0)
-        //                {
-        //                    IGenericControl ctl = tp.Controls[0] as IGenericControl;
-        //                    if (ctl != null && ctl.IsValid(_context, ct))
-        //                    {
-        //                        if (newTabFingerprint == null)
-        //                        {
-        //                            newTabFingerprint = k;
-        //                        }
-        //                        else
-        //                        {
-        //                            newTabFingerprint += "#" + k;
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-        //            TabPage sel = tabContext.SelectedTab;
-        //            if (sel != null) _lastSelectedTabName = sel.Name;
-
-        //            if (_currentTabFingerprint != newTabFingerprint)
-        //            {
-        //                tabContext.TabPages.Clear();
-        //                foreach (string k in _tabPages.Keys)
-        //                {
-        //                    TabPage tp = _tabPages[k];
-        //                    if (tp.Controls.Count > 0)
-        //                    {
-        //                        IGenericControl ctl = tp.Controls[0] as IGenericControl;
-        //                        if (ctl != null && ctl.IsValid(_context, ct))
-        //                        {
-        //                            tabContext.TabPages.Add(tp);
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-        //            if (tabContext.TabPages.ContainsKey(_lastSelectedTabName))
-        //            {
-        //                tabContext.SelectTab(_lastSelectedTabName);
-        //            }
-        //            else if (tabContext.TabPages.Count > 0)
-        //            {
-        //                tabContext.SelectTab(0);
-        //            }
-
-        //            if (tabContext.SelectedTab != null && tabContext.SelectedTab.Controls.Count > 0)
-        //            {
-        //                IGenericControl ctl = tabContext.SelectedTab.Controls[0] as IGenericControl;
-        //                ctl?.Init(_context, msg);
-        //            }
-
-        //            _currentTabFingerprint = newTabFingerprint;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            StandardMessage.ShowMessage(Properties.Resources.exFailureUpdatingTabs, StandardMessage.Severity.ErrorMessage, this, ex);
-        //        }
-        //        finally
-        //        {
-        //            tabContext.ResumeLayout();
-        //        }
-        //    }
-        //}
+        }
     }
 }
