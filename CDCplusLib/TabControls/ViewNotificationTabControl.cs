@@ -186,7 +186,9 @@ namespace CDCplusLib.TabControls
         private void lnkRelatesTo_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
             WindowSelectionData wsd = new WindowSelectionData();
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
             wsd.Selection = new Dictionary<long, IRepositoryNode> { { _relatesToO.Id, _relatesToO } };
+            wsd.SelectedFolder = _relatesToO.Parent;
             SessionWindowRequest?.Invoke(wsd);
 
         }

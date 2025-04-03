@@ -41,6 +41,7 @@ namespace C4GeneralGui.GuiElements
         {
             InitializeComponent();
 
+            this.TextChanged += new System.EventHandler(this.ValidatingTextBox_TextChanged);
             RegularExpression = null;
             ValidColor = Color.White;
             ValidReadOnlyColor = SystemColors.Control;

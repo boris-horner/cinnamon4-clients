@@ -17,6 +17,7 @@ using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -47,12 +48,14 @@ namespace CDCplusLib.ContextFunctions
             if(dict.Values.First().GetType() == typeof(CmnObject))
             {
                 CmnObject o = dict.Values.First() as CmnObject;
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
                 wsd.Selection.Add(o.Id, o);
                 wsd.SelectedFolder = o.Parent;
             }
             else
             {
                 CmnFolder f = dict.Values.First() as CmnFolder;
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
                 wsd.Selection.Add(f.Id, f);
                 wsd.SelectedFolder = f;
             }

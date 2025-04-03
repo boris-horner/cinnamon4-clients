@@ -2,6 +2,7 @@
 using C4ObjectApi.Repository;
 using C4ServerConnector;
 using CDCplusLib.Common;
+using CDCplusLib.DataModel;
 using CDCplusLib.EventData;
 using CDCplusLib.Interfaces;
 
@@ -21,6 +22,7 @@ namespace C4Admin.GUI
             }
         }
 
+        public ContextFunctionsContainer ContextFunctions { get; set; }
         public event WindowClosedEventHandler WindowClosed;
         public event SessionWindowRequestEventHandler SessionWindowRequest;
         public event TreeSelectionChangedEventHandler TreeSelectionChanged;
