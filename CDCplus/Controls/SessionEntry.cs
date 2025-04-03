@@ -19,6 +19,7 @@ using System.Xml;
 using C4Admin.GUI;
 using C4ObjectApi.Repository;
 using CDCplusLib.Common;
+using CDCplusLib.DataModel;
 using CDCplusLib.EventData;
 using CDCplusLib.Interfaces;
 
@@ -40,8 +41,9 @@ namespace CDCplus.Controls
 		private Dictionary<string, WindowEntry> _windowLookup;
 		private string _notificationQuery;
 		private HashSet<long> _prevIds;
+		private ContextFunctionsContainer _contextFunctionsContainer;
 
-		public SessionEntry()
+        public SessionEntry()
 		{
 			InitializeComponent();
 		}
@@ -171,7 +173,9 @@ namespace CDCplus.Controls
 				wsd.SelectedFolder= _s.RootFolder;
 			}
 
-			sw.ShowSessionWindow(_s, _gad, wsd);
+            if (_contextFunctionsContainer != null) sw.ContextFunctions = _contextFunctionsContainer;
+            sw.ShowSessionWindow(_s, _gad, wsd);
+			if (_contextFunctionsContainer == null) _contextFunctionsContainer = sw.ContextFunctions;
 		}
 		private void AddAdminWindow()
 		{

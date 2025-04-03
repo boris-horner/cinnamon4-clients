@@ -454,8 +454,8 @@ namespace CDCplusLib.TabControls
             if (_f is object)
             {
                 WindowSelectionData wsd = new WindowSelectionData();
-                wsd.Selection.Add(_f.Id, _f);
-                wsd.Modification.Add(_f.Id, _f);
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
+                wsd.SelectedFolder = _f;
                 SessionWindowRequest?.Invoke(wsd);
             }
         }

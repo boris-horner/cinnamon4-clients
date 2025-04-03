@@ -14,6 +14,7 @@
 using CDCplusLib.Common;
 using C4ObjectApi.Repository;
 using CDCplusLib.EventData;
+using CDCplusLib.DataModel;
 
 namespace CDCplusLib.Interfaces
 {
@@ -44,5 +45,6 @@ namespace CDCplusLib.Interfaces
 
         string Guid { get; }
         string WindowTitle { get; }
+        ContextFunctionsContainer ContextFunctions { get; set; }
     }
 }

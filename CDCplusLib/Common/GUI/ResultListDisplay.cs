@@ -162,6 +162,7 @@ namespace CDCplusLib.Common.GUI
                     lvwNodeList.Visible = true;
                     lvwNodeList.View = View.Details;
                     lvwNodeList.CheckBoxes = true;
+                    _lvwSort.Active = false;
                     foreach (IRepositoryNode ow in _nl.List.Values)
                     {
                         string iconKey = (_nl.IconOverrides != null && _nl.IconOverrides.ContainsKey(ow.Id))?_nl.IconOverrides[ow.Id] :_iconService.GetIconKey(ow);
@@ -204,6 +205,7 @@ namespace CDCplusLib.Common.GUI
                         //lvwNodeList.Focus();
                         // SelectionChanged()
                     }
+                    _lvwSort.Active = true;
                     Selection = selNl;
 
                     foreach (long id in lvsi)

@@ -29,12 +29,6 @@ namespace C4GeneralGui.GuiElements
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // ValidatingTextBox
-            // 
-            this.TextChanged += new System.EventHandler(this.ValidatingTextBox_TextChanged);
-            this.ResumeLayout(false);
 
         }
 

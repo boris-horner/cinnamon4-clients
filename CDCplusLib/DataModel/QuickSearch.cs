@@ -18,6 +18,7 @@ using C4ObjectApi.Operations.Search;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
 using C4ObjectApi.Interfaces;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.DataModel
 {
@@ -140,7 +141,8 @@ namespace CDCplusLib.DataModel
             }
 
             WindowSelectionData wsd = new WindowSelectionData();
-            wsd.Selection = results;
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Results;
+            wsd.ResultList = results;
             SessionWindowRequest?.Invoke(wsd);
         }
     }
