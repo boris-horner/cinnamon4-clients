@@ -330,9 +330,21 @@ namespace CDCplusLib.Common.GUI
                 EventsActive = false;
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.RootNodeType = GetRoodNodeType(tvwSession.SelectedNode);
-                if (wsd.RootNodeType==RootNodeTypes.Results) wsd.SelectedFolder = null;
-                else if (wsd.RootNodeType == RootNodeTypes.Tasks) wsd.SelectedFolder = null;
-                else if (wsd.RootNodeType == RootNodeTypes.Locked) wsd.SelectedFolder = null;
+                if (wsd.RootNodeType==RootNodeTypes.Results) 
+                { 
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
+                else if (wsd.RootNodeType == RootNodeTypes.Tasks)
+                {
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
+                else if (wsd.RootNodeType == RootNodeTypes.Locked)
+                {
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
                 else if (tvwSession.SelectedNode.Tag is CmnFolder) wsd.SelectedFolder = tvwSession.SelectedNode.Tag as CmnFolder;
                 else wsd.SelectedFolder = (tvwSession.SelectedNode.Tag as CmnSession).RootFolder;
 
