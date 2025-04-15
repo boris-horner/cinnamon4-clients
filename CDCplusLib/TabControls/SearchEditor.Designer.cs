@@ -47,6 +47,7 @@
             chkAnyTerm = new CheckBox();
             chkNotTerm = new CheckBox();
             panel7 = new Panel();
+            vtxtVariableName = new C4GeneralGui.GuiElements.ValidatingTextBox();
             chkVariable = new CheckBox();
             Panel3 = new Panel();
             cboIndexItem = new ComboBox();
@@ -297,6 +298,7 @@
             // 
             // panel7
             // 
+            panel7.Controls.Add(vtxtVariableName);
             panel7.Controls.Add(chkVariable);
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(418, 3);
@@ -305,6 +307,26 @@
             panel7.Padding = new Padding(4, 3, 4, 3);
             panel7.Size = new Size(276, 56);
             panel7.TabIndex = 3;
+            // 
+            // vtxtVariableName
+            // 
+            vtxtVariableName.BackColor = SystemColors.Control;
+            vtxtVariableName.BothInvalidColor = Color.Red;
+            vtxtVariableName.Dock = DockStyle.Top;
+            vtxtVariableName.ExternalInvalidColor = Color.Yellow;
+            vtxtVariableName.ExternalValidation = true;
+            vtxtVariableName.InternalInvalidColor = Color.Yellow;
+            vtxtVariableName.InvalidReadOnlyColor = Color.LightYellow;
+            vtxtVariableName.Location = new Point(4, 22);
+            vtxtVariableName.Margin = new Padding(4, 3, 4, 3);
+            vtxtVariableName.Name = "vtxtVariableName";
+            vtxtVariableName.ReadOnly = true;
+            vtxtVariableName.RegularExpression = "";
+            vtxtVariableName.Size = new Size(268, 23);
+            vtxtVariableName.TabIndex = 1;
+            vtxtVariableName.ValidColor = Color.White;
+            vtxtVariableName.ValidReadOnlyColor = SystemColors.Control;
+            vtxtVariableName.TextChanged += VtxtVariableName_TextChanged;
             // 
             // chkVariable
             // 

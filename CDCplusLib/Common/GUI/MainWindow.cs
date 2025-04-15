@@ -20,6 +20,7 @@ using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
 using static CDCplusLib.Common.GUI.SessionTree;
+using System.Diagnostics;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -28,7 +29,7 @@ namespace CDCplusLib.Common.GUI
         private CmnSession _s;
         private string _guid;
         private GlobalApplicationData _gad;
-        private ContextFunctionsContainer _contextFunctions;
+        //private ContextFunctionsContainer _contextFunctions;
         private string _lockedQuery;
         private string _tasksQuery;
         private QuickSearch _quickSearch;
@@ -45,6 +46,7 @@ namespace CDCplusLib.Common.GUI
             }
         }
 
+        public ContextFunctionsContainer ContextFunctions { get; set; }
         public string WindowTitle
         {
             get
@@ -76,25 +78,33 @@ namespace CDCplusLib.Common.GUI
         public void ShowSessionWindow(CmnSession s, GlobalApplicationData gad, WindowSelectionData wsd = null)
         {
             EventsActive = false;
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: started"));
             if (wsd == null) throw new ApplicationException("Main window can only be opened with WindowSelectionData.");
 
             //_treeSelectEventsActive = false;
             _s = s;
             _s.ReloadSettings();
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: settings loaded"));
             _gad = gad;
             EventsActive = true;
             InitQueries();
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: queries initialized"));
             //LocalizeGUI();
             //InitTreeView();
-            _contextFunctions = new ContextFunctionsContainer(_s, _gad, this);
-            _contextFunctions.SessionWindowRequest += SessionWindowRequestEventHandler;
-            _contextFunctions.NodesModified += NodesModifiedEventHandler;
+            
+            if (ContextFunctions == null) ContextFunctions = new ContextFunctionsContainer(_s, _gad, this);
+
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: context functions loaded"));
+            ContextFunctions.SessionWindowRequest += SessionWindowRequestEventHandler;
+            ContextFunctions.NodesModified += NodesModifiedEventHandler;
             //InitFunctions();
             _quickSearch = new QuickSearch();
             _quickSearch.Init(_s);
             _quickSearch.SessionWindowRequest += SessionWindowRequestEventHandler;
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: quick search initialized"));
             InitToolbar();
             stSession.InitTreeView(_s);
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tree view initialized"));
             stSession.SessionWindowRequest += SessionWindowRequestEventHandler;
             stSession.TreeSelectionChanged += TreeSelectionChangedEventHandler;
             stSession.ContextMenuRequest += ContextMenuRequestEventHandler;
@@ -122,6 +132,7 @@ namespace CDCplusLib.Common.GUI
             ctccTreeContext.NodesModified += NodesModifiedEventHandler;
             ctccListContext.NodesModified += NodesModifiedEventHandler;
 
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: events linked"));
             Width = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.8d);
             Height = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.8d);
             
@@ -164,16 +175,20 @@ namespace CDCplusLib.Common.GUI
             tsslStatus.Text = "";
             tsslStatus.BackColor = SystemColors.Control;
             Show();
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: shown"));
 
             stSession.EventsActive = true;
             stSession.SetSelection(wsd);
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: selection set"));
 
-            ctccListContext.EventsActive = true;
-            if (wsd.RootNodeType == SessionTree.RootNodeTypes.Session) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_SESSION, true)[0], wsd);
-            else if (wsd.RootNodeType == RootNodeTypes.Results) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_RESULTS, true)[0], wsd);
-            else if(wsd.SelectedFolder!=null) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0], wsd);
+            //if (wsd.RootNodeType == SessionTree.RootNodeTypes.Session) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_SESSION, true)[0], wsd);
+            //else if (wsd.RootNodeType == RootNodeTypes.Results) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_RESULTS, true)[0], wsd);
+            //else if(wsd.SelectedFolder!=null) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0], wsd);
+            //ctccTreeContext.EventsActive = true;
+            //Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tab control updated"));
+
             ctccTreeContext.EventsActive = true;
-
+            ctccListContext.EventsActive = true;
             ActivateControls();
         }
         protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
@@ -213,12 +228,12 @@ namespace CDCplusLib.Common.GUI
         }
         protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
         {
-            _contextFunctions.ShowContextMenu(wsd.Selection, this, PointToClient(position));
+            ContextFunctions.ShowContextMenu(wsd.Selection, this, PointToClient(position));
         }
         protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type)
         {
             string k = assembly + "." + type;
-            IGenericFunction contextFunction = k == "." ? _contextFunctions.DefaultObjectFunction: _contextFunctions.Functions[k];
+            IGenericFunction contextFunction = k == "." ? ContextFunctions.DefaultObjectFunction: ContextFunctions.Functions[k];
             if (wsd.Selection.Count==0) contextFunction.Execute(null);
             else contextFunction.Execute(wsd.Selection);
         }
@@ -335,9 +350,9 @@ namespace CDCplusLib.Common.GUI
                     case "button":
                         {
                             string k = el.GetAttribute("assembly") + "." + el.GetAttribute("type");
-                            if(_contextFunctions.Functions.ContainsKey(k))
+                            if(ContextFunctions.Functions.ContainsKey(k))
                             {
-                                IGenericFunction sf = _contextFunctions.Functions[k];
+                                IGenericFunction sf = ContextFunctions.Functions[k];
                                 ToolStripButton b = null;
                                 Image icon = sf.GetIcon();
                                 if (icon is null)
@@ -417,7 +432,8 @@ namespace CDCplusLib.Common.GUI
                         break;
                     case SessionTree.NODE_RESULTS:
                         {
-                            ctccTreeContext.UpdateTabControl(wsd.Selection, IGenericControl.ContextType.List, wsd);
+                            ctccTreeContext.UpdateTabControl(wsd.ResultList, IGenericControl.ContextType.List, wsd);
+                            //ctccTreeContext.UpdateTabControl(wsd.Selection, IGenericControl.ContextType.List, wsd);
                         }
                         break;
                     default:

@@ -56,7 +56,7 @@ namespace CDCplusLib.Common.GUI
                 {
                     results = _s.GetObjects(_ids, false);
                 }
-                wsd.Selection = results.ToDictionary(
+                wsd.ResultList = results.ToDictionary(
                     kvp => kvp.Key,
                     kvp => (IRepositoryNode)kvp.Value
                 );
@@ -74,7 +74,7 @@ namespace CDCplusLib.Common.GUI
                 {
                     results = _s.GetFolders(_ids);
                 }
-                wsd.Selection = results.ToDictionary(
+                wsd.ResultList = results.ToDictionary(
                     kvp => kvp.Key,
                     kvp => (IRepositoryNode)kvp.Value
                 );

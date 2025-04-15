@@ -482,6 +482,7 @@ namespace CDCplusLib.TabControls
             RelationDescriptor rd=(RelationDescriptor)lvw.SelectedItems[0].Tag;
             CmnObject o = (parents ? rd.LeftObject : rd.RightObject);
             WindowSelectionData wsd = new WindowSelectionData();
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
             wsd.Selection = new Dictionary<long, IRepositoryNode> { { o.Id, o } };
             wsd.SelectedFolder = o.Parent;
             SessionWindowRequest?.Invoke(wsd);

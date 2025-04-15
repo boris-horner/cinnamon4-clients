@@ -329,9 +329,21 @@ namespace CDCplusLib.Common.GUI
                 EventsActive = false;
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.RootNodeType = GetRoodNodeType(tvwSession.SelectedNode);
-                if (wsd.RootNodeType==RootNodeTypes.Results) wsd.SelectedFolder = null;
-                else if (wsd.RootNodeType == RootNodeTypes.Tasks) wsd.SelectedFolder = null;
-                else if (wsd.RootNodeType == RootNodeTypes.Locked) wsd.SelectedFolder = null;
+                if (wsd.RootNodeType==RootNodeTypes.Results) 
+                { 
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
+                else if (wsd.RootNodeType == RootNodeTypes.Tasks)
+                {
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
+                else if (wsd.RootNodeType == RootNodeTypes.Locked)
+                {
+                    wsd.SelectedFolder = null;
+                    wsd.ResultList = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
+                }
                 else if (tvwSession.SelectedNode.Tag is CmnFolder) wsd.SelectedFolder = tvwSession.SelectedNode.Tag as CmnFolder;
                 else wsd.SelectedFolder = (tvwSession.SelectedNode.Tag as CmnSession).RootFolder;
 
@@ -412,34 +424,20 @@ namespace CDCplusLib.Common.GUI
 
                     if (clickedNode != null)
                     {
-                        //switch (tvwSession.SelectedNode.Tag.GetType().Name)
-                        WindowSelectionData wsd = new WindowSelectionData();
-                        CmnFolder clickedFolder = clickedNode.Tag as CmnFolder;
-
-                        if (clickedNode.Name== "03_locked")
+                        if (clickedNode.Name== "03_locked" || clickedNode.Name == "04_tasks" || clickedNode.Name == "05_results")
                         {
                             // ignore for the time being
-                            //wsd.RootNodeType = RootNodeTypes.Locked;
-                            //wsd.SelectedFolder = null;
-                            //ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
-                        }
-                        else if (clickedNode.Name == "04_tasks")
-                        {
-                            // ignore for the time being
-                            //wsd.RootNodeType = RootNodeTypes.Tasks;
-                            //wsd.SelectedFolder = null;
-                            //ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
-                        }
-                        else if (clickedNode.Name == "05_results")
-                        {
-                            // ignore
                         }
                         else
                         {
-                            if (tvwSession.SelectedNode.Tag is CmnFolder)
+                            //switch (tvwSession.SelectedNode.Tag.GetType().Name)
+                            WindowSelectionData wsd = new WindowSelectionData();
+
+                            //if (tvwSession.SelectedNode.Tag is CmnFolder)
+                            if (clickedNode.Tag is CmnFolder)
                             {
-                                wsd.SelectedFolder = tvwSession.SelectedNode.Tag as CmnFolder;
-                                wsd.Selection.Add(clickedFolder.Id, clickedFolder);
+                                wsd.SelectedFolder = clickedNode.Tag as CmnFolder;
+                                wsd.Selection.Add(wsd.SelectedFolder.Id, wsd.SelectedFolder);
                                 ContextMenuRequest?.Invoke(wsd, tvwSession.PointToScreen(e.Location));
                             }
                             else
@@ -448,11 +446,11 @@ namespace CDCplusLib.Common.GUI
                                 {
                                     Dictionary<long, IRepositoryNode> dict = tvwSession.SelectedNode.Tag as Dictionary<long, IRepositoryNode>;
                                     if (dict.Count>0) wsd.Selection = dict;
-                                    else wsd.SelectedFolder = (tvwSession.SelectedNode.Tag as CmnSession).RootFolder;
+                                    else wsd.SelectedFolder = (clickedNode.Tag as CmnSession).RootFolder;
                                 }
                                 else if(tvwSession.SelectedNode.Tag is Dictionary<long, CmnObject>)
                                 {
-                                    Dictionary<long, IRepositoryNode> dict = (tvwSession.SelectedNode.Tag as Dictionary<long, CmnObject>).ToDictionary(
+                                    Dictionary<long, IRepositoryNode> dict = (clickedNode.Tag as Dictionary<long, CmnObject>).ToDictionary(
                                         kvp => kvp.Key,
                                         kvp => (IRepositoryNode)kvp.Value
                                     );

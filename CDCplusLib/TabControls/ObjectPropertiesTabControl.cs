@@ -326,8 +326,9 @@ namespace CDCplusLib.TabControls
         private void lnkParentPath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             WindowSelectionData wsd = new WindowSelectionData();
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
             wsd.Selection.Add(_o.Id, _o);
-            wsd.Modification.Add(_o.Id, _o);
+            wsd.SelectedFolder = _o.Parent;
             SessionWindowRequest?.Invoke(wsd);
         }
 

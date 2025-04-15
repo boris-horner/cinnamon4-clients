@@ -783,7 +783,7 @@ namespace CDCplusLib.TabControls
                 }
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.RootNodeType = SessionTree.RootNodeTypes.Results;
-                wsd.Selection = results;
+                wsd.ResultList = results;
                 SessionWindowRequest?.Invoke(wsd);
             }
         }
