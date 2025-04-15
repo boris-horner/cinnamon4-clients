@@ -19,7 +19,6 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
-using Windows.Media.Audio;
 
 namespace CDCplusLib.Common.GUI
 {

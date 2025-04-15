@@ -15,7 +15,6 @@ using System.Xml;
 using CDCplusLib.Common;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
-using CDCplusLib.EventData;
 
 namespace CDCplusLib.Interfaces
 {

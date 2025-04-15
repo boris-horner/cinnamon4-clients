@@ -16,7 +16,6 @@ using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
-using CDCplusLib.Common.GUI;
 using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
