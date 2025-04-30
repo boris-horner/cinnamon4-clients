@@ -19,9 +19,6 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
-using System.ServiceModel.Channels;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
-using static CDCplusLib.Common.GUI.SessionTree;
 using System.Diagnostics;
 
 namespace CDCplusLib.Common.GUI

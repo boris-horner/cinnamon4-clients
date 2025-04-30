@@ -19,7 +19,6 @@ using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
-using CDCplusLib.Common.GUI;
 using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions

@@ -11,16 +11,8 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
-using System.Xml;
-using CDCplusLib.DataModel;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Common.KeyboardEvents;
-using CDCplusLib.Helpers;
-using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
-using C4GeneralGui.GuiElements;
-using System.Diagnostics;
-using CDCplusLib.EventData;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
 

@@ -51,7 +51,6 @@ namespace CDCplusLib.TabControls
         public event KeyPressedEventHandler KeyPressedEvent;
         public event RefreshRequestEventHandler RefreshRequest;
 
-        public delegate void MessageSentEventHandler(IClientMessage msg);
 
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }

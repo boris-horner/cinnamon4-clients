@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using C4ObjectApi.Interfaces;
+﻿using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
