@@ -19,6 +19,7 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
+using Windows.Media.Playback;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -272,85 +273,58 @@ namespace CDCplusLib.Common.GUI
         }
         public void OpenAndSelectPath(TreeNode tn, CmnFolder f)
         {
-            if (!(tn.Tag is CmnFolder || tn.Tag is CmnSession))
-                return;
-
-            string[] segments = f.FolderPath.Trim('/').Split('/');
-            TreeNode current = tn;
-
-            // Traverse the tree by folder path segments
-            for (int i = 0; i < segments.Length; i++)
+            if (tn.Tag is CmnFolder || tn.Tag is CmnSession)
             {
-                bool found = false;
-                if (!current.IsExpanded)
-                    current.Expand();
-
-                foreach (TreeNode child in current.Nodes)
+                // _s is already defined
+                if (tn.Tag is CmnFolder && f.FolderPath == ((CmnFolder)tn.Tag).FolderPath)
                 {
-                    if (child.Tag is CmnFolder childFolder)
-                    {
-                        string childName = childFolder.FolderPath.Trim('/').Split('/').Last();
-                        if (childName == segments[i])
-                        {
-                            current = child;
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found)
-                {
-                    // Subpath not yet present; call recursively to expand and select
-                    OpenAndSelectPath(current, f);
+                    //_selectEventActive = false;
+                    UpdateFolderNode(tn);
+                    tvwSession.SelectedNode = tn;
+                    //_selectEventActive = true;
                     return;
                 }
+                else
+                {
+                    // find existing node
+                    string[] segs = f.FolderPath.Trim('/').Split('/');
+                    int level = 0;
+                    TreeNode[] foundNodes = tn.Nodes.Find(f.Id.ToString(), true);
+                    if(foundNodes.Count()>0)
+                    {
+                        UpdateFolderNode(foundNodes[0]);
+                        tvwSession.SelectedNode = foundNodes[0];
+                        return;
+                    }
+
+                    if (!tn.IsExpanded) tn.Expand();
+                    UpdateFolderNode(tn);
+                    // find folder
+                    foreach (TreeNode subN in tn.Nodes)
+                    {
+                        if (subN.Tag != null)
+                        {
+                            CmnFolder subF = (CmnFolder)subN.Tag;
+                            if (f.FolderPath == subF.FolderPath)
+                            {
+                                //_selectEventActive = false;
+                                tvwSession.SelectedNode = subN;
+                                //_selectEventActive = true;
+                                return;
+                            }
+                            else if (f.FolderPath.StartsWith(subF.FolderPath) && tn != subN)
+                            {
+                                OpenAndSelectPath(subN, f);
+                                break;
+                            }
+                        }
+                    }
+
+                }
             }
+        }
 
-            // Final node found; select it
-            UpdateFolderNode(current);
-            tvwSession.SelectedNode = current;
-        }        //public void OpenAndSelectPath(TreeNode tn, CmnFolder f)
-        //{
-        //    if (tn.Tag is CmnFolder || tn.Tag is CmnSession)
-        //    {
-        //        // _s is already defined
-        //        if (tn.Tag is CmnFolder && f.FolderPath == ((CmnFolder)tn.Tag).FolderPath)
-        //        {
-        //            //_selectEventActive = false;
-        //            UpdateFolderNode(tn);
-        //            tvwSession.SelectedNode = tn;
-        //            //_selectEventActive = true;
-        //            return;
-        //        }
-        //        else
-        //        {
-        //            if (!tn.IsExpanded) tn.Expand();
-        //            UpdateFolderNode(tn);
-        //            // find folder
-        //            foreach (TreeNode subN in tn.Nodes)
-        //            {
-        //                if (subN.Tag != null)
-        //                {
-        //                    CmnFolder subF = (CmnFolder)subN.Tag;
-        //                    if (f.FolderPath == subF.FolderPath)
-        //                    {
-        //                        //_selectEventActive = false;
-        //                        tvwSession.SelectedNode = subN;
-        //                        //_selectEventActive = true;
-        //                        return;
-        //                    }
-        //                    else if (f.FolderPath.StartsWith(subF.FolderPath) && tn != subN)
-        //                    {
-        //                        OpenAndSelectPath(subN, f);
-        //                        break;
-        //                    }
-        //                }
-        //            }
 
-        //        }
-        //    }
-        //}
         public class TreeNodeSorter : IComparer
         {
             int IComparer.Compare(object x, object y)
