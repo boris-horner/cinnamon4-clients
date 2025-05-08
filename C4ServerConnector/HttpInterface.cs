@@ -19,6 +19,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using C4ServerConnector.Exceptions;
+using System.Threading.Tasks;
 
 namespace C4ServerConnector
 {
@@ -125,7 +126,28 @@ namespace C4ServerConnector
             CheckForErrors(cmdUrl, requestBody, responseXml);
             return responseXml;
         }
+        //public async Task<XmlDocument> PostCommandFileUploadFromStreamAsync(string cmdUrl, XmlDocument requestBody, Stream stream)
+        //{
+        //    MultipartFormDataContent multipartContent = new MultipartFormDataContent(Constants.BOUNDARY);
+        //    multipartContent.Headers.ContentType.MediaType = "multipart/form-data";
+        //    multipartContent.Add(new StringContent(requestBody.OuterXml, Encoding.UTF8, "application/xml"), "cinnamonRequest");
 
+        //    StreamContent fileContent = new StreamContent(stream);
+        //    multipartContent.Add(fileContent, "file", "upload.tmp");
+
+        //    HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, cmdUrl)
+        //    {
+        //        Content = multipartContent
+        //    };
+
+        //    HttpResponseMessage responseMessage = await _longTimeoutClient.SendAsync(requestMessage);
+        //    string responseString = await responseMessage.Content.ReadAsStringAsync();
+
+        //    XmlDocument responseXml = new XmlDocument();
+        //    responseXml.LoadXml(responseString);
+        //    CheckForErrors(cmdUrl, requestBody, responseXml);
+        //    return responseXml;
+        //}
         public XmlDocument PostCommandFileUpload(string cmdUrl, XmlDocument requestBody, string filename)
         {
             //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;

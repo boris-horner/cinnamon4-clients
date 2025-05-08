@@ -426,6 +426,7 @@
             cmdShowQuery.Size = new Size(47, 46);
             cmdShowQuery.TabIndex = 4;
             cmdShowQuery.UseVisualStyleBackColor = true;
+            cmdShowQuery.Click += CmdShowQuery_Click;
             // 
             // cmdRunQueryWithPreview
             // 

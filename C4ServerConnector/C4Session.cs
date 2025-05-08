@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace C4ServerConnector
@@ -1751,6 +1752,28 @@ namespace C4ServerConnector
                 ThrowException(ex);
             }
         }
+        //public async Task<C4Object> CreateObjectFromStreamAsync(
+        //    long parentFolderId, string name, long ownerId, long aclId,
+        //    long typeId, long languageId, Stream fileStream,
+        //    long? lifecycleStateId = null, long? formatId = null)
+        //{
+        //    XmlDocument requestBody = new XmlDocument();
+        //    requestBody.AppendChild(requestBody.CreateElement("createOsdRequest"));
+
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("parentId")).InnerText = parentFolderId.ToString();
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("name")).InnerText = name;
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ownerId")).InnerText = ownerId.ToString();
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("aclId")).InnerText = aclId.ToString();
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("typeId")).InnerText = typeId.ToString();
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("languageId")).InnerText = languageId.ToString();
+        //    if (lifecycleStateId != null)
+        //        requestBody.DocumentElement.AppendChild(requestBody.CreateElement("lifecycleStateId")).InnerText = lifecycleStateId.ToString();
+        //    requestBody.DocumentElement.AppendChild(requestBody.CreateElement("formatId")).InnerText = formatId.ToString();
+
+        //    XmlDocument resp = await _http.PostCommandFileUploadFromStreamAsync($"{BaseUrl}/api/osd/createOsd", requestBody, fileStream);
+        //    Dictionary<long, C4Object> objs = ParseObjectResponse(resp);
+        //    return objs.Count == 0 ? null : objs.Values.First();
+        //}
         public C4Object CreateObject(long parentFolderId, string name, long ownerId, long aclId, long typeId, long languageId, long? lifecycleStateId = null, long? formatId = null, string contentFn = null)
         {
             try

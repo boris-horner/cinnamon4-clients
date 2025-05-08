@@ -52,12 +52,6 @@ namespace CDCplusLib.Common.GUI
         public ResultListDisplay()
         {
             InitializeComponent();
-            string stateImagePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Images", "Icons", "16x16");
-            lvwNodeList.StateImageList = new ImageList();
-            lvwNodeList.StateImageList.ImageSize = new Size(16, 16);
-            lvwNodeList.StateImageList.ColorDepth = ColorDepth.Depth24Bit;
-            lvwNodeList.StateImageList.Images.Add("blank", new Bitmap(Path.Combine(stateImagePath, "blank.png")));
-            lvwNodeList.StateImageList.Images.Add("link", new Bitmap(Path.Combine(stateImagePath, "emblem-symbolic-link.png")));
             EventsActive = false;
         }
         public void Init(CmnSession s, XmlElement customConfigEl, XmlElement rldConfigEl, INodeDataProvider ndp)
@@ -98,6 +92,14 @@ namespace CDCplusLib.Common.GUI
             _iconService = ((IIconService)(_s.GetSessionExtension("icon_service")));
             lvwNodeList.SmallImageList = _iconService.GlobalSmallImageList;
             lvwNodeList.LargeImageList = _iconService.GlobalLargeImageList;
+
+            string stateImagePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Images", "Icons", "16x16");
+            lvwNodeList.StateImageList = new ImageList();
+            lvwNodeList.StateImageList.ImageSize = new Size(16, 16);
+            lvwNodeList.StateImageList.ColorDepth = ColorDepth.Depth24Bit;
+            lvwNodeList.StateImageList.Images.Add("blank", new Bitmap(Path.Combine(stateImagePath, "blank.png")));
+            lvwNodeList.StateImageList.Images.Add("link", new Bitmap(Path.Combine(stateImagePath, "emblem-symbolic-link.png")));
+
             EventsActive = true;
 		}
         protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
