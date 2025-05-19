@@ -19,7 +19,6 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using C4ServerConnector.Exceptions;
-using System.Threading.Tasks;
 
 namespace C4ServerConnector
 {
