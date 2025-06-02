@@ -27,6 +27,9 @@ namespace C4ServerConnector
         private HttpClient _shortTimeoutClient;
         private HttpClient _longTimeoutClient;
         private string _sessionLogFn;
+        private const string BOUNDARY = "u7g89dsaanu43g279dfs";
+        //private const int UPLOAD_BUFFER_SIZE = 1048576;
+        private const int DOWNLOAD_BUFFER_SIZE = 1048576;
         public string Ticket { get; set; }
         
         public HttpInterface(string localCertFile, string ticket, bool writeSessionLog, long dataTimeoutSeconds, long contentTimeoutSeconds, string tempPath)
@@ -150,7 +153,7 @@ namespace C4ServerConnector
         public XmlDocument PostCommandFileUpload(string cmdUrl, XmlDocument requestBody, string filename)
         {
             //requestBody.DocumentElement.AppendChild(requestBody.CreateElement("ticket")).InnerText = Ticket;
-            MultipartFormDataContent multipartContent = new MultipartFormDataContent(Constants.BOUNDARY);
+            MultipartFormDataContent multipartContent = new MultipartFormDataContent(BOUNDARY);
             multipartContent.Headers.ContentType.MediaType = "multipart/form-data";
             multipartContent.Add(new StringContent(requestBody.OuterXml, Encoding.UTF8, "application/xml"), "cinnamonRequest");
             if (_sessionLogFn != null)
@@ -226,7 +229,7 @@ namespace C4ServerConnector
             using (FileStream fst = new FileStream(contentFn, FileMode.Create, FileAccess.Write, FileShare.None))
             using (BinaryWriter writer = new BinaryWriter(fst))
             {
-                int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
+                int bufSize = DOWNLOAD_BUFFER_SIZE;
                 while (bufSize > 0)
                 {
                     byte[] buffer = reader.ReadBytes(bufSize);
@@ -258,7 +261,7 @@ namespace C4ServerConnector
             // Ensure response stream and outputStream are properly handled
             using (Stream respStream = respMsg.Content.ReadAsStreamAsync().Result)
             {
-                int bufSize = Constants.DOWNLOAD_BUFFER_SIZE;
+                int bufSize = DOWNLOAD_BUFFER_SIZE;
                 byte[] buffer = new byte[bufSize];
                 int bytesRead;
                 while ((bytesRead = respStream.Read(buffer, 0, bufSize)) > 0)

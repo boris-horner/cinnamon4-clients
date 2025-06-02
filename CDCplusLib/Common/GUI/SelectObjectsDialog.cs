@@ -17,6 +17,7 @@ using C4ObjectApi.Interfaces;
 using CDCplusLib.Interfaces;
 using CDCplusLib.DataModel;
 using CDCplusLib.EventData;
+using C4Logic;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -163,7 +164,7 @@ namespace CDCplusLib.Common.GUI
 
         private void cmdNewFolder_Click(object sender, EventArgs e)
         {
-            EditStringValue esv = new EditStringValue(Properties.Resources.mnuNewFolder, Properties.Resources.lblNewName, "", C4ServerConnector.Constants.VALID_NODE_NAME_REGEX);
+            EditStringValue esv = new EditStringValue(Properties.Resources.mnuNewFolder, Properties.Resources.lblNewName, "", Constants.VALID_NODE_NAME_REGEX);
             if (esv.ShowDialog() == DialogResult.OK)
             {
                 Cursor = Cursors.WaitCursor;

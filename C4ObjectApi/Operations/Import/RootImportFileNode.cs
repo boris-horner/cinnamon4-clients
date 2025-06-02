@@ -20,6 +20,7 @@ using System.IO;
 using C4ServerConnector.Assets;
 using C4ServerConnector;
 using ContentAwareness.Interfaces;
+using C4Logic;
 
 namespace C4ObjectApi.Operations.Import
 {

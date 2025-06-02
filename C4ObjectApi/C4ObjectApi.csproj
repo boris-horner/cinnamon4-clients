@@ -9,6 +9,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\C4Logic\C4Logic.csproj" />
     <ProjectReference Include="..\C4ServerConnector\C4ServerConnector.csproj" />
     <ProjectReference Include="..\ContentAwareness\ContentAwareness.csproj" />
   </ItemGroup>

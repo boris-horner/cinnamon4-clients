@@ -20,6 +20,7 @@ using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector;
 using CDCplusLib.EventData;
+using C4Logic;
 
 namespace CDCplusLib.ContextFunctions
 {
