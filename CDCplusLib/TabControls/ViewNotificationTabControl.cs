@@ -13,14 +13,13 @@
 // the License.
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using System.Xml;
-using CDCplusLib.Messages.SessionWindowRequestData;
-using System.Diagnostics;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
+using CDCplusLib.Common.GUI;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -31,7 +30,14 @@ namespace CDCplusLib.TabControls
         private GlobalApplicationData _gad;
         private Dictionary<long, IRepositoryNode> _dict;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public ViewNotificationTabControl()
         {
@@ -39,6 +45,8 @@ namespace CDCplusLib.TabControls
             LocalizeGUI();
             InitImageList();
         }
+
+
         public bool HasSelection
         {
             get
@@ -94,7 +102,7 @@ namespace CDCplusLib.TabControls
         {
             return Properties.Resources.lblNotification;
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _dict = dict;
             _o = DictionaryHelper.GetSingleObject(dict);
@@ -142,7 +150,6 @@ namespace CDCplusLib.TabControls
                 }
             }
 
-            if (msg is not null) MessageReceived(msg);
             ActivateControls();
         }
 
@@ -174,23 +181,16 @@ namespace CDCplusLib.TabControls
 
         public void ReInit()
         {
-            Init(_dict, null);
-        }
-        public void MessageReceived(IClientMessage msg)
-        {
-            // Nothing to do
+            Init(_dict);
         }
         private void lnkRelatesTo_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
-            BrowserSessionWindowRequestData msgData = new BrowserSessionWindowRequestData();
-            msgData.Folder = _relatesToO.Parent;
-            msgData.Selection.Add(_relatesToO.Id, _relatesToO);
-            SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-            msg.SessionWindowRequestData = msgData;
-            // msg.Source = Me.InstanceName
-            msg.Session = _relatesToO.Parent.Session;
-            MessageSent?.Invoke(msg);
-            Debug.Print("link to created object");
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
+            wsd.Selection = new Dictionary<long, IRepositoryNode> { { _relatesToO.Id, _relatesToO } };
+            wsd.SelectedFolder = _relatesToO.Parent;
+            SessionWindowRequest?.Invoke(wsd);
+
         }
     }
 }

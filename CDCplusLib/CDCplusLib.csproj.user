@@ -41,6 +41,9 @@
     <Compile Update="Common\GUI\ResultListDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Common\GUI\SearchResultsPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Common\GUI\SelectDeleteVersions.cs">
       <SubType>Form</SubType>
     </Compile>

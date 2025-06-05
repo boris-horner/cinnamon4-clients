@@ -14,13 +14,12 @@
 using CDCplusLib.DataModel;
 using CDCplusLib.Helpers;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
-using System.CodeDom;
+using CDCplusLib.EventData;
+using System.Diagnostics;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -29,14 +28,13 @@ namespace CDCplusLib.Common.GUI
         private CmnSession _s;
         private string _guid;
         private GlobalApplicationData _gad;
-        private bool _expandEventOff;
-        private ContextFunctionsContainer _contextFunctions;
+        //private ContextFunctionsContainer _contextFunctions;
         private string _lockedQuery;
         private string _tasksQuery;
         private QuickSearch _quickSearch;
-        private bool _treeSelectEventsActive;
+        //private bool _treeSelectEventsActive;
         //private SessionTree stSession;
-
+        public bool EventsActive { get; set; }
 
         public string Guid
         {
@@ -47,51 +45,93 @@ namespace CDCplusLib.Common.GUI
             }
         }
 
-        public event ISessionWindow.WindowClosedEventHandler WindowClosed;
-        public event ISessionWindow.MessageSentEventHandler MessageSent;
-        public event ISessionWindow.PathChangedEventHandler PathChanged;
+        public ContextFunctionsContainer ContextFunctions { get; set; }
+        public string WindowTitle
+        {
+            get
+            {
+                return Text;
+            }
+        }
+
+        public event WindowClosedEventHandler WindowClosed;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public MainWindow()
         {
-            // This call is required by the designer.
             InitializeComponent();
-            string im16Path = Path.Combine(Application.StartupPath, "Images", "Icons", "16x16");
-            //tsbQuickSearch.Image = new Bitmap(Path.Combine(im16Path, "edit-find.png"));
-            //tsslUser.Image = new Bitmap(Path.Combine(im16Path, "im-user.png"));
-            //tsslServer.Image = new Bitmap(Path.Combine(im16Path, "server-database.png"));
-            //tsslConfiguration.Image = new Bitmap(Path.Combine(im16Path, "applications-system.png"));
-            //tsslStatus.Image = new Bitmap(Path.Combine(im16Path, "dialog-information.png"));
+            //string im16Path = Path.Combine(Application.StartupPath, "Images", "Icons", "16x16");
         }
         public void CloseWindow()
         {
             Close();
         }
 
-        public void ShowSessionWindow(CmnSession s, GlobalApplicationData gad, SessionWindowRequestMessage msg = null)
+        public void ShowSessionWindow(CmnSession s, GlobalApplicationData gad, WindowSelectionData wsd = null)
         {
-            _treeSelectEventsActive = false;
+            EventsActive = false;
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: started"));
+            if (wsd == null) throw new ApplicationException("Main window can only be opened with WindowSelectionData.");
+
+            //_treeSelectEventsActive = false;
             _s = s;
             _s.ReloadSettings();
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: settings loaded"));
             _gad = gad;
-            _expandEventOff = false;
+            EventsActive = true;
             InitQueries();
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: queries initialized"));
             //LocalizeGUI();
             //InitTreeView();
-            _contextFunctions = new ContextFunctionsContainer(_s, _gad, this);
-            _contextFunctions.MessageSent += MessageSentHandler;
+            
+            if (ContextFunctions == null) ContextFunctions = new ContextFunctionsContainer(_s, _gad, this);
+
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: context functions loaded"));
+            ContextFunctions.SessionWindowRequest += SessionWindowRequestEventHandler;
+            ContextFunctions.NodesModified += NodesModifiedEventHandler;
             //InitFunctions();
             _quickSearch = new QuickSearch();
             _quickSearch.Init(_s);
-            _quickSearch.MessageSent += MessageSentHandler;
+            _quickSearch.SessionWindowRequest += SessionWindowRequestEventHandler;
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: quick search initialized"));
             InitToolbar();
             stSession.InitTreeView(_s);
-            stSession.MessageSent += MessageSentHandler;
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tree view initialized"));
+            stSession.SessionWindowRequest += SessionWindowRequestEventHandler;
+            stSession.TreeSelectionChanged += TreeSelectionChangedEventHandler;
+            stSession.ContextMenuRequest += ContextMenuRequestEventHandler;
+            stSession.FunctionRequest += FunctionRequestEventHandler;
+            stSession.NodesModified += NodesModifiedEventHandler;
+            stSession.KeyPressedEvent += KeyPressedEventHandler;
 
             ctccTreeContext.Init(_s, false, _gad);
             ctccListContext.Init(_s, true, _gad);
-            ctccTreeContext.MessageSent += MessageSentHandler;
-            ctccListContext.MessageSent += MessageSentHandler;
+            ctccTreeContext.SessionWindowRequest += SessionWindowRequestEventHandler;
+            ctccListContext.SessionWindowRequest += SessionWindowRequestEventHandler;
 
+            ctccTreeContext.ListSelectionChanged += ListSelectionChangedEventHandler;
+            ctccListContext.ListSelectionChanged += ListSelectionChangedEventHandler;
+
+            ctccTreeContext.TreeSelectionChanged += TreeSelectionChangedEventHandler;
+            ctccListContext.TreeSelectionChanged += TreeSelectionChangedEventHandler;
+
+            ctccTreeContext.ContextMenuRequest += ContextMenuRequestEventHandler;
+            ctccListContext.ContextMenuRequest += ContextMenuRequestEventHandler;
+
+            ctccTreeContext.FunctionRequest += FunctionRequestEventHandler;
+            ctccListContext.FunctionRequest += FunctionRequestEventHandler;
+
+            ctccTreeContext.NodesModified += NodesModifiedEventHandler;
+            ctccListContext.NodesModified += NodesModifiedEventHandler;
+
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: events linked"));
             Width = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.8d);
             Height = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.8d);
             
@@ -134,34 +174,93 @@ namespace CDCplusLib.Common.GUI
             tsslStatus.Text = "";
             tsslStatus.BackColor = SystemColors.Control;
             Show();
-            if (msg != null)
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: shown"));
+
+            stSession.EventsActive = true;
+            stSession.SetSelection(wsd);
+            Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: selection set"));
+
+            //if (wsd.RootNodeType == SessionTree.RootNodeTypes.Session) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_SESSION, true)[0], wsd);
+            //else if (wsd.RootNodeType == RootNodeTypes.Results) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_RESULTS, true)[0], wsd);
+            //else if(wsd.SelectedFolder!=null) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0], wsd);
+            //ctccTreeContext.EventsActive = true;
+            //Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tab control updated"));
+
+            ctccTreeContext.EventsActive = true;
+            ctccListContext.EventsActive = true;
+            ActivateControls();
+        }
+        protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
+        {
+            SessionWindowRequest?.Invoke(wsd);
+        }
+        protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            //UpdateTcTabControl(stSession.SelectedNode, wsd);
+            TreeNode rootNode = stSession.SelectedNode;
+            while (rootNode.Parent != null)
             {
-                System.Diagnostics.Debug.Print(msg.SessionWindowRequestData.GetType().Name);
-                switch (msg.SessionWindowRequestData.GetType().Name)
+                rootNode = rootNode.Parent;
+            }
+            stSession.OpenAndSelectPath(rootNode, wsd.SelectedFolder);
+            //stSession.SetSelection(wsd);
+            //TreeNode tn = stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0];
+            //stSession.SelectedNode = tn;
+            //UpdateTcTabControl(tn, wsd);
+            SetTitle();
+            TreeSelectionChanged?.Invoke(wsd, this);
+        }
+        protected virtual void ListSelectionChangedEventHandler(WindowSelectionData wsd)
+        {
+            ctccListContext.CheckForUnsavedChanges();
+            IGenericControl.ContextType ct;
+            if (wsd.Selection.Count == 1)
+            {
+                if (wsd.Selection.Values.First() is CmnObject) ct = IGenericControl.ContextType.Object;
+                else ct = IGenericControl.ContextType.Folder;
+            }
+            else
+            {
+                ct = IGenericControl.ContextType.List;
+            }
+            ctccListContext.UpdateTabControl(wsd.Selection, ct, wsd);
+        }
+        protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
+        {
+            ContextFunctions.ShowContextMenu(wsd.Selection, this, PointToClient(position));
+        }
+        protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type)
+        {
+            string k = assembly + "." + type;
+            IGenericFunction contextFunction = k == "." ? ContextFunctions.DefaultObjectFunction: ContextFunctions.Functions[k];
+            if (wsd.Selection.Count==0) contextFunction.Execute(null);
+            else contextFunction.Execute(wsd.Selection);
+        }
+        protected virtual void NodesModifiedEventHandler(WindowSelectionData wsd)
+        {
+            // TODO: update parents folders of all objects in modification
+            SortedDictionary<string, CmnFolder> parents = new SortedDictionary<string, CmnFolder>();
+            foreach(IRepositoryNode rn in wsd.Modification.Values)
+            {
+                if(rn.Parent!=null)
                 {
-                    case "BrowserSessionWindowRequestData":
+                    if (!parents.ContainsKey(rn.Parent.FolderPath))
+                    {
+                        parents.Add(rn.Parent.FolderPath, rn.Parent);
+                        foreach(TreeNode tn in stSession.tvwSession.Nodes.Find(rn.Parent.Id.ToString(), true))
                         {
-                            BrowserSessionWindowRequestData bswrData = (BrowserSessionWindowRequestData)msg.SessionWindowRequestData;
-                            stSession.SetSelection(bswrData.Folder); // TODO: pass selection
-
-                            break;
+                            if(tn.Parent!=null && tn.Parent.IsExpanded) stSession.UpdateFolderNode(tn);
                         }
-
-                    case "ResultListSessionWindowRequestData":
-                        {
-                            ResultListSessionWindowRequestData rlswrData = (ResultListSessionWindowRequestData)msg.SessionWindowRequestData;
-                            stSession.SetSelection(rlswrData.ResultList); // TODO: pass selection
-                            break;
-                        }
+                    }
                 }
             }
-
-            RefreshTree(stSession.SelectedNode, msg);
-            // msg handling perhaps better here?
-
-            _treeSelectEventsActive = true;
-            PathChanged?.Invoke(Text, this);
-            ActivateControls();
+            UpdateTcTabControl(stSession.SelectedNode, wsd);
+            SetTitle();
+            //TreeSelectionChanged?.Invoke(wsd, this);
+        }
+        protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            throw new NotImplementedException();
         }
         private void ActivateControls()
         {
@@ -250,9 +349,9 @@ namespace CDCplusLib.Common.GUI
                     case "button":
                         {
                             string k = el.GetAttribute("assembly") + "." + el.GetAttribute("type");
-                            if(_contextFunctions.Functions.ContainsKey(k))
+                            if(ContextFunctions.Functions.ContainsKey(k))
                             {
-                                IGenericFunction sf = _contextFunctions.Functions[k];
+                                IGenericFunction sf = ContextFunctions.Functions[k];
                                 ToolStripButton b = null;
                                 Image icon = sf.GetIcon();
                                 if (icon is null)
@@ -285,147 +384,68 @@ namespace CDCplusLib.Common.GUI
 
 
 
-        protected virtual void MessageSentHandler(IClientMessage msg)
+        private void UpdateTcTabControl(TreeNode selectedTreeNode, WindowSelectionData wsd)
         {
-            System.Diagnostics.Debug.Print(msg.GetType().Name);
-            switch (msg.GetType().Name)
+            if (selectedTreeNode == null) ctccTreeContext.UpdateTabControl(null, IGenericControl.ContextType.Session, wsd);
+            else
             {
-                case "SelectionRightClickedMessage":
-                    {
-                        SelectionRightClickedMessage srcMsg = (SelectionRightClickedMessage)msg;
-                        _contextFunctions.ShowContextMenu(srcMsg.ListSelection, srcMsg.ReferenceControl, srcMsg.Pos);
-                        break;
-                    }
 
-                case "SessionWindowRequestMessage":
-                    {
-                        //((SessionWindowRequestMessage)msg).WindowType = "CDCplusLegacyLib.MainWindow";
-                        MessageSent?.Invoke(msg); // forward to dispatcher
-                        break;
-                    }
-                case "ListSelectionChangeMessage":
-                    {
-                        ctccListContext.CheckForUnsavedChanges();
-                        ListSelectionChangeMessage lscMsg = (ListSelectionChangeMessage)msg;
-                        IGenericControl.ContextType ct;
-                        if (lscMsg.ListSelection.Count == 1)
-                        {
-                            if (lscMsg.ListSelection.Values.First() is CmnObject) ct = IGenericControl.ContextType.Object;
-                            else ct = IGenericControl.ContextType.Folder;
-                        }
-                        else
-                        {
-                            ct = IGenericControl.ContextType.List;
-                        }
-                        ctccListContext.UpdateTabControl(lscMsg.ListSelection, ct, msg);
-
-                        break;
-                    }
-                case "ObjectsModifiedMessage":
-                case "ObjectVersionedMessage":
-                case "ObjectsDeletedMessage":
-                case "ObjectsMovedMessage":
-                case "ObjectsCreatedMessage":
-                case "SetTreeContextSelectionMessage":
-                case "TreeNodeRefreshRequestMessage":
-                    {
-                        RefreshTree(stSession.SelectedNode, msg);
-                        SetTitle();
-                        PathChanged?.Invoke(Text, this);
-                        break;
-                    }
-                case "ObjectDoubleClickedMessage":
-                    {
-                        ObjectDoubleClickedMessage odcm = (ObjectDoubleClickedMessage)msg;
-                        Dictionary<long, IRepositoryNode> dict = new Dictionary<long, IRepositoryNode>();
-                        dict.Add(odcm.SelectedObject.Id, odcm.SelectedObject);
-                        if (_contextFunctions.DefaultObjectFunction.IsValid(dict))
-                        {
-                            _contextFunctions.DefaultObjectFunction.Execute(dict);
-                        }
-                        break;
-                    }
-                case "WindowNotifyUserMessage":
-                    {
-                        WindowNotifyUserMessage wnum = (WindowNotifyUserMessage)msg;
-                        tsslStatus.Text = wnum.Message;
-                        tsslStatus.BackColor = Color.Gold;
-                        SetTitle();
-                        break;
-                    }
-                case "FolderChangeMessage":
-                    {
-                        FolderChangeMessage fcm = (FolderChangeMessage)msg;
-                        stSession.SetSelection(fcm.ChangeToFolder);
-                        RefreshTree(stSession.SelectedNode, msg);
-                        SetTitle();
-                        PathChanged?.Invoke(Text, this);
-                        break;
-                    }
-                case "KeyPressedMessage":
-                    {
-                        KeyPressedMessage kpMsg = (KeyPressedMessage)msg;
-                        string k = kpMsg.Assembly + "." + kpMsg.Type;
-                        if (kpMsg.FunctionType == KeyPressedMessage.FunctionTypes.SessionFunction) _contextFunctions.Functions[k].Execute(null);
-                        else _contextFunctions.Functions[k].Execute(kpMsg.ListSelection);
-                        break;
-                    }
-            }
-        }
-        private void RefreshTree(TreeNode selection, IClientMessage msg)
-        {
-            if (selection == null) ctccTreeContext.UpdateTabControl(null, IGenericControl.ContextType.Session, msg);
-            else switch (selection.Name)
+                switch (selectedTreeNode.Name)
                 {
                     case SessionTree.NODE_SESSION:
                         {
-                            ctccTreeContext.UpdateTabControl(null, IGenericControl.ContextType.Session, msg);
+                            ctccTreeContext.UpdateTabControl(null, IGenericControl.ContextType.Session, wsd);
                         }
                         break;
                     case SessionTree.NODE_HOME:
                         {
                             Dictionary<long, IRepositoryNode> dict = new Dictionary<long, IRepositoryNode>();
-                            CmnFolder f = (CmnFolder)selection.Tag;
-                            //stSession.SetSelection(f);
+                            CmnFolder f = (CmnFolder)selectedTreeNode.Tag;
+                            //if (selection.Parent == null) stSession.UpdateFolderNode(selection);
+                            //else stSession.UpdateFolderNode(selection.Parent);
                             dict.Add(f.Id, f);
-                            ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, msg);
+                            ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, wsd);
                         }
                         break;
                     case SessionTree.NODE_SEARCHES:
                         {
                             Dictionary<long, IRepositoryNode> dict = new Dictionary<long, IRepositoryNode>();
-                            CmnFolder f = (CmnFolder)selection.Tag;
-                            stSession.SetSelection(f);
+                            CmnFolder f = (CmnFolder)selectedTreeNode.Tag;
+                            //if (selection.Parent == null) stSession.UpdateFolderNode(selection);
+                            //else stSession.UpdateFolderNode(selection.Parent);
                             dict.Add(f.Id, f);
-                            ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, msg);
+                            ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, wsd);
                         }
                         break;
                     case SessionTree.NODE_LOCKED:
                         {
-                            selection.Tag = _s.SearchObjects(_lockedQuery);
-                            ctccTreeContext.UpdateTabControl(ListsHelper.ConvertToOwnables((Dictionary<long, CmnObject>)selection.Tag, null), IGenericControl.ContextType.List, msg);
+                            selectedTreeNode.Tag = _s.SearchObjects(_lockedQuery);
+                            ctccTreeContext.UpdateTabControl(ListsHelper.ConvertToOwnables((Dictionary<long, CmnObject>)selectedTreeNode.Tag, null), IGenericControl.ContextType.List, wsd);
                         }
                         break;
                     case SessionTree.NODE_TASKS:
                         {
-                            selection.Tag = _s.SearchObjects(_tasksQuery);
-                            ctccTreeContext.UpdateTabControl(ListsHelper.ConvertToOwnables((Dictionary<long, CmnObject>)selection.Tag, null), IGenericControl.ContextType.List, msg);
+                            selectedTreeNode.Tag = _s.SearchObjects(_tasksQuery);
+                            ctccTreeContext.UpdateTabControl(ListsHelper.ConvertToOwnables((Dictionary<long, CmnObject>)selectedTreeNode.Tag, null), IGenericControl.ContextType.List, wsd);
                         }
                         break;
                     case SessionTree.NODE_RESULTS:
                         {
-                            ctccTreeContext.UpdateTabControl((Dictionary<long, IRepositoryNode>)selection.Tag, IGenericControl.ContextType.List, msg);
+                            ctccTreeContext.UpdateTabControl(wsd.ResultList, IGenericControl.ContextType.List, wsd);
+                            //ctccTreeContext.UpdateTabControl(wsd.Selection, IGenericControl.ContextType.List, wsd);
                         }
                         break;
                     default:
                         {
-                            if (selection.Tag.GetType() == typeof(CmnFolder))
+                            if (selectedTreeNode.Tag.GetType() == typeof(CmnFolder))
                             {
                                 // folder inside one of the folder controls
                                 Dictionary<long, IRepositoryNode> dict = new Dictionary<long, IRepositoryNode>();
-                                CmnFolder f = (CmnFolder)selection.Tag;
+                                CmnFolder f = (CmnFolder)selectedTreeNode.Tag;
+                                //if (selection.Parent == null) stSession.UpdateFolderNode(selection);
+                                //else stSession.UpdateFolderNode(selection.Parent);
                                 dict.Add(f.Id, f);
-                                ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, msg);
+                                ctccTreeContext.UpdateTabControl(dict, IGenericControl.ContextType.Folder, wsd);
                             }
                             else
                             {
@@ -435,12 +455,13 @@ namespace CDCplusLib.Common.GUI
                         }
                         break;
                 }
+            }
 
         }
 
-        private void stSession_SelectionChanged(TreeNode selection, IClientMessage msg)
+        private void stSession_SelectionChanged(WindowSelectionData wsd, ISessionWindow sw)
         {
-            if (_treeSelectEventsActive) RefreshTree(selection, msg);
+            UpdateTcTabControl(stSession.SelectedNode, wsd);
             SetTitle();
         }
 

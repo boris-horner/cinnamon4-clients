@@ -12,12 +12,16 @@
 // License for the specific language governing permissions and limitations under 
 // the License.
 using C4ObjectApi.Interfaces;
+using C4ObjectApi.Repository;
+using C4ServerConnector;
 
 namespace CDCplusLib.Interfaces
 {
     public interface IIconService
     {
+        void Init(CmnSession s, System.Xml.XmlElement configEl);
         string GetIconKey(IRepositoryNode ow);
+        string GetIconKey(IC4Node c4n);
         ImageList GlobalSmallImageList { get; }
         ImageList GlobalLargeImageList { get; }
     }

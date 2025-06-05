@@ -1,9 +1,4 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CDCplusLib.Helpers
 {

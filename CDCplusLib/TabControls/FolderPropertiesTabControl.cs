@@ -14,11 +14,11 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -33,8 +33,14 @@ namespace CDCplusLib.TabControls
         private ToolTip _tt;
 
         //public ISynchronizeInvoke EventSyncInvoke { get; set; }
-        public event IGenericControl.MessageSentEventHandler MessageSent;
-
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
         public FolderPropertiesTabControl()
         {
             InitializeComponent();
@@ -44,6 +50,7 @@ namespace CDCplusLib.TabControls
             LocalizeGui();
             SetControlsEnabledState(false, false);
         }
+
         public bool HasSelection { get { return false; } }
         public Dictionary<long, IRepositoryNode> Selection { get { return null; } set { } }
         public bool AutoRefresh { get { return true; } }
@@ -109,7 +116,7 @@ namespace CDCplusLib.TabControls
             txtParentId.Text = _f.Parent == null ? "" : _f.Parent.Id.ToString();
             lnkParentPath.Text = _f.FolderPath;
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             IsDirty = false;
             _f = DictionaryHelper.GetSingleFolder(dict);
@@ -135,7 +142,6 @@ namespace CDCplusLib.TabControls
                     ClearGui();
                 }
             }
-            if (msg != null) MessageReceived(msg);
             _enableEvents = true;
             SetControlsEnabledState(false, _editable);
         }
@@ -147,11 +153,6 @@ namespace CDCplusLib.TabControls
             if (ct != IGenericControl.ContextType.Folder) return false;
             return DictionaryHelper.GetSingleFolder(dict) != null;
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            // nothing to do
-        }
-
 
         public void ReInit()
         {
@@ -174,9 +175,10 @@ namespace CDCplusLib.TabControls
                                                    (_f.FolderType != (C4FolderType)cboFolderType.SelectedItem) ? ((C4FolderType)cboFolderType.SelectedItem).Id : null,
                                                    null);
             IsDirty = false;
-            ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-            msg.ModifiedObjects.Add(_f.Id, _f);
-            MessageSent?.Invoke(msg);
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.Selection.Add(_f.Id, _f);
+            wsd.Modification.Add(_f.Id, _f);
+            NodesModified?.Invoke(wsd);
             SetControlsEnabledState(false, _editable);
         }
 

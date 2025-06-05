@@ -14,10 +14,10 @@
 using System.Xml;
 using CDCplusLib.Interfaces;
 using CDCplusLib.Common;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -29,9 +29,10 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
             // nothing to do
         }
@@ -42,7 +43,7 @@ namespace CDCplusLib.ContextFunctions
         }
         public void Execute(Dictionary<long, IRepositoryNode> dict)
         {
-            ObjectsCreatedMessage ocm = new ObjectsCreatedMessage();
+            WindowSelectionData wsd = new WindowSelectionData();
             string failedObjs = null;
             foreach(IRepositoryNode ow in dict.Values)
             {
@@ -50,7 +51,8 @@ namespace CDCplusLib.ContextFunctions
                 try
                 {
                     CmnObject copyO = o.Copy(o.Parent);
-                    ocm.CreatedObjects.Add(copyO.Id, copyO);
+                    wsd.Selection.Add(copyO.Id, copyO);
+                    wsd.Modification.Add(copyO.Id, copyO);
                 }
                 catch(Exception ex)
                 {
@@ -59,7 +61,7 @@ namespace CDCplusLib.ContextFunctions
                     else failedObjs = string.Concat(failedObjs, "\n", o.Id.ToString());
                 }
             }
-            MessageSent?.Invoke(ocm);
+            NodesModified?.Invoke(wsd); 
             if (failedObjs != null) StandardMessage.ShowMessage(failedObjs, StandardMessage.Severity.WarningMessage, null, null, null);
         }
 
@@ -73,7 +75,7 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.mnuClone;
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }

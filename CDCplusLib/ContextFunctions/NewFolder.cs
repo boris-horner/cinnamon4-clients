@@ -15,12 +15,13 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
+using CDCplusLib.EventData;
+using C4Logic;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -36,11 +37,11 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.mnuNewFolder;
         }
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -65,10 +66,11 @@ namespace CDCplusLib.ContextFunctions
             }
             if(newF!=null)
             {
-                ObjectsCreatedMessage msg;
-                msg = new ObjectsCreatedMessage();
-                msg.CreatedObjects.Add(newF.Id, newF);
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.SelectedFolder = newF;
+                wsd.Selection.Add(newF.Id, newF);
+                wsd.Modification.Add(newF.Id, newF);
+                NodesModified?.Invoke(wsd);
             }
         }
 
@@ -91,7 +93,8 @@ namespace CDCplusLib.ContextFunctions
 
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

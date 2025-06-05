@@ -14,19 +14,27 @@
 using C4GeneralGui.GuiElements;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
-using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
+using CDCplusLib.EventData;
 using System.Xml;
 
 namespace CDCplusLib.Common.KeyboardEvents
 {
     public class KeyEventTable
     {
-        public event IGenericControl.MessageSentEventHandler MessageSent;
-        private readonly Dictionary<KeyEvent, KeyEventReaction> _keyEventDefinitions;
+        public enum Modes { Tree, List }
 
-        public KeyEventTable(XmlElement configParentNode)
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public delegate void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt);
+
+        public event FunctionRequestEventHandler FunctionRequest;
+        public delegate void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type);
+
+        private readonly Dictionary<KeyEvent, KeyEventReaction> _keyEventDefinitions;
+        private readonly Modes _mode;
+
+        public KeyEventTable(XmlElement configParentNode, Modes mode)
         {
+            _mode = mode;
             _keyEventDefinitions = new Dictionary<KeyEvent, KeyEventReaction>(new KeyEventComparer());
             foreach (XmlElement keyColEl in configParentNode.SelectNodes("key_event"))
             {
@@ -118,6 +126,17 @@ namespace CDCplusLib.Common.KeyboardEvents
                 case Keys.ControlKey: break;
                 default:
                     // handle configured function
+                    WindowSelectionData wsd = null;
+                    if (_mode == Modes.Tree)
+                    {
+                        wsd = new WindowSelectionData();
+                        wsd.SelectedFolder = (CmnFolder)selection.Values.First();
+                    }
+                    else
+                    {
+                        wsd = new WindowSelectionData();
+                        wsd.Selection = selection;
+                    }
                     bool useContext = false;
                     KeyEvent ke = default(KeyEvent);
                     if (selection.Count > 0)
@@ -146,45 +165,37 @@ namespace CDCplusLib.Common.KeyboardEvents
                         {
                             case KeyEventReaction.EventTypes.ExecuteMethod:
                                 // send message to Session Window to execute matching function
-                                KeyPressedMessage kpMsg = new KeyPressedMessage();
-                                switch (ke.Filter)
-                                {
-                                    case KeyEvent.KeyEventSelection.FolderSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.FolderFunction;
-                                        break;
-                                    case KeyEvent.KeyEventSelection.ObjectSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ObjectFunction;
-                                        break;
-                                    case KeyEvent.KeyEventSelection.ListSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ListFunction;
-                                        break;
-                                    default:
-                                        throw new ApplicationException("Invalid function type for no selection");
-                                }
+                                //KeyPressedMessage kpMsg = new KeyPressedMessage();
+                                //switch (ke.Filter)
+                                //{
+                                //    case KeyEvent.KeyEventSelection.FolderSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.FolderFunction;
+                                //        break;
+                                //    case KeyEvent.KeyEventSelection.ObjectSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ObjectFunction;
+                                //        break;
+                                //    case KeyEvent.KeyEventSelection.ListSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ListFunction;
+                                //        break;
+                                //    default:
+                                //        throw new ApplicationException("Invalid function type for no selection");
+                                //}
                                 if (useContext)
                                 {
-                                    kpMsg.ListSelection.Add(context.Id, context);
+                                    wsd.Selection.Add(context.Id, context);
                                 }
                                 else
                                 {
-                                    kpMsg.ListSelection = selection;
+                                    wsd.Selection = selection;
                                 }
 
-                                kpMsg.Assembly = ker.Assembly;
-                                kpMsg.Type = ker.Type;
-                                MessageSent?.Invoke(kpMsg);
+                                FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
 
                                 break;
                             case KeyEventReaction.EventTypes.Refresh:
-                                TreeNodeRefreshRequestMessage tnrrMsg = new TreeNodeRefreshRequestMessage();
-                                //msg.Source = EVENT_SOURCE
-                                MessageSent?.Invoke(tnrrMsg);
+                                KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
 
                                 break;
-                            // TODO: add this when using the function for ResultListDisplay as well
-                            //case KeyEventReaction.EventTypes.SelectAll:
-                            //    foreach (ListViewItem lvi in lvwNodeList.Items) lvi.Selected = true;
-                            //    break;
                             default:
                                 System.Diagnostics.Debug.Print("Unsupported key was pressed");
                                 break;

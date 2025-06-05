@@ -20,12 +20,12 @@ using System.Xml;
 using C4ObjectApi.Helpers;
 using C4ObjectApi.Exceptions;
 using C4ObjectApi.Interfaces;
-using ContentAwareness;
 using System.Text;
 using C4ObjectApi.Global;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
 using ContentAwareness.Interfaces;
+using C4Logic;
 
 namespace C4ObjectApi.Repository
 {

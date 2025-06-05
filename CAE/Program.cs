@@ -62,7 +62,6 @@ namespace CAE
                 l.Log(string.Concat("Connecting to server ", url));
                 C4Session c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath);
                 C4SessionConfiguration sc = new C4SessionConfiguration(c4s, username, tempPath, null, null);
-                //sc.CachedFolders.Add("async_processing_requests", c4s.GetFolderByPath("/.data/transient/async_processing_requests"));
 
                 l.Log("Connected");
 

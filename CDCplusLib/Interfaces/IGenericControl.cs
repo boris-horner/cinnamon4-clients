@@ -20,23 +20,30 @@ namespace CDCplusLib.Interfaces
 {
     public interface IGenericControl
     {
-        enum ContextType { Object, Folder, Session, List}
-        event MessageSentEventHandler MessageSent;
+        enum ContextType { Object, Folder, Session, List }
 
-        delegate void MessageSentEventHandler(IClientMessage msg);
+        event SessionWindowRequestEventHandler SessionWindowRequest;
+        event ListSelectionChangedEventHandler ListSelectionChanged; 
+        event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        event ContextMenuRequestEventHandler ContextMenuRequest;
+        event FunctionRequestEventHandler FunctionRequest;
+        event NodesModifiedEventHandler NodesModified;
+        event KeyPressedEventHandler KeyPressedEvent;
+        event RefreshRequestEventHandler RefreshRequest;
+
         bool HasSelection { get; }
         bool AutoRefresh { get; }
         bool ListContext { get; }
+
         Dictionary<long, IRepositoryNode> Selection { get; set; }
+
         bool IsValid(Dictionary<long, IRepositoryNode> dict, ContextType ct);
-        void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg);
+        void Init(Dictionary<long, IRepositoryNode> dict);
         string GetTabText();
         void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl);
-
         bool IsDirty { get; }
 
         void Save();
-        void MessageReceived(IClientMessage msg);
         void ReInit();
     }
 }

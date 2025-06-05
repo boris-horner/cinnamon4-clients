@@ -14,13 +14,13 @@
 using System.Xml;
 using CDCplusLib.DataModel;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using CDCplusLib.Common.KeyboardEvents;
 using CDCplusLib.Helpers;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using System.Diagnostics;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -33,26 +33,26 @@ namespace CDCplusLib.Common.GUI
         private KeyEventTable _keyEvents;
         private ListViewSort _lvwSort;
         private bool _enableCheck;
-        private bool _enableSelectionChangeEvent;
         private bool _useTimer = true;
         private View _view;
         private System.Windows.Forms.Timer selectionChangedTimer;
+        public bool EventsActive { get; set; }
 
         //private bool _idleHandlerSet;
         private CmnSession _s;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
         //public event EventHandler SelectedIndexChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public ResultListDisplay()
         {
             InitializeComponent();
-            string stateImagePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Images", "Icons", "16x16");
-            lvwNodeList.StateImageList = new ImageList();
-            lvwNodeList.StateImageList.ImageSize = new Size(16, 16);
-            lvwNodeList.StateImageList.ColorDepth = ColorDepth.Depth24Bit;
-            lvwNodeList.StateImageList.Images.Add("blank", new Bitmap(Path.Combine(stateImagePath, "blank.png")));
-            lvwNodeList.StateImageList.Images.Add("link", new Bitmap(Path.Combine(stateImagePath, "emblem-symbolic-link.png")));
+            EventsActive = false;
         }
         public void Init(CmnSession s, XmlElement customConfigEl, XmlElement rldConfigEl, INodeDataProvider ndp)
         {
@@ -61,7 +61,6 @@ namespace CDCplusLib.Common.GUI
             _s = s;
             //_idleHandlerSet = false;
             _enableCheck = false;
-			_enableSelectionChangeEvent = false;
 			_view = View.Details;
             XmlAttribute frs = ((XmlAttribute)(rldConfigEl.SelectSingleNode("appearance/full_row_select/@value")));
             _useTimer = s.Server.LocalSettings.ContainsKey("use_threaded_gui_controls") ? s.Server.LocalSettings["use_threaded_gui_controls"] == "true" : true;
@@ -81,7 +80,7 @@ namespace CDCplusLib.Common.GUI
             }
 
             XmlNode customEventsN = customConfigEl.SelectSingleNode("events");  // detect legacy config
-            if(_keyEvents==null) _keyEvents = new KeyEventTable(customEventsN==null?(XmlElement)rldConfigEl.SelectSingleNode("key_events"):customConfigEl); // these are only loaded for the first time since they are global
+            if(_keyEvents==null) _keyEvents = new KeyEventTable(customEventsN==null?(XmlElement)rldConfigEl.SelectSingleNode("key_events"):customConfigEl, KeyEventTable.Modes.List); // these are only loaded for the first time since they are global
 
             if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList, true);
 
@@ -93,10 +92,42 @@ namespace CDCplusLib.Common.GUI
             _iconService = ((IIconService)(_s.GetSessionExtension("icon_service")));
             lvwNodeList.SmallImageList = _iconService.GlobalSmallImageList;
             lvwNodeList.LargeImageList = _iconService.GlobalLargeImageList;
-			_enableSelectionChangeEvent = true;
-		}
 
-		public View View {
+            string stateImagePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Images", "Icons", "16x16");
+            lvwNodeList.StateImageList = new ImageList();
+            lvwNodeList.StateImageList.ImageSize = new Size(16, 16);
+            lvwNodeList.StateImageList.ColorDepth = ColorDepth.Depth24Bit;
+            lvwNodeList.StateImageList.Images.Add("blank", new Bitmap(Path.Combine(stateImagePath, "blank.png")));
+            lvwNodeList.StateImageList.Images.Add("link", new Bitmap(Path.Combine(stateImagePath, "emblem-symbolic-link.png")));
+
+            EventsActive = true;
+		}
+        protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            TreeSelectionChanged?.Invoke(wsd, null);
+        }
+        protected virtual void ListSelectionChangedEventHandler(WindowSelectionData wsd)
+        {
+            ListSelectionChanged?.Invoke(wsd);
+        }
+        protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
+        {
+            ContextMenuRequest?.Invoke(wsd, position);
+        }
+        protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd)
+        {
+            FunctionRequest?.Invoke(wsd, null, null);
+        }
+        protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
+        }
+        protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
+        {
+            RefreshRequest?.Invoke();
+        }
+
+        public View View {
             get
             {
                 return _view;
@@ -118,7 +149,6 @@ namespace CDCplusLib.Common.GUI
             }
             set
             {
-				_enableSelectionChangeEvent = false;
 				_enableCheck = true;
                 lvwNodeList.BeginUpdate();
                 _nl = value;
@@ -134,6 +164,7 @@ namespace CDCplusLib.Common.GUI
                     lvwNodeList.Visible = true;
                     lvwNodeList.View = View.Details;
                     lvwNodeList.CheckBoxes = true;
+                    _lvwSort.Active = false;
                     foreach (IRepositoryNode ow in _nl.List.Values)
                     {
                         string iconKey = (_nl.IconOverrides != null && _nl.IconOverrides.ContainsKey(ow.Id))?_nl.IconOverrides[ow.Id] :_iconService.GetIconKey(ow);
@@ -176,6 +207,7 @@ namespace CDCplusLib.Common.GUI
                         //lvwNodeList.Focus();
                         // SelectionChanged()
                     }
+                    _lvwSort.Active = true;
                     Selection = selNl;
 
                     foreach (long id in lvsi)
@@ -184,21 +216,19 @@ namespace CDCplusLib.Common.GUI
                     }
                     if (_lvwSort != null) _lvwSort.ReSort();
 
-                    ListSelectionChangeMessage msg = new ListSelectionChangeMessage();
-                    //msg.Source = EVENT_SOURCE
+                    WindowSelectionData wsd = new WindowSelectionData();
                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
                     {
                         IRepositoryNode ow = (IRepositoryNode)li.Tag;
-                        msg.ListSelection.Add(ow.Id, ow);
+                        wsd.Selection.Add(ow.Id, ow);
                     }
-                    MessageSent?.Invoke(msg);
+                    ListSelectionChanged?.Invoke(wsd);
 
                     if ((lvwNodeList.SelectedItems.Count > 0)) lvwNodeList.SelectedItems[0].EnsureVisible();
 
                     lvwNodeList.EndUpdate();
                 }
                 _enableCheck = false;
-				_enableSelectionChangeEvent = true;
 			}
 		}
 
@@ -237,15 +267,16 @@ namespace CDCplusLib.Common.GUI
         {
             if ((lvwNodeList.SelectedItems[0].Tag).GetType() == typeof(CmnFolder))
             {
-                FolderChangeMessage msg = new FolderChangeMessage();
-                msg.ChangeToFolder = (CmnFolder)(lvwNodeList.SelectedItems[0].Tag);
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.SelectedFolder = lvwNodeList.SelectedItems[0].Tag as CmnFolder;
+                TreeSelectionChanged?.Invoke(wsd, null);
             }
             else if ((lvwNodeList.SelectedItems[0].Tag).GetType() == typeof(CmnObject))
             {
-                ObjectDoubleClickedMessage msg = new ObjectDoubleClickedMessage();
-                msg.SelectedObject = (CmnObject)(lvwNodeList.SelectedItems[0].Tag);
-                MessageSent?.Invoke(msg);
+                CmnObject o = (CmnObject)(lvwNodeList.SelectedItems[0].Tag);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Selection.Add(o.Id, o);
+                FunctionRequest?.Invoke(wsd, null, null);   // default function
             }
         }
 
@@ -291,46 +322,40 @@ namespace CDCplusLib.Common.GUI
                         {
                             case KeyEventReaction.EventTypes.ExecuteMethod:
                                 // send message to Session Window to execute matching function
-                                KeyPressedMessage kpMsg = new KeyPressedMessage();
-                                switch (ke.Filter)
-                                {
-                                    case KeyEvent.KeyEventSelection.FolderSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.FolderFunction;
-                                        break;
-                                    case KeyEvent.KeyEventSelection.ObjectSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ObjectFunction;
-                                        break;
-                                    case KeyEvent.KeyEventSelection.ListSelected:
-                                        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ListFunction;
-                                        break;
-                                    default:
-                                        throw new ApplicationException("Invalid function type for no selection");
-                                }
+                                //switch (ke.Filter)
+                                //{
+                                //    case KeyEvent.KeyEventSelection.FolderSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.FolderFunction;
+                                //        break;
+                                //    case KeyEvent.KeyEventSelection.ObjectSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ObjectFunction;
+                                //        break;
+                                //    case KeyEvent.KeyEventSelection.ListSelected:
+                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ListFunction;
+                                //        break;
+                                //    default:
+                                //        throw new ApplicationException("Invalid function type for no selection");
+                                //}
+                                WindowSelectionData wsd = null;
                                 if(useContext)
                                 {
-                                    kpMsg.ListSelection.Add(_nl.Context.Id, _nl.Context);
+                                    wsd = new WindowSelectionData();
+                                    wsd.SelectedFolder = _nl.Context;
                                 }
                                 else
                                 {
+                                    wsd = new WindowSelectionData();
                                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
                                     {
-                                        kpMsg.ListSelection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
-                                        //if(li.Tag.GetType()==typeof(CmnObject)) msg.ListSelection.Add(((CmnObject)li.Tag).Id, (CmnObject)li.Tag);
-                                        //else if (li.Tag.GetType() == typeof(CmnFolder)) msg.ListSelection.Add(((CmnFolder)li.Tag).Id, (CmnFolder)li.Tag);
+                                        wsd.Selection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
                                     }
                                 }
 
-                                kpMsg.Assembly = ker.Assembly;
-                                kpMsg.Type = ker.Type;
-                                //msg.Source = EVENT_SOURCE
-                                MessageSent?.Invoke(kpMsg);
+                                FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
 
                                 break;
                             case KeyEventReaction.EventTypes.Refresh:
-                                TreeNodeRefreshRequestMessage tnrrMsg = new TreeNodeRefreshRequestMessage();
-                                //msg.Source = EVENT_SOURCE
-                                MessageSent?.Invoke(tnrrMsg);
-
+                                RefreshRequest?.Invoke();
                                 break;
                             case KeyEventReaction.EventTypes.SelectAll:
                                 foreach (ListViewItem lvi in lvwNodeList.Items) lvi.Selected = true;
@@ -361,16 +386,12 @@ namespace CDCplusLib.Common.GUI
                 //SelectionChanged()
                 if (e.Button == MouseButtons.Right)
                 {
-                    // context menu
-                    SelectionRightClickedMessage msg = new SelectionRightClickedMessage();
-                    //msg.Source = EVENT_SOURCE
+                    WindowSelectionData wsd = new WindowSelectionData();
                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
                     {
-                        msg.ListSelection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
+                        wsd.Selection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
                     }
-                    msg.Pos = e.Location;
-                    msg.ReferenceControl = lvwNodeList;
-                    MessageSent?.Invoke(msg);
+                    ContextMenuRequest?.Invoke(wsd, lvwNodeList.PointToScreen(e.Location));
                 }
             }
             catch (ApplicationException ex)
@@ -406,19 +427,15 @@ namespace CDCplusLib.Common.GUI
 
         private void SelectionChanged()
         {
-            if (_enableSelectionChangeEvent)
+            if (EventsActive)
             {
-                ListSelectionChangeMessage msg = new ListSelectionChangeMessage();
-                //msg.Source = EVENT_SOURCE
+                WindowSelectionData wsd = new WindowSelectionData();
                 foreach (ListViewItem li in lvwNodeList.SelectedItems)
                 {
                     IRepositoryNode ow = (IRepositoryNode)li.Tag;
-                    msg.ListSelection.Add(ow.Id, ow);
+                    wsd.Selection.Add(ow.Id, ow);
                 }
-                MessageSent?.Invoke(msg);
-                if (lvwNodeList.SelectedItems.Count > 0)
-                    lvwNodeList.SelectedItems[0].EnsureVisible();
-                lvwNodeList.Focus();
+                ListSelectionChanged?.Invoke(wsd);
             }
         }
         private void lvwNodeList_SelectedIndexChanged(object sender, EventArgs e)

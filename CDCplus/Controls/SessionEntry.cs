@@ -19,9 +19,9 @@ using System.Xml;
 using C4Admin.GUI;
 using C4ObjectApi.Repository;
 using CDCplusLib.Common;
+using CDCplusLib.DataModel;
+using CDCplusLib.EventData;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 
 namespace CDCplus.Controls
 {
@@ -41,8 +41,9 @@ namespace CDCplus.Controls
 		private Dictionary<string, WindowEntry> _windowLookup;
 		private string _notificationQuery;
 		private HashSet<long> _prevIds;
+		private ContextFunctionsContainer _contextFunctionsContainer;
 
-		public SessionEntry()
+        public SessionEntry()
 		{
 			InitializeComponent();
 		}
@@ -148,42 +149,33 @@ namespace CDCplus.Controls
 			Resized?.Invoke(this);
 		}
 
-		private void AddWindow(SessionWindowRequestMessage msg = null)
+		private void AddWindow(WindowSelectionData wsd = null)
 		{
 			XmlElement defaultWindowEl = (XmlElement)_s.UserConfig.DocumentElement.SelectSingleNode("classes/default_window");
 			string assemblyName = defaultWindowEl.GetAttribute("assembly");
 			string typeName = defaultWindowEl.GetAttribute("type");
-			if (msg == null)
-			{
-				BrowserSessionWindowRequestData msgData = new BrowserSessionWindowRequestData();
-				msgData.Folder = _s.GetFolder(defaultWindowEl.SelectSingleNode("path").InnerText);
-				msg = new SessionWindowRequestMessage();
-				msg.SessionWindowRequestData = msgData;
-				msg.Session = _s;
-			}
-
 			ISessionWindow sw = (ISessionWindow)_s.SessionConfig.GetAssembly(assemblyName).CreateInstance(assemblyName + "." + typeName);
-			// TODO: register events WindowClosed and MessageSent
 			WindowEntry we = new WindowEntry();
 			_windowLookup.Add(sw.Guid, we);
-
-			sw.MessageSent += MessageSentHandler;
-			sw.WindowClosed += WindowClosedHandler;
-			sw.PathChanged += PathChangedHandler;
-			if (msg.SessionWindowRequestData.GetType() == typeof(BrowserSessionWindowRequestData))
-			{
-				BrowserSessionWindowRequestData bswrd = (BrowserSessionWindowRequestData)msg.SessionWindowRequestData;
-				we.InitWindowEntry(_s, sw, bswrd.Folder == null ? defaultWindowEl.SelectSingleNode("path").InnerText : bswrd.Folder.FolderPath, false);
-			}
-			else we.InitWindowEntry(_s, sw, defaultWindowEl.SelectSingleNode("path").InnerText, false);
-
-			//we.AddWindowClicked += AddWindowClickedHandler;
+			we.InitWindowEntry(_s, sw, "[new window]", false);
 			we.Dock = DockStyle.Bottom;
 			pSessionContent.Controls.Add(we);
-			sw.ShowSessionWindow(_s, _gad, msg);
-			//we.SendToBack();
-
 			ResizeControl();
+
+			sw.SessionWindowRequest += SessionWindowRequestHandler;
+			sw.WindowClosed += WindowClosedHandler;
+			sw.TreeSelectionChanged += TreeSelectionChangedHandler;
+
+			if (wsd == null)
+			{
+				wsd=new WindowSelectionData();
+				wsd.RootNodeType = CDCplusLib.Common.GUI.SessionTree.RootNodeTypes.Session;
+				wsd.SelectedFolder= _s.RootFolder;
+			}
+
+            if (_contextFunctionsContainer != null) sw.ContextFunctions = _contextFunctionsContainer;
+            sw.ShowSessionWindow(_s, _gad, wsd);
+			if (_contextFunctionsContainer == null) _contextFunctionsContainer = sw.ContextFunctions;
 		}
 		private void AddAdminWindow()
 		{
@@ -191,9 +183,8 @@ namespace CDCplus.Controls
 			WindowEntry we = new WindowEntry();
 			_windowLookup.Add(sw.Guid, we);
 
-			sw.MessageSent += MessageSentHandler;
+			sw.SessionWindowRequest += SessionWindowRequestHandler;
 			sw.WindowClosed += WindowClosedHandler;
-			sw.PathChanged += PathChangedHandler;
 			we.InitWindowEntry(_s, sw, "Cinnamon Administration", true);
 
 			//we.AddWindowClicked += AddWindowClickedHandler;
@@ -247,20 +238,16 @@ namespace CDCplus.Controls
 			ResizeControl();
 			Resized?.Invoke(this);
 		}
-		private void MessageSentHandler(IClientMessage msg)
+		private void SessionWindowRequestHandler(WindowSelectionData wsd)
 		{
-			if (msg.GetType() == typeof(SessionWindowRequestMessage)) AddWindow((SessionWindowRequestMessage)msg);
-			else
-			{
-				System.Diagnostics.Debug.Print(msg.ToString());
-			}
+			AddWindow(wsd);
 		}
-		private void PathChangedHandler(string path, ISessionWindow sw)
+		private void TreeSelectionChangedHandler(WindowSelectionData wsd, ISessionWindow sw)
 		{
 			if (_windowLookup.ContainsKey(sw.Guid))
 			{
 				WindowEntry we = _windowLookup[sw.Guid];
-				we.Path = path;
+				we.Path = sw.WindowTitle;
 			}
 		}
 	}

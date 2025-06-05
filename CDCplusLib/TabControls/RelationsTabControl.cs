@@ -16,8 +16,6 @@ using System.Xml;
 using CDCplusLib.Interfaces;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
-using CDCplusLib.Messages.SessionWindowRequestData;
-using CDCplusLib.Messages;
 using CDCplusLib.DataModel;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
@@ -26,6 +24,7 @@ using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.Properties;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -46,7 +45,14 @@ namespace CDCplusLib.TabControls
         private Dictionary<long, C4Relation> _parentRels;
 
         public ISynchronizeInvoke EventSyncInvoke { get; set; }
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public RelationsTabControl()
         {
@@ -475,15 +481,11 @@ namespace CDCplusLib.TabControls
             bool parents = (lvw == lvwParents);
             RelationDescriptor rd=(RelationDescriptor)lvw.SelectedItems[0].Tag;
             CmnObject o = (parents ? rd.LeftObject : rd.RightObject);
-
-            BrowserSessionWindowRequestData wrd=new BrowserSessionWindowRequestData();
-            wrd.Selection.Add(o.Id, o);
-            wrd.Folder = o.Parent;
-            SessionWindowRequestMessage swrm = new SessionWindowRequestMessage();
-            swrm.SessionWindowRequestData = wrd;
-            swrm.Session = o.Session;
-            // TODO: raise event
-            MessageSent?.Invoke(swrm);
+            WindowSelectionData wsd = new WindowSelectionData();
+            wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
+            wsd.Selection = new Dictionary<long, IRepositoryNode> { { o.Id, o } };
+            wsd.SelectedFolder = o.Parent;
+            SessionWindowRequest?.Invoke(wsd);
             Cursor = null;
         }
 
@@ -533,7 +535,7 @@ namespace CDCplusLib.TabControls
             }
         }
 
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _dict = dict;
             _o = DictionaryHelper.GetSingleObject(dict);
@@ -555,7 +557,6 @@ namespace CDCplusLib.TabControls
                 }
                 else ClearGui();
             }
-            if (msg != null) MessageReceived(msg);
             _enableEvents = true;
             SetControlsEnabledState(false);
         }
@@ -565,11 +566,6 @@ namespace CDCplusLib.TabControls
             if (ct != IGenericControl.ContextType.Object) return false;
             return DictionaryHelper.GetSingleObject(dict)!=null;
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            // nothing to do
-        }
-
 
         public void ReInit()
         {
@@ -686,7 +682,7 @@ namespace CDCplusLib.TabControls
                 }
                 _o.Session.CommandSession.CreateRelations(createRelations.Values.ToHashSet<C4Relation>());
 
-                Init(_dict, null);
+                Init(_dict);
             }
             catch(Exception ex)
             {

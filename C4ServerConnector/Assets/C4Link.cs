@@ -45,7 +45,8 @@ namespace C4ServerConnector.Assets
             ParentId = long.Parse(assetEl.SelectSingleNode("parentId").InnerText);
             OwnerId = long.Parse(assetEl.SelectSingleNode("ownerId").InnerText);
             LinkType = assetEl.SelectSingleNode("type").InnerText=="OBJECT"?LinkTypes.Object:LinkTypes.Folder;
-            ResolverType = LinkType == LinkTypes.Object ? (assetEl.SelectSingleNode("resolver").InnerText == "FIXED" ? ResolverTypes.Fixed : ResolverTypes.LatestHead) : ResolverTypes.Folder;
+            XmlNode resolver = assetEl.SelectSingleNode("resolver");        // TODO: this is only for backward compatibility with older server versions before 1.5.8 - can be removed later
+            ResolverType = LinkType == LinkTypes.Object ? (resolver==null || assetEl.SelectSingleNode("resolver").InnerText == "FIXED" ? ResolverTypes.Fixed : ResolverTypes.LatestHead) : ResolverTypes.Folder;
             if(LinkType==LinkTypes.Object) RepositoryNodeId = long.Parse(assetEl.SelectSingleNode("objectId").InnerText);
             else RepositoryNodeId = long.Parse(assetEl.SelectSingleNode("folderId").InnerText);
         }

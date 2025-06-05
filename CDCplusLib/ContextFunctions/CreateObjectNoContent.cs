@@ -15,11 +15,11 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -29,12 +29,12 @@ namespace CDCplusLib.ContextFunctions
 
         private GlobalApplicationData _gad;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -57,11 +57,10 @@ namespace CDCplusLib.ContextFunctions
                 try
                 {
                     CmnObject newO = f.Session.Create(f.Id, newObjDlg.ObjectName, null, null, newObjDlg.Language.Id, newObjDlg.ObjectType.Id, null, f.Session.SessionConfig.C4Sc.AclsByName["_default_acl"].Id);
-                    ObjectsCreatedMessage msg;
-                    msg = new ObjectsCreatedMessage();
-                    // msg.Source = instanceName_
-                    msg.CreatedObjects.Add(newO.Id, newO);
-                    MessageSent?.Invoke(msg);
+                    WindowSelectionData wsd = new WindowSelectionData();
+                    wsd.Selection.Add(newO.Id, newO);
+                    wsd.Modification.Add(newO.Id, newO);
+                    NodesModified?.Invoke(wsd);
                 }
                 catch (Exception ex)
                 {
@@ -88,7 +87,8 @@ namespace CDCplusLib.ContextFunctions
         }
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

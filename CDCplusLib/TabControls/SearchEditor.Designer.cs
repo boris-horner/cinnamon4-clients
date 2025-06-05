@@ -57,6 +57,7 @@
             cmdSave = new Button();
             Panel1 = new Panel();
             cmdShowQuery = new Button();
+            cmdRunQueryWithPreview = new Button();
             Panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splSearch).BeginInit();
             splSearch.Panel1.SuspendLayout();
@@ -405,6 +406,7 @@
             // Panel1
             // 
             Panel1.Controls.Add(cmdShowQuery);
+            Panel1.Controls.Add(cmdRunQueryWithPreview);
             Panel1.Controls.Add(cmdRunQuery);
             Panel1.Controls.Add(cmdSave);
             Panel1.Dock = DockStyle.Bottom;
@@ -418,13 +420,25 @@
             // 
             cmdShowQuery.Dock = DockStyle.Left;
             cmdShowQuery.Image = (Image)resources.GetObject("cmdShowQuery.Image");
-            cmdShowQuery.Location = new Point(94, 0);
+            cmdShowQuery.Location = new Point(141, 0);
             cmdShowQuery.Margin = new Padding(4, 3, 4, 3);
             cmdShowQuery.Name = "cmdShowQuery";
             cmdShowQuery.Size = new Size(47, 46);
-            cmdShowQuery.TabIndex = 2;
+            cmdShowQuery.TabIndex = 4;
             cmdShowQuery.UseVisualStyleBackColor = true;
             cmdShowQuery.Click += CmdShowQuery_Click;
+            // 
+            // cmdRunQueryWithPreview
+            // 
+            cmdRunQueryWithPreview.Dock = DockStyle.Left;
+            cmdRunQueryWithPreview.Image = (Image)resources.GetObject("cmdRunQueryWithPreview.Image");
+            cmdRunQueryWithPreview.Location = new Point(94, 0);
+            cmdRunQueryWithPreview.Margin = new Padding(4, 3, 4, 3);
+            cmdRunQueryWithPreview.Name = "cmdRunQueryWithPreview";
+            cmdRunQueryWithPreview.Size = new Size(47, 46);
+            cmdRunQueryWithPreview.TabIndex = 3;
+            cmdRunQueryWithPreview.UseVisualStyleBackColor = true;
+            cmdRunQueryWithPreview.Click += cmdRunQueryWithPreview_Click;
             // 
             // SearchEditor
             // 
@@ -483,5 +497,6 @@
         private CheckBox chkAnyTerm;
         private C4GeneralGui.GuiElements.ValidatingTextBox vtxtVariableName;
         internal Button cmdShowQuery;
+        internal Button cmdRunQueryWithPreview;
     }
 }

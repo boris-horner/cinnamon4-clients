@@ -15,10 +15,9 @@ using CDCplusLib.Interfaces;
 using System.Xml;
 using CDCplusLib.DataModel;
 using CDCplusLib.Common;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -28,8 +27,7 @@ namespace CDCplusLib.TabControls
 
         private GlobalApplicationData _gad;
         private XmlElement _configEl;
-        private bool _initCompleted = false;
-        private bool _includeSummary;
+        private bool _initializing;
         private XmlElement _rldConfigEl;
         private Dictionary<string, string> _allowedCustomFields;
         private string _defaultConfigName;
@@ -40,15 +38,26 @@ namespace CDCplusLib.TabControls
         //private Dictionary<string, RldColumnConfiguration> _columnConfigurations;
         //private bool _settingsDirty;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
+
         public ContentsListControl()
         {
             InitializeComponent();
+            _initializing = true;
             lvseSettings.Visible = false;
             _defaultConfigName = null;
             _tt = new ToolTip();
             _tt.SetToolTip(cmdSettings, Properties.Resources.lblShowSettings);
         }
+
+
         private void InitViewCombo()
         {
             cboView.Items.Clear();
@@ -83,49 +92,38 @@ namespace CDCplusLib.TabControls
         {
             return Properties.Resources.tabShowFolderContents;
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             if(dict!=null)
             {
                 Cursor = Cursors.WaitCursor;
                 _dict = dict;
-                _initCompleted = false;
+                rldNodes.EventsActive = false;
+                _initializing = true;
                 CmnNodeList nl = new CmnNodeList(_s, null);
                 foreach (IRepositoryNode ow in dict.Values) nl.List.Add(ow.Id, ow);
                 rldNodes.NodeList = nl;
-                _initCompleted = true;
+                _initializing = false;
+                rldNodes.EventsActive = true;
                 Cursor = null;
             }
-            if (msg != null) MessageReceived(msg);
         }
         public bool IsValid(Dictionary<long, IRepositoryNode> dict, IGenericControl.ContextType ct)
         {
             if (ct != IGenericControl.ContextType.List) return false;
             return dict !=null;
         }
-        public void MessageReceived(IClientMessage msg)
-        {
-            if (msg.GetType() == typeof(SessionWindowRequestMessage))
-            {
-                SessionWindowRequestMessage swrm = (SessionWindowRequestMessage)msg;
-                if (swrm.SessionWindowRequestData.GetType() == typeof(BrowserSessionWindowRequestData))
-                {
-                    BrowserSessionWindowRequestData bswrd = (BrowserSessionWindowRequestData)swrm.SessionWindowRequestData;
-                    rldNodes.Selection = bswrd.Selection;
-                }
-            }
-        }
 
         public void ReInit()
         {
-            Init(_dict, null);
+            Init(_dict);
         }
 
         public void Reset(CmnSession s, GlobalApplicationData gad, XmlElement configEl)
         {
             _gad = gad;
             _configEl = configEl;
-            _includeSummary = (s.UserConfig.DocumentElement.SelectSingleNode("global_settings/summary[@include_summary='true']") != null);
+            //_includeSummary = (s.UserConfig.DocumentElement.SelectSingleNode("global_settings/summary[@include_summary='true']") != null);
             _rldConfigEl = (XmlElement)(s.UserConfig.DocumentElement.SelectSingleNode("classes/result_list_display"));
             _allowedCustomFields = new Dictionary<string, string>();
             _s = s;
@@ -182,12 +180,12 @@ namespace CDCplusLib.TabControls
 
         private void cboColumnSettings_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_initCompleted)
+            if (rldNodes.EventsActive && !_initializing)
             {
-                _initCompleted = false;
+                rldNodes.EventsActive = false;
                 Reset(_s, _gad, _configEl);
                 ReInit();
-                _initCompleted = true;
+                rldNodes.EventsActive = true;
             }
         }
 
@@ -206,11 +204,30 @@ namespace CDCplusLib.TabControls
                     break;
             }
         }
-        private void rldNodes_MessageSent(IClientMessage msg)
+        private void rldNodes_ListSelectionChanged(WindowSelectionData wsd)
         {
-            MessageSent?.Invoke(msg);
+            ListSelectionChanged?.Invoke(wsd);
         }
-
+        private void rldNodes_TreeSelectionChanged(WindowSelectionData wsd, ISessionWindow sw)
+        {
+            TreeSelectionChanged?.Invoke(wsd, null);
+        }
+        private void rldNodes_ContextMenuRequest(WindowSelectionData wsd, Point position)
+        {
+            ContextMenuRequest?.Invoke(wsd, position);
+        }
+        private void rldNodes_FunctionRequest(WindowSelectionData wsd, string assembly, string type)
+        {
+            FunctionRequest?.Invoke(wsd, assembly, type);
+        }
+        private void rldNodes_KeyPressedEvent(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
+        {
+            KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
+        }
+        private void rldNodes_RefreshRequest()
+        {
+            RefreshRequest?.Invoke();
+        }
         private void cmdSettings_Click(object sender, EventArgs e)
         {
             lvseSettings.Visible = !lvseSettings.Visible;

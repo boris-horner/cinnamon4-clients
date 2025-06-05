@@ -13,12 +13,12 @@
 // the License.
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector.Assets;
 using System.Text;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -30,7 +30,14 @@ namespace CDCplusLib.TabControls
         private bool _dirty;
         private Dictionary<long, IRepositoryNode> _dict;
 
-        public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
         public PermissionsTabControl()
         {
@@ -38,6 +45,8 @@ namespace CDCplusLib.TabControls
             LocalizeGUI();
             InitCurrentPermissionsLv();
         }
+
+
         public bool HasSelection
         {
             get
@@ -148,12 +157,11 @@ namespace CDCplusLib.TabControls
                 cboAcl.Enabled = writable;
             }
         }
-        public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+        public void Init(Dictionary<long, IRepositoryNode> dict)
         {
             _initCompleted = false;
             _dict = dict;
             SetCurrentPermissions();
-            if (msg!=null) MessageReceived(msg);
             _initCompleted = true;
             ActivateControls(false);
         }
@@ -322,20 +330,16 @@ namespace CDCplusLib.TabControls
                     _s.CommandSession.UpdateFolder(f.Id, null, null, null, null, ((C4Acl)cboAcl.SelectedItem).Id);
                 }
                 ActivateControls(false);
-                ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-                msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.SystemMetadataChanged;
-                msg.ModifiedObjects.Add(ow.Id, ow);
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Selection.Add(ow.Id, ow);
+                wsd.Modification.Add(ow.Id, ow);
+                NodesModified?.Invoke(wsd);
             }
         }
 
         public void ReInit()
         {
-            Init(_dict, null);
-        }
-        public void MessageReceived(IClientMessage msg)
-        {
-            // Nothing to do
+            Init(_dict);
         }
     }
 }

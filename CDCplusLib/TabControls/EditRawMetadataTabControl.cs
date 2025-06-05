@@ -13,16 +13,15 @@
 // the License.
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using System.Xml;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using C4ServerConnector.Assets;
-using C4ObjectApi.Helpers;
 using CDCplusLib.Properties;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.DataModel;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.TabControls
 {
@@ -38,13 +37,21 @@ namespace CDCplusLib.TabControls
 		private Dictionary<long, IRepositoryNode> _dict;
 		private TreeNode _clickedNode;
 
-		public event IGenericControl.MessageSentEventHandler MessageSent;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event ListSelectionChangedEventHandler ListSelectionChanged;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
+        public event KeyPressedEventHandler KeyPressedEvent;
+        public event RefreshRequestEventHandler RefreshRequest;
 
-		public EditRawMetadataTabControl()
+        public EditRawMetadataTabControl()
 		{
 			InitializeComponent();
 		}
-		public bool HasSelection
+
+        public bool HasSelection
 		{
 			get
 			{
@@ -113,7 +120,7 @@ namespace CDCplusLib.TabControls
                 }	
 			}
 		}
-		public void Init(Dictionary<long, IRepositoryNode> dict, IClientMessage msg)
+		public void Init(Dictionary<long, IRepositoryNode> dict)
 		{
 			_dict = dict;
 			IRepositoryNode ow = _dict.First().Value;
@@ -145,7 +152,6 @@ namespace CDCplusLib.TabControls
 			}
 
 			//xtbMetadata.SetText(ow.Metadata.LegacyXml.OuterXml);
-			if (msg != null) MessageReceived(msg);
 			tvwMetasets.ExpandAll();
 			_initCompleted = true;
 			_txtChangeEventActive = true;
@@ -239,12 +245,12 @@ namespace CDCplusLib.TabControls
                     if (updateMetasets.Keys.Count() > 0) _s.CommandSession.UpdateFolderMetaContent(updateMetasets);
                 }
                 ActivateControls(false);
-				ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-				msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.CustomMetadataChanged;
-				msg.ModifiedObjects.Add(ow.Id, ow);
-				MessageSent?.Invoke(msg);
-			}
-			catch (Exception ex)
+				WindowSelectionData wsd = new WindowSelectionData();
+				wsd.Selection.Add(ow.Id, ow);
+                wsd.Modification.Add(ow.Id, ow);
+                NodesModified?.Invoke(wsd);
+            }
+            catch (Exception ex)
 			{
 				StandardMessage.ShowMessage(Properties.Resources.msgFailureWritingMetadata, StandardMessage.Severity.ErrorMessage, this, ex);   // TODO: I18N
 			}
@@ -252,13 +258,8 @@ namespace CDCplusLib.TabControls
 
 		public void ReInit()
 		{
-			Init(_dict, null);
+			Init(_dict);
 		}
-		public void MessageReceived(IClientMessage msg)
-		{
-			// Nothing to do
-		}
-
 		private void xtbMetadata_TextChanged(object sender, EventArgs e)
 		{
 			if(_txtChangeEventActive) ActivateControls(true);

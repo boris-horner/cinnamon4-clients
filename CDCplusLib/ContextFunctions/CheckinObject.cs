@@ -15,13 +15,13 @@ using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Common.GUI;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Exceptions;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -34,12 +34,12 @@ namespace CDCplusLib.ContextFunctions
         private bool _checkinFromOtherDefaultOverwrite;
         private XmlElement _configEl;
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -85,11 +85,11 @@ namespace CDCplusLib.ContextFunctions
                             newVersion.Lock();
                             o.CopyToExisting(newVersion, false, o.Session.SessionConfig.CopyMetasetTypeIds);
                             newVersion.Unlock();
-                            ObjectVersionedMessage msg = new ObjectVersionedMessage();
-                            msg.OldVersion = o;
-                            msg.NewVersion = newVersion;
-                            // msg.Source = instanceName_
-                            MessageSent?.Invoke(msg);
+                            WindowSelectionData wsd = new WindowSelectionData();
+                            wsd.Modification.Add(o.Id, o);
+                            wsd.Selection.Add(newVersion.Id, newVersion);
+                            wsd.Modification.Add(newVersion.Id, newVersion);
+                            NodesModified?.Invoke(wsd);
                         }
                         catch (CmnDataModelException ex)
                         {
@@ -128,10 +128,10 @@ namespace CDCplusLib.ContextFunctions
                             StandardMessage.ShowMessage(Properties.Resources.msgInsufficientPermissions, StandardMessage.Severity.ErrorMessage, null, null, o.Session.GetHelpUrl(DataModelErrorCodes.INSUFFICIENT_PERMISSIONS));
                         }
                         o.CheckinFromFile(checkinPath, fmt, false, ci.ChildUpdateBehavior);
-                        ObjectsModifiedMessage msg = new ObjectsModifiedMessage();
-                        msg.ModifiedObjects.Add(o.Id, o);
-                        msg.ModificationType = ObjectsModifiedMessage.ModificationTypes.CheckedIn;
-                        MessageSent?.Invoke(msg);
+                        WindowSelectionData wsd = new WindowSelectionData();
+                        wsd.Modification.Add(o.Id, o);
+                        wsd.Selection.Add(o.Id, o);
+                        NodesModified?.Invoke(wsd);
                     }
                 }
                 catch (CmnDataModelException ex)
@@ -154,10 +154,10 @@ namespace CDCplusLib.ContextFunctions
                                 foreach (string fn in files)
                                     msg += "\n" + fn;
                                 StandardMessage.ShowMessage(msg, StandardMessage.Severity.ErrorMessage, null, null, o.Session.GetHelpUrl(ex.ErrorCode));
-                                ObjectsModifiedMessage msg2 = new ObjectsModifiedMessage();
-                                msg2.ModifiedObjects.Add(o.Id, o);
-                                msg2.ModificationType = ObjectsModifiedMessage.ModificationTypes.CheckedIn;
-                                MessageSent?.Invoke(msg2);
+                                WindowSelectionData wsd = new WindowSelectionData();
+                                wsd.Selection.Add(o.Id, o);
+                                wsd.Modification.Add(o.Id, o);
+                                NodesModified?.Invoke(wsd);
                                 break;
                             }
                     }
@@ -193,7 +193,8 @@ namespace CDCplusLib.ContextFunctions
             return o is not null;
         }
         public string InstanceName { get; set; }
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

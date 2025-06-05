@@ -1,4 +1,4 @@
-// Copyright 2012,2024 texolution GmbH
+﻿// Copyright 2012,2024 texolution GmbH
 // 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not 
 // use this file except in compliance with the License. You may obtain a copy of 
@@ -11,18 +11,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
-using CDCplusLib.Interfaces;
-
-namespace CDCplusLib.Messages
+namespace C4Logic
 {
-    public class WindowNotifyUserMessage : IClientMessage
+    public class Constants
     {
-        public WindowNotifyUserMessage()
-        {
-            Handled = false;
-        }
+        public const string VALID_NODE_NAME_REGEX = "^([^/\\\\]+)$";
+        public const long MAX_CLAUSE_COUNT = 980;
+        public const string CHILD_CONTENT_RELATION = "child_content";
+        public const string REQUEST_OBJECT_TYPE = "async_processing_request";
+        public const string REQUEST_METASET_TYPE = "async_processing_request";
+        public const string REQUEST_PATH = "/.data/transient/async_processing_requests";
 
-        public string Message { get; set; }
-        public bool Handled { get; set; }
     }
 }

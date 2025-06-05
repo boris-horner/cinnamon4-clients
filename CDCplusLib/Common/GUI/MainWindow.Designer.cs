@@ -151,7 +151,7 @@ namespace CDCplusLib.Common.GUI
             stSession.SelectedNode = null;
             stSession.Size = new Size(357, 1137);
             stSession.TabIndex = 0;
-            stSession.SelectionChanged += stSession_SelectionChanged;
+            stSession.TreeSelectionChanged += stSession_SelectionChanged;
             // 
             // splHor
             // 

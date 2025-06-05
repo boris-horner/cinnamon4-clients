@@ -14,11 +14,11 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
+using CDCplusLib.EventData;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -28,12 +28,12 @@ namespace CDCplusLib.ContextFunctions
 
         private GlobalApplicationData _gad;
         private CmnSession _s;
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
@@ -59,11 +59,10 @@ namespace CDCplusLib.ContextFunctions
                 HashSet<C4Relation> relations = new HashSet<C4Relation>();
                 relations.Add(new C4Relation((long)o.Session.SessionConfig.C4Sc.RelationTypesByName["rendition"].Id, o.Id, newO.Id, null));
                 _s.CommandSession.CreateRelations(relations);
-                ObjectsCreatedMessage msg;
-                msg = new ObjectsCreatedMessage();
-                // msg.Source = instanceName_
-                msg.CreatedObjects.Add(newO.Id, newO);
-                MessageSent?.Invoke(msg);
+                WindowSelectionData wsd = new WindowSelectionData();
+                wsd.Selection.Add(newO.Id, newO);
+                wsd.Modification.Add(newO.Id, newO);
+                NodesModified?.Invoke(wsd); 
                 Environment.CurrentDirectory = Path.GetDirectoryName(ofd.FileName);
             }
         }
@@ -83,7 +82,8 @@ namespace CDCplusLib.ContextFunctions
         }
         public string InstanceName { get; set; }
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

@@ -17,7 +17,6 @@ using System;
 using System.Xml;
 using C4ObjectApi.Interfaces;
 using System.Runtime.Serialization;
-using ContentAwareness;
 using System.Globalization;
 using System.Threading;
 using C4ObjectApi.Operations.Search;
@@ -406,8 +405,8 @@ namespace C4ObjectApi.Repository
                 HashSet<long> ids = new HashSet<long>();
                 ids.Add(id);
                 Dictionary<long, C4Folder> c4fs = CommandSession.GetFoldersById(ids);
-                if(c4fs.Count==0) 
-                    throw new ApplicationException("Folder not found: "+id.ToString());
+                if (c4fs.Count == 0) return null;
+                    //throw new ApplicationException("Folder not found: "+id.ToString());
                 C4Folder c4f = CommandSession.GetFoldersById(ids).Values.First();
                 CmnFolder result = new CmnFolder(this, c4f);
                 CmnFolder currFolder = result;

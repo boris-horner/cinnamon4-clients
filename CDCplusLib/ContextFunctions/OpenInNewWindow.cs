@@ -14,10 +14,10 @@
 using System.Xml;
 using CDCplusLib.Common;
 using CDCplusLib.Interfaces;
-using CDCplusLib.Messages;
-using CDCplusLib.Messages.SessionWindowRequestData;
 using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
+using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -33,36 +33,34 @@ namespace CDCplusLib.ContextFunctions
             return Properties.Resources.mnuOpenInNewWindow;
         }
 
-        public void AppendSubmenu(ToolStripMenuItem cmi)
+        public void AppendSubmenu(ToolStripMenuItem cmi, Dictionary<long, IRepositoryNode> dict)
         {
 
         }
 
-        public bool HasSubmenuItems()
+        public bool HasSubmenuItems(Dictionary<long, IRepositoryNode> dict)
         {
             return false;
         }
         public void Execute(Dictionary<long, IRepositoryNode> dict)
         {
-            IRepositoryNode ow = dict.First().Value;
-            BrowserSessionWindowRequestData msgData = new BrowserSessionWindowRequestData();
-            if(ow.GetType()==typeof(CmnObject))
+            WindowSelectionData wsd = new WindowSelectionData();
+            if(dict.Values.First().GetType() == typeof(CmnObject))
             {
-                CmnObject o = (CmnObject)ow;
-                msgData.Folder = o.Parent;
-                msgData.Selection.Add(o.Id, o);
+                CmnObject o = dict.Values.First() as CmnObject;
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
+                wsd.Selection.Add(o.Id, o);
+                wsd.SelectedFolder = o.Parent;
             }
             else
             {
-                CmnFolder f = (CmnFolder)ow;
-                msgData.Folder=f;
-
+                CmnFolder f = dict.Values.First() as CmnFolder;
+                wsd.RootNodeType = SessionTree.RootNodeTypes.Session;
+                wsd.Selection.Add(f.Id, f);
+                wsd.SelectedFolder = f;
             }
 
-            SessionWindowRequestMessage msg = new SessionWindowRequestMessage();
-            msg.SessionWindowRequestData = msgData;
-            msg.Session = _s;
-            MessageSent?.Invoke(msg);
+            SessionWindowRequest?.Invoke(wsd);
         }
 
         public bool IsValid(Dictionary<long, IRepositoryNode> dict)
@@ -76,7 +74,8 @@ namespace CDCplusLib.ContextFunctions
         public string InstanceName { get; set; }
 
 
-        public event IGenericFunction.MessageSentEventHandler MessageSent;
+        public event IGenericFunction.SessionWindowRequestEventHandler SessionWindowRequest;
+        public event IGenericFunction.NodesModifiedEventHandler NodesModified;
 
         public void Reset(CmnSession s, GlobalApplicationData globalAppData, XmlElement configEl)
         {

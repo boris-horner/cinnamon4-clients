@@ -8,4 +8,7 @@
     <Platforms>AnyCPU;x64</Platforms>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Constants.cs" />
+  </ItemGroup>
 </Project>
