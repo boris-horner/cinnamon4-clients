@@ -21,6 +21,11 @@ namespace C4Logic
         public const string REQUEST_OBJECT_TYPE = "async_processing_request";
         public const string REQUEST_METASET_TYPE = "async_processing_request";
         public const string REQUEST_PATH = "/.data/transient/async_processing_requests";
+        public const string REQUEST_NEW_LCS = "req_new.lcs";
+        public const string REQUEST_RUNNING_LCS = "req_running.lcs";
+        public const string REQUEST_SUCCESS_LCS = "req_success.lcs";
+        public const string REQUEST_FAILURE_LCS = "req_failure.lcs";
 
+        public const string HISTORY_METASET_TYPE = "history";
     }
 }

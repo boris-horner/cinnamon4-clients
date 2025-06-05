@@ -22,7 +22,7 @@ namespace C4Admin.GUI.AssetEditors
 			LifecycleState = lifecycleState;
 
 			foreach (C4Lifecycle lc in _allLifecycles.Values) cboLifecycle.Items.Add(lc);
-			cboLifecycle.Text = lifecycle.Name;
+			if(lifecycle!=null) cboLifecycle.Text = lifecycle.Name;
 			UpdateStatesForCopy();
 
 			if (LifecycleState == null)
