@@ -661,13 +661,13 @@ namespace CDCplusLib.TabControls
                 foreach (ListViewItem lvi in lvwParents.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, null);
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
                     requiredRelations.Add(GetRelKey(rel),rel);
                 }
                 foreach (ListViewItem lvi in lvwChildren.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, null);
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
                     string relKey = GetRelKey(rel);
                     requiredRelations.Add(relKey, rel);
                 }
