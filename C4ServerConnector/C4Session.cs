@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Xml;
 
 namespace C4ServerConnector
@@ -1714,7 +1715,7 @@ namespace C4ServerConnector
                 XmlElement metasetTypeIdsEl = (XmlElement)requestBody.DocumentElement.AppendChild(requestBody.CreateElement("metasetTypeIds"));
                 if(metasetTypeIds!=null) foreach (long id in metasetTypeIds) metasetTypeIdsEl.AppendChild(requestBody.CreateElement("metasetTypeId")).InnerText = id.ToString();
                 resp = _http.PostCommand(string.Concat(BaseUrl, "/api/osd/copy"), requestBody);
-                // CheckResponse(resp, requestBody, "/api/osd/copy");
+                CheckResponse(resp, requestBody, "/api/osd/copy");
             }
             catch (WebException ex)
             {
@@ -2754,35 +2755,34 @@ namespace C4ServerConnector
             if (ex.Message.Contains("(403)")) throw new ApplicationException("Forbidden", ex); // TODO: specific exceptions; 
             throw (ex);
         }
-   //     private bool // // CheckResponse(XmlDocument resp, XmlDocument req, string apiCommand, bool throwException=true)   // result = true means: no error
-   //     {
-   //         XmlElement errorsEl = (XmlElement)resp.SelectSingleNode("//errors");
-			//StringBuilder message = new StringBuilder();
-   //         message.Append("Request: "+req.OuterXml+"\n");
-   //         if (errorsEl == null)
-   //         {
-   //             // TODO: fallback, if other single error elements are returned (if so, needs to be fixed in server)
-   //             XmlElement errorEl = (XmlElement)resp.SelectSingleNode("//error");
-   //             if (errorEl == null) return true;
-			//	message.Append("SINGLE ERROR MESSAGE\n");
-			//	message.Append(GetErrorString(apiCommand, errorEl));
-   //         }
-   //         else
-   //         {
-   //             foreach (XmlElement errorEl in errorsEl.SelectNodes("error"))
-   //             {
-   //                 message.Append(GetErrorString(apiCommand, errorEl));
-   //             }
-   //         }
-   //         if(throwException) throw new ApplicationException(string.Concat("Failure executing '", apiCommand, "'", "\nMessages: ", message.ToString()));
-   //         return false;
-   //     }
+        private bool CheckResponse(XmlDocument resp, XmlDocument req, string apiCommand, bool throwException=true)   // result = true means: no error
+        {
+            XmlElement errorsEl = (XmlElement)resp.SelectSingleNode("//errors");
+            StringBuilder message = new StringBuilder();
+            message.Append("Request: "+req.OuterXml+"\n");
+            if (errorsEl == null)
+            {
+                // TODO: fallback, if other single error elements are returned (if so, needs to be fixed in server)
+                XmlElement errorEl = (XmlElement)resp.SelectSingleNode("//error");
+                if (errorEl == null) return true;
+				message.Append("SINGLE ERROR MESSAGE\n");
+				message.Append(GetErrorString(apiCommand, errorEl));
+            }
+            else
+            {
+                foreach (XmlElement errorEl in errorsEl.SelectNodes("error"))
+                {
+                    message.Append(GetErrorString(apiCommand, errorEl));
+                }
+            }
+            if (throwException) throw new ApplicationException(string.Concat("Failure executing '", apiCommand, "'", "\nMessages: ", message.ToString()));
+            return false;
+        }
 
-   //     private string GetErrorString(string apiCommand, XmlElement errorEl)
-   //     {
-   //         string result = string.Concat("Code: ", errorEl.SelectSingleNode("code").InnerText, "\nMessage: ", errorEl.SelectSingleNode("message").InnerText, "\nId: ", errorEl.SelectSingleNode("id").InnerText, "\n");
-   //         Debug.Print(result);
-   //         return result;
-   //     }
+        private string GetErrorString(string apiCommand, XmlElement errorEl)
+        {
+            string result = string.Concat("Code: ", errorEl.SelectSingleNode("code").InnerText, "\nMessage: ", errorEl.SelectSingleNode("message").InnerText, "\nId: ", errorEl.SelectSingleNode("id").InnerText, "\n");
+            return result;
+        }
     }
 }
