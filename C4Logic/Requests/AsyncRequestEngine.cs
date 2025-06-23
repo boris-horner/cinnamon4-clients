@@ -85,7 +85,7 @@ namespace C4Logic.Requests
             Dictionary<long, C4Object> objs =_c4s.GetObjectsById(ids, false);
             if (objs.Count > batchSize)
             {
-                objs = new Dictionary<long, C4Object>(objs.OrderBy(id => id).Take((int)batchSize));
+                objs = new Dictionary<long, C4Object>(objs.OrderBy(kvp => kvp.Key).Take((int)batchSize));
             }
             return objs;
         }
