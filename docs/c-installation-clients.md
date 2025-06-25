@@ -10,11 +10,23 @@ You can, however, access the Cinnamon 4 server API from any language or environm
 
 ## Applications
 ### CAE
-CAE is the acronym for Cinnamon Asynchronous Engine.
+CAE is the acronym for Cinnamon Asynchronous Engine. CAE is used for peripheral functions that do not run synchronously in the Cinnamon 4 server.
+Typical examples are:
+* Managing translation requests, creating the data structure
+* Executing publication requests, like DITAmap to PDF
+* Rendering thumbnails
+* Asynchronous push / pull interfaces
 
 ### Change Trigger
+Cinnamon 4 Change Trigger is a web service providing end points that can be called by Cinnamon 4 server.
+The server configuration allows the definition of triggers associated with server API methods. Whenever such an API method is called, the server will call the configured endpoint.
+Triggers can be configured so that they are called before executing the API call (pre-triggers), after the API call, but before commit (post-triggers) or after commit (post-commit-triggers).
+Cinnamon 4 uses a standard change trigger in combination with the desktop client, CDCplus. When a new user account is created, the change trigger creates a set of folders that the client needs for every user.
+Custom plugins performing other tasks can easily be added.
 
 ### Cinnamon 4 Desktop Client (CDCplus)
+CDCplus is the standard Windows client for interacting with the server. It is a powerful, modular, multipurpose GUI client that can easily be extended with custom functionality through a set of defined interfaces.
+These interfaces are also used by the client itself for its own standard functions, thus, these functions can not only be supplemented, but also replaced if required.
 
 ## Installing Cinnamon 4 client applications
 
