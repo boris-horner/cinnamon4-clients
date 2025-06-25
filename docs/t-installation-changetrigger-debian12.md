@@ -18,12 +18,14 @@ apt install -y dotnet-sdk-8.0
 ```
 dotnet ChangeTrigger.dll --urls="http://127.0.0.1:8081"
 ```
- > **NOTE:** The compiler creates a dll named like the exe to run it directly with the `dotnet` command. Thus, not the exe, but the dll is specified.
+> [!NOTE]
+> The compiler creates a dll named like the exe to run it directly with the `dotnet` command. Thus, not the exe, but the dll is specified.
 
 
 
 ## Run Change Trigger as a service
-> **NOTE:** Make sure the startup script run.sh contains `#!/bin/bash` as the first line.
+> [!NOTE]
+> Make sure the startup script run.sh contains `#!/bin/bash` as the first line.
 
 * Create a systemd service file
 ```
