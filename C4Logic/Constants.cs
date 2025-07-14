@@ -11,7 +11,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
-namespace C4ServerConnector
+namespace C4Logic
 {
     public class Constants
     {
@@ -20,10 +20,12 @@ namespace C4ServerConnector
         public const string CHILD_CONTENT_RELATION = "child_content";
         public const string REQUEST_OBJECT_TYPE = "async_processing_request";
         public const string REQUEST_METASET_TYPE = "async_processing_request";
-        //public const int UPLOAD_BUFFER_SIZE = 16777216;
-        public const int UPLOAD_BUFFER_SIZE = 1048576;
-        //public const int DOWNLOAD_BUFFER_SIZE = 16777216;
-        public const int DOWNLOAD_BUFFER_SIZE = 1048576;
-        public const string BOUNDARY = "u7g89dsaanu43g279dfs";
+        public const string REQUEST_PATH = "/.data/transient/async_processing_requests";
+        public const string REQUEST_NEW_LCS = "req_new.lcs";
+        public const string REQUEST_RUNNING_LCS = "req_running.lcs";
+        public const string REQUEST_SUCCESS_LCS = "req_success.lcs";
+        public const string REQUEST_FAILURE_LCS = "req_failure.lcs";
+
+        public const string HISTORY_METASET_TYPE = "history";
     }
 }

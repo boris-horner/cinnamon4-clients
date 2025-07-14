@@ -19,6 +19,7 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
+using Windows.Media.Playback;
 
 namespace CDCplusLib.Common.GUI
 {
@@ -216,15 +217,15 @@ namespace CDCplusLib.Common.GUI
             }
         }
 
-        public void SetSelection(Dictionary<long, IRepositoryNode> dict)
-        {
-            tvwSession.SuspendLayout();
-            tvwSession.BeginUpdate();
-            tvwSession.Nodes[NODE_RESULTS].Tag = dict;
-            tvwSession.SelectedNode = tvwSession.Nodes[NODE_RESULTS];
-            tvwSession.EndUpdate();
-            tvwSession.ResumeLayout(true);
-        }
+        //public void SetSelection(Dictionary<long, IRepositoryNode> dict)
+        //{
+        //    tvwSession.SuspendLayout();
+        //    tvwSession.BeginUpdate();
+        //    tvwSession.Nodes[NODE_RESULTS].Tag = dict;
+        //    tvwSession.SelectedNode = tvwSession.Nodes[NODE_RESULTS];
+        //    tvwSession.EndUpdate();
+        //    tvwSession.ResumeLayout(true);
+        //}
         public void SetSelection(WindowSelectionData wsd)
         {
             tvwSession.SuspendLayout();
@@ -242,13 +243,13 @@ namespace CDCplusLib.Common.GUI
                     throw new NotImplementedException();
                     break;
                 case RootNodeTypes.Results:
-                    tvwSession.SuspendLayout();
-                    tvwSession.BeginUpdate();
+                    //tvwSession.SuspendLayout();
+                    //tvwSession.BeginUpdate();
                     tvwSession.Nodes[NODE_RESULTS].Tag = wsd.ResultList;
                     // TODO: if wsd.Selection has content, select the objects / folders
                     tvwSession.SelectedNode = tvwSession.Nodes[NODE_RESULTS];
-                    tvwSession.EndUpdate();
-                    tvwSession.ResumeLayout(true);
+                    //tvwSession.EndUpdate();
+                    //tvwSession.ResumeLayout(true);
                     break;
                 default:
                     TreeNode rootNode = null;
@@ -285,6 +286,17 @@ namespace CDCplusLib.Common.GUI
                 }
                 else
                 {
+                    // find existing node
+                    string[] segs = f.FolderPath.Trim('/').Split('/');
+                    int level = 0;
+                    TreeNode[] foundNodes = tn.Nodes.Find(f.Id.ToString(), true);
+                    if(foundNodes.Count()>0)
+                    {
+                        UpdateFolderNode(foundNodes[0]);
+                        tvwSession.SelectedNode = foundNodes[0];
+                        return;
+                    }
+
                     if (!tn.IsExpanded) tn.Expand();
                     UpdateFolderNode(tn);
                     // find folder
@@ -300,7 +312,7 @@ namespace CDCplusLib.Common.GUI
                                 //_selectEventActive = true;
                                 return;
                             }
-                            else if (f.FolderPath.StartsWith(subF.FolderPath) && tn!=subN)
+                            else if (f.FolderPath.StartsWith(subF.FolderPath) && tn != subN)
                             {
                                 OpenAndSelectPath(subN, f);
                                 break;
@@ -311,6 +323,8 @@ namespace CDCplusLib.Common.GUI
                 }
             }
         }
+
+
         public class TreeNodeSorter : IComparer
         {
             int IComparer.Compare(object x, object y)

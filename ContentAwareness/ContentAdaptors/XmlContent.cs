@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace ContentAwareness.ContentAdaptors
@@ -51,6 +52,7 @@ namespace ContentAwareness.ContentAdaptors
                     // TODO: add ftp:// etc. as required
                     if (!r.ToLower().StartsWith("http://") && !r.ToLower().StartsWith("https://"))
                     {
+                        r = Uri.UnescapeDataString(r);
                         if (r.Contains("#"))
                         {
                             string[] rSegs = r.Split('#');

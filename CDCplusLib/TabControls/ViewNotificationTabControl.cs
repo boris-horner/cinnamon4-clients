@@ -19,6 +19,7 @@ using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using C4ServerConnector.Assets;
 using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.TabControls
 {

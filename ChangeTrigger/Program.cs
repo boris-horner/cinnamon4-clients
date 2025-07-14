@@ -77,6 +77,15 @@ triggerActionService.InitFactories();
 builder.Services.AddSingleton(triggerActionService);
 
 // Add other custom singleton services here
+builder.Services.AddHttpClient("ShortTimeoutClient", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient("LongTimeoutClient", client =>
+{
+    client.Timeout = TimeSpan.FromHours(1);
+}); 
 
 var app = builder.Build();
 

@@ -26,12 +26,12 @@ namespace CAELib.Helpers
             result[objId].Add(ms);
             return result;
         }
-        public static HashSet<long> IdToHashSet(long id)
-        {
-            HashSet<long> result = new HashSet<long>();
-            result.Add(id);
-            return result;
-        }
+        //public static HashSet<long> IdToHashSet(long id)
+        //{
+        //    HashSet<long> result = new HashSet<long>();
+        //    result.Add(id);
+        //    return result;
+        //}
         public static C4Relation CreateSingleRelation(long leftId, long rightId, long typeId, XmlDocument metadata, C4Session c4s)
         {
             HashSet<C4Relation> createRelations = new HashSet<C4Relation>();

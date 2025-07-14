@@ -20,6 +20,7 @@ using C4ServerConnector;
 using C4ServerConnector.Assets;
 using C4GeneralGui.GuiElements;
 using CDCplusLib.EventData;
+using CDCplusLib.Common.GUI;
 
 namespace CDCplusLib.TabControls
 {

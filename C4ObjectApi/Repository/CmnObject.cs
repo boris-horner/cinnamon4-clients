@@ -25,6 +25,7 @@ using C4ObjectApi.Global;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
 using ContentAwareness.Interfaces;
+using C4Logic;
 
 namespace C4ObjectApi.Repository
 {

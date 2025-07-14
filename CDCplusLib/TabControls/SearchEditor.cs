@@ -84,7 +84,7 @@ namespace CDCplusLib.TabControls
             chkAnyTerm.Text = Properties.Resources.lblAny;
             chkVariable.Text = Properties.Resources.lblVariableSpecifyName;
             tlpTerm.Visible = false;
-            SessionWindowRequest += SessionWindowRequestEventHandler;
+            //SessionWindowRequest += SessionWindowRequestEventHandler;
             _rnd = new Random();
         }
 
