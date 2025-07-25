@@ -220,7 +220,7 @@ namespace C4ObjectApi.Repository
                         else
                         {
                             XmlDocument m = new XmlDocument();
-                            metadata = (XmlElement)m.AppendChild(m.CreateElement("meta"));
+                            metadata = (XmlElement)m.AppendChild(m.CreateElement("metadata"));
                             XmlElement filenameEl = (XmlElement)metadata.AppendChild(metadata.OwnerDocument.CreateElement("filename"));
                             filenameEl.InnerText = Path.GetFileName(childFilename);
                         }
@@ -262,7 +262,7 @@ namespace C4ObjectApi.Repository
                     else
                     {
                         XmlDocument m = new XmlDocument();
-                        metadata = (XmlElement)m.AppendChild(m.CreateElement("meta"));
+                        metadata = (XmlElement)m.AppendChild(m.CreateElement("metadata"));
                         XmlElement filenameEl = (XmlElement)metadata.AppendChild(metadata.OwnerDocument.CreateElement("filename"));
                         filenameEl.InnerText = Path.GetFileName(childFilename);
                     }

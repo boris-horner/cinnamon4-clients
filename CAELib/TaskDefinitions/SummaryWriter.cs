@@ -16,6 +16,7 @@ using CAELib.Log;
 using CAELib.Interfaces;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
+using System;
 
 namespace CAELib.TaskDefinitions
 {
@@ -28,6 +29,8 @@ namespace CAELib.TaskDefinitions
         public DateTime NextRun { get; set; }
         public int Interval { get; set; }
 
+        public IC4Node Result { get; set; }
+        public bool Status { get; set; }
         public void Init(C4Session c4s, C4SessionConfiguration sc, System.Xml.XmlElement tEl, Logger l)
         {
             _c4s = c4s;
@@ -36,7 +39,7 @@ namespace CAELib.TaskDefinitions
             _l = l;
         }
 
-        public bool Execute(IC4Node n, ref bool? contentChanged, ref bool? metadataChanged)
+        public void Execute(IC4Node n, ref bool? contentChanged, ref bool? metadataChanged)
         {
             try
             {
@@ -98,16 +101,16 @@ namespace CAELib.TaskDefinitions
                     else _c4s.SetFolderSummary(n.Id, summary.DocumentElement);
                 }
 
-                return true;
+                Status = true;
             }
             catch (Exception ex)
             {
                 _l.Log(string.Concat("  SummaryWriter: ", ex.GetType().ToString(), "\n", ex.Message, "\n", ex.StackTrace));
-                return false;
+                Status = false;
             }
         }
 
-        public bool Execute()
+        public void Execute()
         {
             throw new NotImplementedException();
         }

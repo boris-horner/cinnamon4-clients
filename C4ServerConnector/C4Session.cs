@@ -278,7 +278,7 @@ namespace C4ServerConnector
             XmlDocument resp = null;
             try
             {
-                resp = _http.PostCommand(string.Concat(BaseUrl, "/api/changeTrigger/nop"), requestBody);
+                resp = _http.PostCommand(string.Concat(BaseUrl, "/api/changeTrigger/nop"), requestBody, true);
             }
             catch (WebException ex)
             {

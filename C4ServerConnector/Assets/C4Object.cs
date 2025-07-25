@@ -96,16 +96,7 @@ namespace C4ServerConnector.Assets
                     Metadata.MetasetsByTypeId.Add(ms.TypeId, new System.Collections.Generic.HashSet<C4Metaset>());
                 Metadata.MetasetsByTypeId[ms.TypeId].Add(ms);
             }
-            //XmlElement metaEl = (XmlElement)assetEl.SelectSingleNode("meta");
-            //if(metaEl!=null) Metadata = new C4Metadata(metaEl);
         }
-        //public void AppendAssetEl(XmlElement parentEl)
-        //{
-        //    // TODO
-        //    XmlElement assetEl = (XmlElement)parentEl.AppendChild(parentEl.OwnerDocument.CreateElement("osd"));
-        //    assetEl.AppendChild(parentEl.OwnerDocument.CreateElement("name")).InnerText = Name;
-        //    assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("id")).InnerText = Id.ToString();
-        //}
         public override string ToString()
         {
             return Name;

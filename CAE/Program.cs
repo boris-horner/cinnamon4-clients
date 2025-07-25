@@ -115,128 +115,130 @@ namespace CAE
                         //XmlDocument echoResp = c4s.Echo();
                         //if (echoResp != null)
                         //{
-                            // jobs
-                            XmlElement jobsEl = (XmlElement)serverEl.SelectSingleNode("jobs[@active='true']");
-                            if (jobsEl != null)
+                        // jobs
+                        XmlElement jobsEl = (XmlElement)serverEl.SelectSingleNode("jobs[@active='true']");
+                        if (jobsEl != null)
+                        {
+                            if (framework) l.Log("-------");
+                            foreach (XmlElement otEl in jobsEl.SelectNodes("tasks/task"))
                             {
-                                if (framework) l.Log("-------");
-                                foreach (XmlElement otEl in jobsEl.SelectNodes("tasks/task"))
+                                string tn = otEl.GetAttribute("name");
+                                IAsyncTask t = null;
+                                try
                                 {
-                                    string tn = otEl.GetAttribute("name");
-                                    IAsyncTask t = null;
-                                    try
+                                    t = tasks[tn];
+                                    if (t.Interval == 0 || (t.Interval > 0 && t.NextRun < DateTime.Now))
                                     {
-                                        t = tasks[tn];
-                                        if (t.Interval == 0 || (t.Interval > 0 && t.NextRun < DateTime.Now))
+                                        t.Execute();
+                                        bool execResult = t.Status;
+                                        if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
+                                        if (t.Interval > 0) t.NextRun = DateTime.Now.AddSeconds(t.Interval);
+
+
+                                        // TODO: implement chained actions
+                                    }
+                                }
+                                catch (Exception ex5)
+                                {
+                                    l.Log("ERR " + tn + Environment.NewLine + ex5.GetType().ToString() + Environment.NewLine + ex5.Message + Environment.NewLine + ex5.StackTrace);
+                                }
+                            }
+                            //c4s.setchangedstatus(id, false, false, C4Session.NodeType.Object);
+                            if (framework) l.Log("Processed jobs");
+                        }
+
+
+
+
+                        // objects
+                        //XmlElement objectsEl = (XmlElement)repoEl.SelectSingleNode("objects[@active='true']");
+                        foreach (XmlElement objectsEl in serverEl.SelectNodes("objects[@active='true']"))
+                        {
+                            XmlElement queryEl = (XmlElement)objectsEl.SelectSingleNode("query");
+                            XmlDocument oq = new XmlDocument();
+                            oq.AppendChild(oq.CreateXmlDeclaration("1.0", "UTF-8", ""));
+                            oq.AppendChild(oq.ImportNode((XmlElement)queryEl.SelectSingleNode("*").CloneNode(true), true));
+                            //Dictionary<long, C4Object> objects = c4s.GetObjectsById(c4s.SearchObjectIds(oq.OuterXml, long.Parse(queryEl.GetAttribute("batch_size"))),false);
+                            Dictionary<long, C4Object> objects = c4s.GetObjectsById(c4s.SearchObjectIds(oq.OuterXml),false);
+
+                            foreach (C4Object o in objects.Values)
+                            {
+                                try
+                                {
+                                    // these are passed to the task as null. If the task changes metadata or content, it should set this to true.
+                                    bool? contentChanged = null;
+                                    bool? metadataChanged = null;
+                                    if (framework) l.Log("-------");
+                                    foreach (XmlElement otEl in objectsEl.SelectNodes("tasks/task"))
+                                    {
+                                        string tn = otEl.GetAttribute("name");
+                                        try
                                         {
-                                            bool execResult = t.Execute();
+                                            IAsyncTask t = tasks[tn];
+                                        t.Execute(o, ref contentChanged, ref metadataChanged);
+                                        bool execResult = t.Status;
+                                        if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
+                                        }
+                                        catch (Exception ex5)
+                                        {
+                                            l.Log(string.Concat("ERR ", tn, "\n", ex5.GetType().ToString(), "\n", ex5.Message, "\n", ex5.StackTrace));
+                                        }
+
+                                    }
+                                    c4s.LockObject(o.Id);
+                                    l.Log(string.Concat("Setting metadata changed on object: id=", o.Id.ToString(), " to ", (bool)metadataChanged?"true":"false"));
+                                    l.Log(string.Concat("Setting content changed on object: id=", o.Id.ToString(), " to ", (bool)contentChanged ? "true" : "false"));
+
+                                    c4s.UpdateObject(o.Id, null, null, null, null, null, null, objectsEl.GetAttribute("clearmetadatachanged") == "true" ? false : (bool)metadataChanged, objectsEl.GetAttribute("clearcontentchanged") == "true" ? false : (bool)contentChanged);
+                                    c4s.UnlockObject(o.Id);
+                                    if (framework) l.Log(string.Concat("Processed object: id=", o.Id.ToString()));
+                                }
+                                catch (Exception ex4)
+                                {
+                                    l.Log(string.Concat("Failure processing object: id=", o.Id.ToString(), "\n", ex4.GetType().ToString(), "\n", ex4.Message, "\n", ex4.StackTrace));
+                                }
+                            }
+                        }
+
+
+                        // folders
+                        //XmlElement foldersEl = (XmlElement)repoEl.SelectSingleNode("folders[@active='true']");
+                        foreach (XmlElement foldersEl in serverEl.SelectNodes("folders[@active='true']"))
+                        {
+                            XmlElement queryEl = (XmlElement)foldersEl.SelectSingleNode("query");
+                            Dictionary<long, C4Folder> folders = c4s.GetFoldersById(c4s.SearchFolderIds(queryEl.InnerXml));
+
+                            foreach (C4Folder f in folders.Values)
+                            {
+                                try
+                                {
+                                    bool? contentChanged = null;
+                                    bool? metadataChanged = null;
+                                    foreach (XmlElement ftEl in foldersEl.SelectNodes("tasks/task"))
+                                    {
+                                        string tn = ftEl.GetAttribute("name");
+                                        try
+                                        {
+                                            IAsyncTask t = tasks[tn];
+                                            t.Execute(f, ref contentChanged, ref metadataChanged);
+                                            bool execResult = t.Status;
                                             if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
-                                            if (t.Interval > 0) t.NextRun = DateTime.Now.AddSeconds(t.Interval);
                                         }
-                                    }
-                                    catch (Exception ex5)
-                                    {
-                                        l.Log("ERR " + tn + Environment.NewLine + ex5.GetType().ToString() + Environment.NewLine + ex5.Message + Environment.NewLine + ex5.StackTrace);
-                                    }
-                                    finally
-                                    {
-                                    }
-
-                                }
-                                //c4s.setchangedstatus(id, false, false, C4Session.NodeType.Object);
-                                if (framework) l.Log("Processed jobs");
-                            }
-
-
-
-
-                            // objects
-                            //XmlElement objectsEl = (XmlElement)repoEl.SelectSingleNode("objects[@active='true']");
-                            foreach (XmlElement objectsEl in serverEl.SelectNodes("objects[@active='true']"))
-                            {
-                                XmlElement queryEl = (XmlElement)objectsEl.SelectSingleNode("query");
-                                XmlDocument oq = new XmlDocument();
-                                oq.AppendChild(oq.CreateXmlDeclaration("1.0", "UTF-8", ""));
-                                oq.AppendChild(oq.ImportNode((XmlElement)queryEl.SelectSingleNode("*").CloneNode(true), true));
-                                //Dictionary<long, C4Object> objects = c4s.GetObjectsById(c4s.SearchObjectIds(oq.OuterXml, long.Parse(queryEl.GetAttribute("batch_size"))),false);
-                                Dictionary<long, C4Object> objects = c4s.GetObjectsById(c4s.SearchObjectIds(oq.OuterXml),false);
-
-                                foreach (C4Object o in objects.Values)
-                                {
-                                    try
-                                    {
-                                        // these are passed to the task as null. If the task changes metadata or content, it should set this to true.
-                                        bool? contentChanged = null;
-                                        bool? metadataChanged = null;
-                                        if (framework) l.Log("-------");
-                                        foreach (XmlElement otEl in objectsEl.SelectNodes("tasks/task"))
+                                        catch (Exception ex5)
                                         {
-                                            string tn = otEl.GetAttribute("name");
-                                            try
-                                            {
-                                                IAsyncTask t = tasks[tn];
-                                                bool execResult = t.Execute(o, ref contentChanged, ref metadataChanged);
-                                                if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
-                                            }
-                                            catch (Exception ex5)
-                                            {
-                                                l.Log(string.Concat("ERR ", tn, "\n", ex5.GetType().ToString(), "\n", ex5.Message, "\n", ex5.StackTrace));
-                                            }
-
+                                            l.Log(string.Concat("ERR ", tn, "\n", ex5.GetType().ToString(), "\n", ex5.Message, "\n", ex5.StackTrace));
                                         }
-                                        c4s.LockObject(o.Id);
-                                        l.Log(string.Concat("Setting metadata changed on object: id=", o.Id.ToString(), " to ", (bool)metadataChanged?"true":"false"));
-                                        l.Log(string.Concat("Setting content changed on object: id=", o.Id.ToString(), " to ", (bool)contentChanged ? "true" : "false"));
-
-                                        c4s.UpdateObject(o.Id, null, null, null, null, null, null, objectsEl.GetAttribute("clearmetadatachanged") == "true" ? false : (bool)metadataChanged, objectsEl.GetAttribute("clearcontentchanged") == "true" ? false : (bool)contentChanged);
-                                        c4s.UnlockObject(o.Id);
-                                        if (framework) l.Log(string.Concat("Processed object: id=", o.Id.ToString()));
+                                        //tasks[ftEl.GetAttribute("name")].Execute(c4s, id, folderEl, ref contentChanged, ref metadataChanged);
                                     }
-                                    catch (Exception ex4)
-                                    {
-                                        l.Log(string.Concat("Failure processing object: id=", o.Id.ToString(), "\n", ex4.GetType().ToString(), "\n", ex4.Message, "\n", ex4.StackTrace));
-                                    }
+                                    c4s.UpdateFolder(f.Id, null, null, null, null, null, metadataChanged);
+                                    if (framework) l.Log(string.Concat("Processed folder: id=", f.Id.ToString()));
                                 }
-                            }
-
-
-                            // folders
-                            //XmlElement foldersEl = (XmlElement)repoEl.SelectSingleNode("folders[@active='true']");
-                            foreach (XmlElement foldersEl in serverEl.SelectNodes("folders[@active='true']"))
-                            {
-                                XmlElement queryEl = (XmlElement)foldersEl.SelectSingleNode("query");
-                                Dictionary<long, C4Folder> folders = c4s.GetFoldersById(c4s.SearchFolderIds(queryEl.InnerXml));
-
-                                foreach (C4Folder f in folders.Values)
+                                catch (Exception ex4)
                                 {
-                                    try
-                                    {
-                                        bool? contentChanged = null;
-                                        bool? metadataChanged = null;
-                                        foreach (XmlElement ftEl in foldersEl.SelectNodes("tasks/task"))
-                                        {
-                                            string tn = ftEl.GetAttribute("name");
-                                            try
-                                            {
-                                                IAsyncTask t = tasks[tn];
-                                                bool execResult = t.Execute(f, ref contentChanged, ref metadataChanged);
-                                                if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
-                                            }
-                                            catch (Exception ex5)
-                                            {
-                                                l.Log(string.Concat("ERR ", tn, "\n", ex5.GetType().ToString(), "\n", ex5.Message, "\n", ex5.StackTrace));
-                                            }
-                                            //tasks[ftEl.GetAttribute("name")].Execute(c4s, id, folderEl, ref contentChanged, ref metadataChanged);
-                                        }
-                                        c4s.UpdateFolder(f.Id, null, null, null, null, null, metadataChanged);
-                                        if (framework) l.Log(string.Concat("Processed folder: id=", f.Id.ToString()));
-                                    }
-                                    catch (Exception ex4)
-                                    {
-                                        l.Log(string.Concat("Failure processing folder: id=", f.Id.ToString(), "\n", ex4.GetType().ToString(), "\n", ex4.Message, "\n", ex4.StackTrace));
-                                    }
+                                    l.Log(string.Concat("Failure processing folder: id=", f.Id.ToString(), "\n", ex4.GetType().ToString(), "\n", ex4.Message, "\n", ex4.StackTrace));
                                 }
                             }
+                        }
                         //}
                         //else
                         //{

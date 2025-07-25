@@ -55,7 +55,7 @@ namespace C4ServerConnector.Assets
             assetEl.AppendChild(parentEl.OwnerDocument.CreateElement("leftId")).InnerText = LeftId.ToString();
             assetEl.AppendChild(parentEl.OwnerDocument.CreateElement("rightId")).InnerText = RightId.ToString();
             XmlNode mdNode = assetEl.AppendChild(parentEl.OwnerDocument.CreateElement("metadata"));
-            if (Metadata == null) mdNode.InnerText = "<meta/>";
+            if (Metadata == null) mdNode.InnerText = "<metadata/>";
             else mdNode.InnerText = Metadata.DocumentElement.OuterXml;
             assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("id")).InnerText = Id==null?"":Id.ToString();
             //if(Id!=null) assetEl.AppendChild(assetEl.OwnerDocument.CreateElement("id")).InnerText = Id.ToString();

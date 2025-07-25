@@ -19,6 +19,8 @@ namespace CAELib.Interfaces
 {
     public interface IAsyncTask
     {
+        IC4Node Result { get; set; }
+        bool Status { get; set; }
         DateTime NextRun { get; set; }
         int Interval { get; set; }
         void Init(C4Session c4s, C4SessionConfiguration sc, XmlElement tEl, Logger l);
@@ -28,9 +30,9 @@ namespace CAELib.Interfaces
         //        if the object was processed, but processing failed, throw an exception
 
         // use this one for operations on an object or folder (tasks)
-        bool Execute(IC4Node n, ref bool? contentChanged, ref bool? metadataChanged);
+        void Execute(IC4Node n, ref bool? contentChanged, ref bool? metadataChanged);
 
         // use this one for session operations (jobs)
-        bool Execute();
+        void Execute();
     }
 }

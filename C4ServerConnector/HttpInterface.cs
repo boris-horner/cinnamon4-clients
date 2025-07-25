@@ -102,7 +102,7 @@ namespace C4ServerConnector
             }
             return null;
         }
-        public XmlDocument PostCommand(string cmdUrl, XmlDocument requestBody)
+        public XmlDocument PostCommand(string cmdUrl, XmlDocument requestBody, bool longTimeout=false)
         {
             HttpContent content = new StringContent(requestBody.OuterXml, Encoding.UTF8, "application/xml");
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, cmdUrl)
@@ -113,7 +113,9 @@ namespace C4ServerConnector
             {
                 File.AppendAllText(_sessionLogFn, $"POST {cmdUrl}\n{requestBody.OuterXml}\n");
             }
-            HttpResponseMessage responseMessage = _shortTimeoutClient.SendAsync(requestMessage).Result;
+            HttpResponseMessage responseMessage = longTimeout?
+                                                 _longTimeoutClient.SendAsync(requestMessage).Result:
+                                                 _shortTimeoutClient.SendAsync(requestMessage).Result;
             string responseString = responseMessage.Content.ReadAsStringAsync().Result;
             if (_sessionLogFn != null)
             {
