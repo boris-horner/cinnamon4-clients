@@ -2008,6 +2008,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No target folder was selected..
+        /// </summary>
+        internal static string msgNoFolderSelected {
+            get {
+                return ResourceManager.GetString("msgNoFolderSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In this repository, no lifecycles are defined..
         /// </summary>
         internal static string msgNoLifecyclesDefined {

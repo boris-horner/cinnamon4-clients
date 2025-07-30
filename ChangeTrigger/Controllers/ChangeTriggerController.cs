@@ -89,6 +89,12 @@ public class ChangeTriggerController : ControllerBase
                 try
                 {
                     resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                    if(resp.DocumentElement.Name=="error" && resp.DocumentElement.InnerText.StartsWith("C4ServerConnector.Exceptions.SessionExpiredException")) 
+                    {
+                        _logger.Error("Session expired - trying to reconnect.");
+                        _triggerActionService.ReconnectServiceSession();
+                        resp = await _triggerActionService.GetNopAction(reqType, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                    }
                 }
                 catch (SessionExpiredException ex)
                 {
@@ -103,8 +109,14 @@ public class ChangeTriggerController : ControllerBase
                 try
                 {
                     resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                    if (resp.DocumentElement.Name == "error" && resp.DocumentElement.InnerText.StartsWith("C4ServerConnector.Exceptions.SessionExpiredException"))
+                    {
+                        _logger.Error("Session expired - trying to reconnect.");
+                        _triggerActionService.ReconnectServiceSession();
+                        resp = await _triggerActionService.GetAction(actionParameter, _logger).ExecuteAsync(ticketHeader, requestData, requestToCinnamon, Request.Headers);
+                    }
                 }
-                catch(SessionExpiredException ex)
+                catch (SessionExpiredException ex)
                 {
                     _logger.Error(ex, "Session expired - trying to reconnect.");
                     _triggerActionService.ReconnectServiceSession();

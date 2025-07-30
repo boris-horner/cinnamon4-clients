@@ -19,6 +19,7 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ServerConnector.Assets;
 using static C4ServerConnector.Assets.C4Link;
+using C4GeneralGui.GuiElements;
 
 namespace CDCplusLib.ContextFunctions
 {
@@ -54,35 +55,39 @@ namespace CDCplusLib.ContextFunctions
 
             if (sd.ShowSelectorDialog() == DialogResult.OK)
             {
-                CmnFolder targetF = (CmnFolder)sd.Selection.Values.First();
-                ResolverTypes rt = ResolverTypes.Folder;
-                if(ContainsObjects(dict))
+                if (sd.Selection.Count() == 1 && sd.Selection.Values.First() is CmnFolder)
                 {
-                    // If there is at least one object in dict, ask whether objects should be fixed or latest version
-                    SelectObjectLinkResolver slr = new SelectObjectLinkResolver(_s, true);
-                    if (slr.ShowDialog() == DialogResult.OK)
+                    CmnFolder targetF = (CmnFolder)sd.Selection.Values.First();
+                    ResolverTypes rt = ResolverTypes.Folder;
+                    if (ContainsObjects(dict))
                     {
-                        rt = slr.FixedVersion ? ResolverTypes.Fixed : ResolverTypes.LatestHead;
+                        // If there is at least one object in dict, ask whether objects should be fixed or latest version
+                        SelectObjectLinkResolver slr = new SelectObjectLinkResolver(_s, true);
+                        if (slr.ShowDialog() == DialogResult.OK)
+                        {
+                            rt = slr.FixedVersion ? ResolverTypes.Fixed : ResolverTypes.LatestHead;
+                        }
+                        else return;
                     }
-                    else return;
+
+
+                    HashSet<C4Link> links = new HashSet<C4Link>();
+                    C4Acl linkAcl = _s.SessionConfig.C4Sc.AclsByName["_default_acl"];
+                    foreach (IRepositoryNode target in dict.Values)
+                    {
+                        if (target.GetType() == typeof(CmnObject))
+                        {
+                            links.Add(new C4Link((long)linkAcl.Id, targetF.Id, (long)_s.User.Id, LinkTypes.Object, rt, target.Id));
+                        }
+                        else
+                        {
+                            links.Add(new C4Link((long)linkAcl.Id, targetF.Id, (long)_s.User.Id, LinkTypes.Folder, ResolverTypes.Folder, target.Id));
+                        }
+                    }
+
+                    _s.CommandSession.CreateLinks(links);
                 }
-
-
-                HashSet<C4Link> links= new HashSet<C4Link>();
-                C4Acl linkAcl = _s.SessionConfig.C4Sc.AclsByName["_default_acl"];
-                foreach (IRepositoryNode target in dict.Values)
-                {
-                    if (target.GetType() == typeof(CmnObject))
-                    {
-                        links.Add(new C4Link((long)linkAcl.Id, targetF.Id, (long)_s.User.Id, LinkTypes.Object, rt, target.Id));
-                    }
-                    else
-                    {
-                        links.Add(new C4Link((long)linkAcl.Id, targetF.Id, (long)_s.User.Id, LinkTypes.Folder, ResolverTypes.Folder, target.Id));
-                    }
-                }
-
-                _s.CommandSession.CreateLinks(links);
+                else StandardMessage.ShowMessage(Properties.Resources.msgNoFolderSelected, StandardMessage.Severity.InfoMessage);
             }
         }
         private bool ContainsObjects(Dictionary<long, IRepositoryNode> dict)

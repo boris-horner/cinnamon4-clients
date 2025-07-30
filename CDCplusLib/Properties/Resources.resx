@@ -934,4 +934,7 @@ The change will be committed when you click the Save button.</value>
   <data name="lblNumResultsFound" xml:space="preserve">
     <value>{0} search results</value>
   </data>
+  <data name="msgNoFolderSelected" xml:space="preserve">
+    <value>No target folder was selected.</value>
+  </data>
 </root>

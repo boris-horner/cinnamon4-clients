@@ -934,4 +934,7 @@ Die Änderung wird gespeichert, wenn Sie auf den Speichern-Button klicken.</valu
   <data name="lblNumResultsFound" xml:space="preserve">
     <value>{0} Suchergebnisse</value>
   </data>
+  <data name="msgNoFolderSelected" xml:space="preserve">
+    <value>Es wurde kein Zielordner ausgewählt.</value>
+  </data>
 </root>
