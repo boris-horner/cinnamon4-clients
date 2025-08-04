@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.7" />
     <PackageReference Include="System.ServiceModel.Federation" Version="8.1.2" />
   </ItemGroup>
 
