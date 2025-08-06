@@ -76,7 +76,7 @@ namespace C4ObjectApi.Repository
         {
             get
             {
-                return C4F.ParentId;
+                return C4F != null ? C4F.ParentId : 0;
             }
         }
         public CmnFolder Parent
@@ -390,7 +390,9 @@ public void SetChangedStatus(bool metadataChanged)
         {
             HashSet<long> ids = new HashSet<long>();
             ids.Add(Id);
-            C4F = Session.CommandSession.GetFoldersById(ids).Values.First();
+            Dictionary<long, C4Folder> folders = Session.CommandSession.GetFoldersById(ids);
+            if (folders.Count() == 0) C4F=null;
+            else C4F = Session.CommandSession.GetFoldersById(ids).Values.First();
         }
         public CmnLink Link { get; private set; }
     }

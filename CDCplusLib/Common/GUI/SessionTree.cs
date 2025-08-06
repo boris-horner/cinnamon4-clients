@@ -197,10 +197,13 @@ namespace CDCplusLib.Common.GUI
                     {
                         f.Refresh();
                         n.Nodes.Clear();
-                        if (f.HasSubfolders)
+                        if(f.C4F!=null)
                         {
-                            // add dummy folder to let treeview show a [+] next to the folder
-                            TreeNode tn = n.Nodes.Add(DUMMY_FOLDER, DUMMY_FOLDER, "folder", "folder");
+                            if (f.HasSubfolders)
+                            {
+                                // add dummy folder to let treeview show a [+] next to the folder
+                                TreeNode tn = n.Nodes.Add(DUMMY_FOLDER, DUMMY_FOLDER, "folder", "folder");
+                            }
                         }
                     }
                     else

@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Xml;
 using C4ServerConnector;
 using C4ServerConnector.Assets;
+using System.Security.AccessControl;
 
 namespace C4Logic.Requests
 {
@@ -17,6 +18,7 @@ namespace C4Logic.Requests
         private C4Folder _requestFolder;
         private long _newRequestLcsId;
         private long _requestObjTypeId;
+        private string _baseRequestQuery;
         public AsyncRequestEngine(C4Session c4s, C4SessionConfiguration c4sc)
         {
             _c4s = c4s;
@@ -25,6 +27,24 @@ namespace C4Logic.Requests
             _newRequestLcsId = (long)_c4sc.LifecycleStatesByName[Constants.REQUEST_NEW_LCS].Id;
             _requestFolder = _c4s.GetFolderByPath(Constants.REQUEST_PATH);
             _requestObjTypeId = (long)_c4sc.ObjectTypesByName[Constants.REQUEST_OBJECT_TYPE].Id;
+            _baseRequestQuery = "<BooleanQuery>" +
+                            "  <Clause occurs=\"must\">" +
+                            "    <TermQuery fieldName=\"latest_head\">true</TermQuery>" +
+                            "  </Clause>" +
+                            "  <Clause occurs=\"must\">" +
+                            "    <BooleanQuery>" +
+                            "      <Clause occurs=\"must\">" +
+                            $"        <ExactPointQuery fieldName=\"lifecycle_state\" type=\"long\" value=\"{_newRequestLcsId}\" />" +
+                            "      </Clause>" +
+                            "      <Clause occurs=\"must\">" +
+                            $"        <ExactPointQuery fieldName=\"object_type\" type=\"long\" value=\"{_requestObjTypeId}\" />" +
+                            "      </Clause>" +
+                            "      <Clause occurs=\"must\">" +
+                            $"        <TermQuery fieldName=\"async_processing_request.channel\">{{CHANNEL}}</TermQuery>" +
+                            "      </Clause>" +
+                            "    </BooleanQuery>" +
+                            "  </Clause>" +
+                            "</BooleanQuery>";
         }
         public AsyncRequest CreateRequest(long sourceId, string sourcePath, string sourceLang, string channel, string command, long ownerId, XmlElement parametersEl)
         {
@@ -66,32 +86,29 @@ namespace C4Logic.Requests
 
         public Dictionary<long, C4Object> FindRequests(string channel, long batchSize)
         {
-            string query = "<BooleanQuery>" +
-            "  <Clause occurs=\"must\">" +
-            "    <TermQuery fieldName=\"latest_head\">true</TermQuery>" +
-            "  </Clause>" +
-            "  <Clause occurs=\"must\">" +
-            "    <BooleanQuery>" +
-            "      <Clause occurs=\"must\">" +
-            $"        <ExactPointQuery fieldName=\"lifecycle_state\" type=\"long\" value=\"{_newRequestLcsId}\" />" +
-            "      </Clause>" +
-            "      <Clause occurs=\"must\">" +
-            $"        <ExactPointQuery fieldName=\"object_type\" type=\"long\" value=\"{_requestObjTypeId}\" />" +
-            "      </Clause>" +
-            "      <Clause occurs=\"must\">" +
-            $"        <TermQuery fieldName=\"async_processing_request.channel\">{channel}</TermQuery>" +
-            "      </Clause>" +
-            "    </BooleanQuery>" +
-            "  </Clause>" +
-            "</BooleanQuery>";
-
-            HashSet<long> ids = _c4s.SearchObjectIds(query);
-            Dictionary<long, C4Object> objs =_c4s.GetObjectsById(ids, false);
-            if (objs.Count > batchSize)
+            string query = _baseRequestQuery.Replace("{CHANNEL}", channel);
+            try
             {
-                objs = new Dictionary<long, C4Object>(objs.OrderBy(kvp => kvp.Key).Take((int)batchSize));
+                HashSet<long> ids = _c4s.SearchObjectIds(query);
+                if(ids.Count>0)
+                {
+                    Dictionary<long, C4Object> objs =_c4s.GetObjectsById(ids, false);
+                    if (objs.Count > batchSize)
+                    {
+                        objs = new Dictionary<long, C4Object>(objs.OrderBy(kvp => kvp.Key).Take((int)batchSize));
+                    }
+                    return objs;
+                }
+                else
+                {
+                    return new Dictionary<long, C4Object>();
+                }
             }
-            return objs;
+            catch(AggregateException ex) 
+            {
+                // this can happen at times - just ignore and the engine will try again in the next loop
+                return new Dictionary<long, C4Object>();
+            }
         }
     }
 }

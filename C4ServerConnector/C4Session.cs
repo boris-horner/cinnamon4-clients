@@ -1949,13 +1949,17 @@ namespace C4ServerConnector
                 requestBody.AppendChild(requestBody.CreateElement("searchIdsRequest"));
                 requestBody.DocumentElement.AppendChild(requestBody.CreateElement("searchType")).InnerText = "OSD";
                 requestBody.DocumentElement.AppendChild(requestBody.CreateElement("query")).InnerText = query;
-                XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/search/objectIds"), requestBody);
+                XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/search/objectIds"), requestBody, true);
                 // CheckResponse(resp, requestBody, "/api/search/objectIds");
                 foreach(XmlElement idEl in resp.DocumentElement.SelectNodes("osdIds/osdId")) result.Add(long.Parse(idEl.InnerText));
             }
-            catch (WebException ex)
+            catch (WebException webex)
             {
-                ThrowException(ex);
+                ThrowException(webex);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
             return result;
         }
