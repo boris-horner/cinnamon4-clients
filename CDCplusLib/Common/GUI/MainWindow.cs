@@ -195,7 +195,13 @@ namespace CDCplusLib.Common.GUI
         }
         protected virtual void SessionWindowRequestEventHandler(WindowSelectionData wsd)
         {
-            SessionWindowRequest?.Invoke(wsd);
+            if(wsd.AllowInvoke)
+            {
+                // fixes issue that sometimes new windows were opened in a loop. 
+                // AllowInvoke = false breaks the loop.
+                wsd.AllowInvoke = false;
+                SessionWindowRequest?.Invoke(wsd);
+            }
         }
         protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
         {

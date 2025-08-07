@@ -13,11 +13,13 @@ namespace CDCplusLib.EventData
             Modification = new Dictionary<long, IRepositoryNode>();
             ResultList = new Dictionary<long, IRepositoryNode>();
             SelectedFolder = null;
+            AllowInvoke = true;
         }
         public Dictionary<long, IRepositoryNode> Selection { get; set; }
         public Dictionary<long, IRepositoryNode> Modification { get; set; }
         public Dictionary<long, IRepositoryNode> ResultList { get; set; }
         public CmnFolder SelectedFolder { get; set; }
         public SessionTree.RootNodeTypes RootNodeType { get; set; }
+        public bool AllowInvoke { get; set; }
     }
 }
