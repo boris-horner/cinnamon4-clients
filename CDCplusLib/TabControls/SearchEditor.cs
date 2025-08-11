@@ -510,7 +510,7 @@ namespace CDCplusLib.TabControls
                     {
                         TreeNode selectedNode = (TreeNode)item.Tag;
                         selectedNode.Remove();
-                        pTermEditorContainer.Controls.Clear();
+                        UpdateSearchControls();
                         IsDirty = true;
                         ActivateControls();
                         break;
@@ -533,8 +533,7 @@ namespace CDCplusLib.TabControls
                     }
             }
         }
-
-        private void TvwSearchDef_AfterSelect(object sender, TreeViewEventArgs e)
+        private void UpdateSearchControls()
         {
             _enableEvents = false;
             pTermEditorContainer.Controls.Clear();
@@ -572,6 +571,11 @@ namespace CDCplusLib.TabControls
                 }
             }
             _enableEvents = true;
+
+        }
+        private void TvwSearchDef_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            UpdateSearchControls();
         }
 
         private void ChkVariable_CheckedChanged(object sender, EventArgs e)
