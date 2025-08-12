@@ -340,7 +340,9 @@ namespace CDCplusLib.ContextFunctions
                                     {
                                         if (srcF.Id == rootFId)
                                         {
-                                            CmnFolder targetSubF = _f.CreateSubfolder(srcF.Name);
+                                            string folderName = (srcF.ParentId == _f.Id) ? "_" + srcF.Name : srcF.Name;
+                                            CmnFolder targetSubF = _f.CreateSubfolder(folderName,srcF.FolderType, srcF.Acl);
+                                            CopyFolderMetadata(srcF.Id, targetSubF.Id);
                                             sourceTargetFLookup.Add(srcF.Id, targetSubF);
                                             wsd.Selection.Add(targetSubF.Id, targetSubF);
                                         }
@@ -348,7 +350,8 @@ namespace CDCplusLib.ContextFunctions
                                         {
                                             if (sourceTargetFLookup.ContainsKey(srcF.ParentId))
                                             {
-                                                CmnFolder targetSubF = sourceTargetFLookup[srcF.ParentId].CreateSubfolder(srcF.Name);
+                                                CmnFolder targetSubF = sourceTargetFLookup[srcF.ParentId].CreateSubfolder(srcF.Name, srcF.FolderType, srcF.Acl);
+                                                CopyFolderMetadata(srcF.Id, targetSubF.Id);
                                                 sourceTargetFLookup.Add(srcF.Id, targetSubF);
                                                 wsd.Selection.Add(targetSubF.Id, targetSubF);
                                             }
@@ -448,6 +451,26 @@ namespace CDCplusLib.ContextFunctions
             {
                 Cursor.Current = Cursors.Default;
             }
+        }
+        private void CopyFolderMetadata(long sourceId, long targetId)
+        {
+            // copy metadata
+            Dictionary<long, HashSet<C4Metaset>> createMetasets = new Dictionary<long, HashSet<C4Metaset>>();
+            createMetasets.Add(targetId, new HashSet<C4Metaset>());
+            C4Metadata sourceM = _s.CommandSession.GetFolderMeta(sourceId);
+            if (sourceM.MetasetsByTypeId.Count > 0)
+            {
+                foreach (long msTypeId in sourceM.MetasetsByTypeId.Keys)
+                {
+                    foreach (C4Metaset sourceMs in sourceM.MetasetsByTypeId[msTypeId])
+                    {
+                        sourceMs.ObjectId = targetId;
+                        createMetasets[targetId].Add(sourceMs);
+                    }
+                }
+                _s.CommandSession.CreateFolderMeta(createMetasets);
+            }
+
         }
         private void CopySelectedVersions()
         {
