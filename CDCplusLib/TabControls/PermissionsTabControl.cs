@@ -316,7 +316,7 @@ namespace CDCplusLib.TabControls
                     // object
                     CmnObject o = (CmnObject)ow;
                     o.Lock();
-					o.Session.CommandSession.UpdateObject(o.Id,
+                    o.Session.CommandSession.UpdateObject(o.Id,
 														null,
 														null,
 														null,

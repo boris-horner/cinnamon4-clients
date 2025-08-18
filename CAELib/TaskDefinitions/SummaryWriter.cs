@@ -96,7 +96,7 @@ namespace CAELib.TaskDefinitions
                     _l.Log(string.Concat("SummaryWriter: summary: creating summary for object: ", n.Id.ToString()));
                     metadataChanged = false;
                     contentChanged = false;
-                    //_l.Log("SummaryWriter: summary:" + summary.OuterXml.ToString());
+                    _l.Log("SummaryWriter: summary:" + summary.OuterXml.ToString());
                     if(n.NodeType == C4Session.NodeType.Object) _c4s.SetObjectSummary(n.Id,summary.DocumentElement);
                     else _c4s.SetFolderSummary(n.Id, summary.DocumentElement);
                 }

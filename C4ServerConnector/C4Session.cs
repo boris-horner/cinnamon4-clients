@@ -2056,7 +2056,7 @@ namespace C4ServerConnector
                     }
                     requestBody.DocumentElement.AppendChild(requestBody.CreateElement("deleteDescendants")).InnerText = withDescendants?"true":"false";
                     requestBody.DocumentElement.AppendChild(requestBody.CreateElement("deleteAllVersions")).InnerText = allVersions ? "true" : "false";
-                    XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/osd/delete"), requestBody);
+                    XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/osd/delete"), requestBody, true);
                     // CheckResponse(resp, requestBody, "/api/osd/delete");
                     return resp;
                 }

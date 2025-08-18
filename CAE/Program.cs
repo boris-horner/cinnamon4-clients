@@ -175,9 +175,9 @@ namespace CAE
                                         try
                                         {
                                             IAsyncTask t = tasks[tn];
-                                        t.Execute(o, ref contentChanged, ref metadataChanged);
-                                        bool execResult = t.Status;
-                                        if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
+                                            t.Execute(o, ref contentChanged, ref metadataChanged);
+                                            bool execResult = t.Status;
+                                            if (framework) l.Log((execResult ? "[x] " : "[ ] ") + tn);
                                         }
                                         catch (Exception ex5)
                                         {
@@ -185,12 +185,12 @@ namespace CAE
                                         }
 
                                     }
-                                    c4s.LockObject(o.Id);
+                                    //c4s.LockObject(o.Id);
                                     l.Log(string.Concat("Setting metadata changed on object: id=", o.Id.ToString(), " to ", (bool)metadataChanged?"true":"false"));
                                     l.Log(string.Concat("Setting content changed on object: id=", o.Id.ToString(), " to ", (bool)contentChanged ? "true" : "false"));
 
                                     c4s.UpdateObject(o.Id, null, null, null, null, null, null, objectsEl.GetAttribute("clearmetadatachanged") == "true" ? false : (bool)metadataChanged, objectsEl.GetAttribute("clearcontentchanged") == "true" ? false : (bool)contentChanged);
-                                    c4s.UnlockObject(o.Id);
+                                    //c4s.UnlockObject(o.Id);
                                     if (framework) l.Log(string.Concat("Processed object: id=", o.Id.ToString()));
                                 }
                                 catch (Exception ex4)
