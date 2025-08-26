@@ -185,10 +185,12 @@ namespace CDCplusLib.TabControls
 
             INodeDataProvider nodeDataProvider = (INodeDataProvider)(s.SessionConfig.GetAssembly(ndpAsm).CreateInstance(ndpAsm + "." + ndpTp));
             nodeDataProvider.Init(s, columnConfigEl, _rldConfigEl);
+            rldNodes.EventsActive = false;
             rldNodes.Init(s, columnConfigEl, _rldConfigEl, nodeDataProvider);
+            rldNodes.EventsActive = true;
 
             // load allowed custom fields
-            foreach(XmlElement field in _rldConfigEl.SelectNodes("allowed_custom_fields/field"))
+            foreach (XmlElement field in _rldConfigEl.SelectNodes("allowed_custom_fields/field"))
             {
                 _allowedCustomFields.Add(field.InnerText, s.SessionConfig.C4Sc.GetLocalizedLabel("listview_custom_column." + field.InnerText, "other"));
             }
@@ -198,8 +200,11 @@ namespace CDCplusLib.TabControls
             {
                 cboColumnSettings.Items.Add(cc);
             }
+
+            rldNodes.EventsActive = false;
             if (lastSelected == null) cboColumnSettings.SelectedItem = lvseSettings.ColumnConfigurations[_defaultConfigName];
             else cboColumnSettings.Text = lastSelected.ToString();
+            rldNodes.EventsActive = true;
 
             InitFilterSettings(s);
             InitViewCombo();
@@ -221,8 +226,11 @@ namespace CDCplusLib.TabControls
                 if (defaultFilterKey != null && defaultFilterKey == flt.GetKey()) defaultFilterLabel = flt.ToString();
                 if (flt.ShowsAllVersions) _allVersionFilter = flt;
             }
+            rldNodes.EventsActive = false;
+
             if (defaultFilterKey == null) cboVersionDisplay.SelectedIndex = 0;
             else cboVersionDisplay.Text = defaultFilterLabel;
+            rldNodes.EventsActive = true;
         }
         public void Save()
         {
