@@ -2422,16 +2422,20 @@ namespace C4ServerConnector
             {
                 if(relations.Count>0)
                 {
-                    XmlDocument requestBody = new XmlDocument();
-                    requestBody.AppendChild(requestBody.CreateElement("createRelationRequest"));
-                    XmlElement relationsEl = (XmlElement)requestBody.DocumentElement.AppendChild(requestBody.CreateElement("relations"));
-                    foreach (C4Relation relation in relations) relation.AppendAssetEl(relationsEl);
-                    XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/relation/create"), requestBody);
-                    // CheckResponse(resp, requestBody, "/api/relation/create");
-                    foreach (XmlElement relEl in resp.DocumentElement.SelectNodes("relations/relation"))
+                    // running in batches avoids issues with 1000+ relations at once
+                    foreach (var batch in relations.Chunk(300))
                     {
-                        C4Relation rel = new C4Relation(relEl);
-                        result.Add((long)rel.Id, rel);
+                        XmlDocument requestBody = new XmlDocument();
+                        requestBody.AppendChild(requestBody.CreateElement("createRelationRequest"));
+                        XmlElement relationsEl = (XmlElement)requestBody.DocumentElement.AppendChild(requestBody.CreateElement("relations"));
+                        foreach (C4Relation relation in batch) relation.AppendAssetEl(relationsEl);
+                        XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/relation/create"), requestBody);
+                        // CheckResponse(resp, requestBody, "/api/relation/create");
+                        foreach (XmlElement relEl in resp.DocumentElement.SelectNodes("relations/relation"))
+                        {
+                            C4Relation rel = new C4Relation(relEl);
+                            result.Add((long)rel.Id, rel);
+                        }
                     }
                 }
             }
@@ -2763,7 +2767,7 @@ namespace C4ServerConnector
         {
             XmlElement errorsEl = (XmlElement)resp.SelectSingleNode("//errors");
             StringBuilder message = new StringBuilder();
-            message.Append("Request: "+req.OuterXml+"\n");
+            if(req.OuterXml.Length<3000) message.Append("Request: "+req.OuterXml+"\n");
             if (errorsEl == null)
             {
                 // TODO: fallback, if other single error elements are returned (if so, needs to be fixed in server)
