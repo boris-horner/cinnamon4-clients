@@ -257,10 +257,10 @@ namespace CDCplusLib.Common.GUI
                 default:
                     TreeNode rootNode = null;
                     if(wsd.RootNodeType==RootNodeTypes.Results) rootNode = tvwSession.Nodes[NODE_RESULTS];
-                    else if(wsd.SelectedFolder!=null)
+                    else if(wsd.SelectedFolder!=null && wsd.SelectedFolder.FolderPath != null)
                     {
-                        if (wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.HomeFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_HOME];
-                        else if (wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.SearchesFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_SEARCHES];
+                        if (_s.SessionConfig.HomeFolder != null && wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.HomeFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_HOME];
+                        else if (_s.SessionConfig.SearchesFolder != null && wsd.SelectedFolder.FolderPath.StartsWith(_s.SessionConfig.SearchesFolder.FolderPath)) rootNode = tvwSession.Nodes[NODE_SEARCHES];
                         else rootNode = tvwSession.Nodes[NODE_SESSION];
                     }
                     else rootNode = tvwSession.Nodes[NODE_SESSION];
