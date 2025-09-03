@@ -11,6 +11,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -27,6 +28,7 @@ namespace C4ObjectApi.Global
             if(!Directory.Exists(_locksDir)) Directory.CreateDirectory(_locksDir);
             Locks=new Dictionary<long, Lock>();
             ServerId = serverId;
+            HashSet<string> delFns = new HashSet<string>();
             foreach (string fn in Directory.GetFiles(_locksDir, string.Concat(ServerId, ".*.xml")))
             {
                 string fnOnly = Path.GetFileNameWithoutExtension(fn);
@@ -34,7 +36,25 @@ namespace C4ObjectApi.Global
                 string idString = fnOnly.Split('.')[1];
                 if(long.TryParse(idString, out id))
                 {
-                    Locks.Add(id, new Lock(id, _locksDir, ServerId));
+                    try
+                    {
+                        Locks.Add(id, new Lock(id, _locksDir, ServerId));
+                    }
+                    catch(Exception ex)
+                    {
+                        delFns.Add(fn);
+                    }
+                }
+            }
+            foreach (string fn in delFns)
+            {
+                try
+                {
+                    File.Delete(fn);
+                }
+                catch
+                {
+                    // ignore
                 }
             }
         }
