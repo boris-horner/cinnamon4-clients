@@ -21,9 +21,17 @@ using System.Xml;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestHeadersTotalSize = 1048576; // Increase to 1 MB
-});
+    // Header limits
+    serverOptions.Limits.MaxRequestHeadersTotalSize = 2 * 1024 * 1024;           
+    serverOptions.Limits.Http2.MaxRequestHeaderFieldSize = 2 * 1024 * 1024;      
+    serverOptions.Limits.Http3.MaxRequestHeaderFieldSize = 2 * 1024 * 1024;      
 
+    // Buffer must be >= any header limit
+    serverOptions.Limits.MaxRequestBufferSize = 4 * 1024 * 1024;    
+
+    // Optional: keep this reasonable
+    serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(100);
+});
 XmlDocument config = new XmlDocument();
 string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 config.Load(Path.Combine(assemblyPath, "ct.config.xml"));
