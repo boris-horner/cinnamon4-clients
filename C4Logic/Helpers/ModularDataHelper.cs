@@ -87,5 +87,49 @@ namespace C4Logic.Helpers
                 }
             }
         }
+
+        public static string GetXPath(XmlElement contentEl, XmlDocument topicDoc)
+        {
+            if (contentEl == null)
+                throw new ArgumentNullException(nameof(contentEl));
+            if (topicDoc == null)
+                throw new ArgumentNullException(nameof(topicDoc));
+
+            // Build the XPath from the element up to the root
+            string path = string.Empty;
+            XmlNode? current = contentEl;
+
+            while (current != null && current.NodeType == XmlNodeType.Element)
+            {
+                XmlElement el = (XmlElement)current;
+
+                // Determine the element’s index among siblings with the same name
+                int index = 1;
+                XmlNode? sibling = el.PreviousSibling;
+                while (sibling != null)
+                {
+                    if (sibling.NodeType == XmlNodeType.Element && sibling.Name == el.Name)
+                        index++;
+                    sibling = sibling.PreviousSibling;
+                }
+
+                string segment = (index == 1 && (el.NextSibling == null ||
+                                el.ParentNode == null ||
+                                el.ParentNode.SelectNodes(el.Name).Count == 1))
+                                ? $"/{el.Name}"
+                                : $"/{el.Name}[{index}]";
+
+                path = segment + path;
+
+                // Stop if we’ve reached the document root
+                if (el == topicDoc.DocumentElement)
+                    break;
+
+                current = el.ParentNode;
+            }
+
+            return path;
+        }
+
     }
 }
