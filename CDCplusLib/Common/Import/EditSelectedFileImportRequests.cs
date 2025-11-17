@@ -160,9 +160,13 @@ namespace CDCplusLib.Common.Import
 
         private void cmdBrowseTargetFolder_Click(object sender, EventArgs e)
         {
-            SelectObjectsDialog sd = new SelectObjectsDialog(_s, _selectObjectsConfigEl, SelectObjectsDialog.SelectionModes.SelectFolder, _initialFolder, Properties.Resources.lblTargetFolder, _gad);
             CmnFolder targetFolder = _s.GetFolder(TargetPath);
-            sd.Folder = targetFolder ?? _initialFolder;
+            SelectObjectsDialog sd = new SelectObjectsDialog(_s, 
+                                                             _selectObjectsConfigEl, 
+                                                             SelectObjectsDialog.SelectionModes.SelectFolder,
+                                                             targetFolder ?? _initialFolder, 
+                                                             Properties.Resources.lblTargetFolder, 
+                                                             _gad);
             if (sd.ShowSelectorDialog() == DialogResult.OK)
             {
                 targetFolder = (CmnFolder)sd.Selection.First().Value;
