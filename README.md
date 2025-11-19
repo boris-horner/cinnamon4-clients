@@ -24,7 +24,8 @@ The cinnamon4-clients repository contains several projects for libraries, and th
 * **C4ChangeTrigger:** Change triggers implement .net 8 core based microservice plugins that run in the ChangeTrigger framework. The Cinnamon server can be configured to call such microservices before or after any API command, or after its commit. Apart from some system functions implemented as Change Triggers by standard, and some extensions like the billing and LLM integration in Smart AI Hub, custom functions can easily be added.
 
 # Installing binaries
-**NOTE:** Binary download links coming soon.
+* [CAE installation instructions](docs/t-installation-cae-debian12.md)
+* [Changetrigger installation instructions](docs/t-installation-changetrigger-debian12.md)
 
 # Compiling from source
 **NOTE:** More detailed instructions coming soon.
