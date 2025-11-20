@@ -50,9 +50,11 @@ namespace CDCplusLib.TabControls
             cboView = new ComboBox();
             cmdSettings = new Button();
             splTranslations = new SplitContainer();
+            rldNodes = new ResultListDisplay();
             pTranslations = new Panel();
             pTranslationContainer = new Panel();
             lblTranslations = new Label();
+            lvseSettings = new ListViewSettingsEditor();
             Panel1.SuspendLayout();
             tlpViewParameters.SuspendLayout();
             panel5.SuspendLayout();
@@ -65,6 +67,7 @@ namespace CDCplusLib.TabControls
             panel4.SuspendLayout();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splTranslations).BeginInit();
+            splTranslations.Panel1.SuspendLayout();
             splTranslations.Panel2.SuspendLayout();
             splTranslations.SuspendLayout();
             pTranslations.SuspendLayout();
@@ -270,6 +273,10 @@ namespace CDCplusLib.TabControls
             splTranslations.Name = "splTranslations";
             splTranslations.Orientation = Orientation.Horizontal;
             // 
+            // splTranslations.Panel1
+            // 
+            splTranslations.Panel1.Controls.Add(rldNodes);
+            // 
             // splTranslations.Panel2
             // 
             splTranslations.Panel2.Controls.Add(pTranslations);
@@ -277,6 +284,19 @@ namespace CDCplusLib.TabControls
             splTranslations.SplitterDistance = 299;
             splTranslations.SplitterWidth = 5;
             splTranslations.TabIndex = 4;
+            // 
+            // rldNodes
+            // 
+            rldNodes.Dock = DockStyle.Fill;
+            rldNodes.EventsActive = false;
+            rldNodes.Location = new Point(0, 0);
+            rldNodes.Margin = new Padding(5, 3, 5, 3);
+            rldNodes.Name = "rldNodes";
+            rldNodes.NodeList = null;
+            rldNodes.Selection = (Dictionary<long, C4ObjectApi.Interfaces.IRepositoryNode>)resources.GetObject("rldNodes.Selection");
+            rldNodes.Size = new Size(1130, 299);
+            rldNodes.TabIndex = 5;
+            rldNodes.View = View.LargeIcon;
             // 
             // pTranslations
             // 
@@ -308,10 +328,20 @@ namespace CDCplusLib.TabControls
             lblTranslations.TabIndex = 0;
             lblTranslations.Text = "Translations";
             // 
+            // lvseSettings
+            // 
+            lvseSettings.Dock = DockStyle.Bottom;
+            lvseSettings.Location = new Point(0, 311);
+            lvseSettings.Margin = new Padding(5);
+            lvseSettings.Name = "lvseSettings";
+            lvseSettings.Size = new Size(1130, 257);
+            lvseSettings.TabIndex = 6;
+            // 
             // ContentsFolderControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lvseSettings);
             Controls.Add(splTranslations);
             Controls.Add(Panel1);
             Margin = new Padding(4);
@@ -328,6 +358,7 @@ namespace CDCplusLib.TabControls
             panel2.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel6.ResumeLayout(false);
+            splTranslations.Panel1.ResumeLayout(false);
             splTranslations.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splTranslations).EndInit();
             splTranslations.ResumeLayout(false);
