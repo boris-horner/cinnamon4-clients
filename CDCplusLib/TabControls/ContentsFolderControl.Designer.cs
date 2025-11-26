@@ -297,6 +297,12 @@ namespace CDCplusLib.TabControls
             rldNodes.Size = new Size(1130, 299);
             rldNodes.TabIndex = 5;
             rldNodes.View = View.LargeIcon;
+            rldNodes.TreeSelectionChanged += rldNodes_TreeSelectionChanged;
+            rldNodes.ListSelectionChanged += rldNodes_ListSelectionChanged;
+            rldNodes.ContextMenuRequest += rldNodes_ContextMenuRequest;
+            rldNodes.FunctionRequest += rldNodes_FunctionRequest;
+            rldNodes.KeyPressedEvent += rldNodes_KeyPressedEvent;
+            rldNodes.RefreshRequest += rldNodes_RefreshRequest;
             // 
             // pTranslations
             // 
@@ -336,6 +342,7 @@ namespace CDCplusLib.TabControls
             lvseSettings.Name = "lvseSettings";
             lvseSettings.Size = new Size(1130, 257);
             lvseSettings.TabIndex = 6;
+            lvseSettings.Apply += lvseSettings_Apply;
             // 
             // ContentsFolderControl
             // 
