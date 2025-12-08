@@ -57,15 +57,21 @@ namespace ChangeTriggerLib.TriggerActionFactories
                     long userId = long.Parse(userAccountEl.SelectSingleNode("id").InnerText);
                     string username = userAccountEl.SelectSingleNode("name").InnerText;
                     //long userId = long.Parse(userEl.SelectSingleNode("id").InnerText);
-                    string query = $"<BooleanQuery><Clause occurs=\"must\"><BooleanQuery><Clause occurs=\"must\"><WildcardQuery fieldName=\"folderpath\">/root/.data/users/*</WildcardQuery></Clause><Clause occurs=\"must\"><ExactPointQuery fieldName=\"owner\" type=\"long\" value=\""+ userId.ToString()+ "\" /></Clause><Clause occurs=\"must\"><TermQuery fieldName=\"name\">home</TermQuery></Clause></BooleanQuery></Clause></BooleanQuery>";
+                    string query = $"<BooleanQuery><Clause occurs=\"must\"><BooleanQuery><Clause occurs=\"must\"><WildcardQuery fieldName=\"folderpath\">/root/.data/users*</WildcardQuery></Clause><Clause occurs=\"must\"><ExactPointQuery fieldName=\"owner\" type=\"long\" value=\""+ userId.ToString()+ "\" /></Clause><Clause occurs=\"must\"><TermQuery fieldName=\"name\">home</TermQuery></Clause></BooleanQuery></Clause></BooleanQuery>";
+                    _logger.Information(query);
                     HashSet<long> homeFolderIds= _triggerActionService.ServiceSession.SearchFolderIds(query);
                     if(homeFolderIds.Count()==1)
                     {
                         // rename user folder
                         Dictionary<long, C4Folder> homeFolders = _triggerActionService.ServiceSession.GetFoldersById(homeFolderIds);
                         long renameFolderId =homeFolders.Values.First().ParentId;
-                        _logger.Information(renameFolderId.ToString());
-                        _triggerActionService.ServiceSession.UpdateFolder(renameFolderId, null, username);
+                        Dictionary<long, C4Folder> renameFolders = _triggerActionService.ServiceSession.GetFoldersById(new HashSet<long> { renameFolderId });
+                        string oldName = renameFolders.Values.First().Name;
+                        if(oldName != username)
+                        {
+                            _triggerActionService.ServiceSession.UpdateFolder(renameFolderId, null, username);
+                            _logger.Information("Renamed user folder id " + renameFolderId.ToString() + " from " + oldName + " to " + username);
+                        }
                     }
                     else
                     {

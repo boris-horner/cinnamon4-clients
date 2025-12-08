@@ -34,6 +34,7 @@ namespace C4Logic.Helpers
             HashSet<long> ids = new HashSet<long>();
             HashSet<C4Relation> rels = new HashSet<C4Relation>();
             AppendObjects(c4s, c4sc, rootId, relTypeIds, ids, rels);
+            Dictionary<long, C4Object> objects = c4s.GetObjectsById(ids,false);
 
             // TODO: queue a feature request that /api/osd/copy returns the source id of which the copy was taken
             HashSet<long> leftIds = new HashSet<long>();
@@ -49,8 +50,9 @@ namespace C4Logic.Helpers
                 if (copy.Name.StartsWith("Copy_"))
                 {
                     copy.Name = copy.Name.Substring(5);
-                    c4s.UpdateObject(copy.Id, null, copy.Name);
                 }
+                copy.OwnerId = objects[id].OwnerId;
+                c4s.UpdateObject(copy.Id, null, copy.Name, copy.OwnerId);
                 leftIds.Add(copy.Id);
             }
             Dictionary<long, C4Relation> delRels = c4s.SearchRelations(false, false, relTypeIds, leftIds);
@@ -85,5 +87,49 @@ namespace C4Logic.Helpers
                 }
             }
         }
+
+        public static string GetXPath(XmlElement contentEl, XmlDocument topicDoc)
+        {
+            if (contentEl == null)
+                throw new ArgumentNullException(nameof(contentEl));
+            if (topicDoc == null)
+                throw new ArgumentNullException(nameof(topicDoc));
+
+            // Build the XPath from the element up to the root
+            string path = string.Empty;
+            XmlNode? current = contentEl;
+
+            while (current != null && current.NodeType == XmlNodeType.Element)
+            {
+                XmlElement el = (XmlElement)current;
+
+                // Determine the element’s index among siblings with the same name
+                int index = 1;
+                XmlNode? sibling = el.PreviousSibling;
+                while (sibling != null)
+                {
+                    if (sibling.NodeType == XmlNodeType.Element && sibling.Name == el.Name)
+                        index++;
+                    sibling = sibling.PreviousSibling;
+                }
+
+                string segment = (index == 1 && (el.NextSibling == null ||
+                                el.ParentNode == null ||
+                                el.ParentNode.SelectNodes(el.Name).Count == 1))
+                                ? $"/{el.Name}"
+                                : $"/{el.Name}[{index}]";
+
+                path = segment + path;
+
+                // Stop if we’ve reached the document root
+                if (el == topicDoc.DocumentElement)
+                    break;
+
+                current = el.ParentNode;
+            }
+
+            return path;
+        }
+
     }
 }

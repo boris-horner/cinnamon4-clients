@@ -171,8 +171,17 @@ namespace ContentAwareness.ContentAdaptors
                             //r = r.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
                             if(lookup.ContainsKey(r))
                             {
+                                Log(" Rewrote " + n.InnerText);
                                 n.InnerText = lookup[r];
+                                Log(" with " + n.InnerText);
                             }
+                            else if (lookup.ContainsKey(r.Replace('/','\\')))
+                            {
+                                Log(" Rewrote " + n.InnerText);
+                                n.InnerText = lookup[r.Replace('/', '\\')];
+                                Log(" with " + n.InnerText);
+                            }
+
                             else
                             {
                                 // reference not found in lookup
@@ -187,7 +196,7 @@ namespace ContentAwareness.ContentAdaptors
                                     else
                                     {
                                         //Dictionary<string, string> sloppyLookup = new Dictionary<string, string>();
-                                        bool found =false;
+                                        bool found = false;
                                         foreach (string key in lookup.Keys)
                                         {
                                             string sloppyKey = RemoveNumberFromRef(key);
