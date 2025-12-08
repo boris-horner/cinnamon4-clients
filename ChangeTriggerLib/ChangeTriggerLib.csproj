@@ -5,8 +5,6 @@
     <BaseOutputPath>$(SolutionDir)$(SolutionName)\bin\</BaseOutputPath>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
