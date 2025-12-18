@@ -78,14 +78,14 @@ namespace CDCplusLib.ContextFunctions
             }
 
             // remember relations to rebuild
-            Dictionary<long, C4Relation> relsToKeep = new Dictionary<long, C4Relation>();
-            foreach (C4Relation rel in o.Session.GetRelations(false, leftId: o.Id).Values)
-            {
-                if (_keepRelationIds.Contains(rel.TypeId))
-                {
-                    relsToKeep.Add((long)rel.Id, rel);
-                }
-            }
+            //Dictionary<long, C4Relation> relsToKeep = new Dictionary<long, C4Relation>();
+            //foreach (C4Relation rel in o.Session.GetRelations(false, leftId: o.Id).Values)
+            //{
+            //    if (_keepRelationIds.Contains(rel.TypeId))
+            //    {
+            //        relsToKeep.Add((long)rel.Id, rel);
+            //    }
+            //}
 
             try
             {
@@ -106,12 +106,12 @@ namespace CDCplusLib.ContextFunctions
                 newVersion.Unlock();
 
                 // rebuild relations
-                if (relsToKeep.Count > 0)
-                {
-                    HashSet<C4Relation> relations = new HashSet<C4Relation>();
-                    foreach (C4Relation rel in relsToKeep.Values) relations.Add(new C4Relation(rel.TypeId, newVersion.Id, rel.RightId, rel.Metadata));
-                    o.Session.CommandSession.CreateRelations(relations);
-                }
+                //if (relsToKeep.Count > 0)
+                //{
+                //    HashSet<C4Relation> relations = new HashSet<C4Relation>();
+                //    foreach (C4Relation rel in relsToKeep.Values) relations.Add(new C4Relation(rel.TypeId, newVersion.Id, rel.RightId, rel.Metadata));
+                //    o.Session.CommandSession.CreateRelations(relations);
+                //}
 
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.Modification.Add(o.Id, o);

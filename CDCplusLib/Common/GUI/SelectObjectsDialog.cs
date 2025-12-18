@@ -99,7 +99,17 @@ namespace CDCplusLib.Common.GUI
         {
             get
             {
-                return _rldNodes.Selection;
+                if(_sm==SelectionModes.SelectFolder)
+                {
+                    if (_rldNodes.Selection.Count == 0)
+                    {
+                        Dictionary<long, IRepositoryNode> result = new Dictionary<long, IRepositoryNode>();
+                        result.Add(_f.Id, _f);
+                        return result;
+                    }
+                    else return _rldNodes.Selection;
+                }
+                else return _rldNodes.Selection;
             }
         }
         public CmnFolder Folder
