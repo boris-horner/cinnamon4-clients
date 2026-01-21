@@ -260,7 +260,7 @@ namespace C4ObjectApi.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
         public IContent GetContentAwarenessModule(C4Format fmt)

@@ -1959,7 +1959,7 @@ namespace C4ServerConnector
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
             return result;
         }

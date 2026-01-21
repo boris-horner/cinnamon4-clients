@@ -733,7 +733,7 @@ namespace C4ObjectApi.Repository
                                             + "Message: {1}" + "\n"
                                             + "{2}", ex.GetType().ToString(), ex.Message, ex.StackTrace));
                                             LocalPath = "";
-                throw ex;
+                throw;
             }
         }
         private void AppendObjects(long id,
