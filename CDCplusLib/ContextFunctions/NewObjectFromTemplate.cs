@@ -57,7 +57,7 @@ namespace CDCplusLib.ContextFunctions
         {
             foreach (TemplateContainer tc in parentTc.Containers.Values)
             {
-                ToolStripMenuItem tsmi = new ToolStripMenuItem(tc.Name);
+                ToolStripMenuItem tsmi = new ToolStripMenuItem(tc.Name); 
                 parentTsmi.DropDownItems.Add(tsmi);
                 AppendSubmenuR(tsmi, tc);
             }

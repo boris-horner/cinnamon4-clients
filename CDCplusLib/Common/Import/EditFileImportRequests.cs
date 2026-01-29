@@ -11,11 +11,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
-using System.Diagnostics;
-using System.Xml;
 using C4GeneralGui.GuiElements;
 using C4ObjectApi.Repository;
 using C4ServerConnector.Assets;
+using CDCplusLib.Interfaces;
+using System.Diagnostics;
+using System.Xml;
 
 namespace CDCplusLib.Common.Import
 {
@@ -24,6 +25,7 @@ namespace CDCplusLib.Common.Import
         private CmnFolder _f;
         GlobalApplicationData _gad;
         private XmlElement _selectObjectsConfigEl;
+        private ListViewSort _lvwSort;
         private Dictionary<string, FileImportRequest> _FIRs;
         public EditFileImportRequests(CmnFolder f, Dictionary<string, FileImportRequest> firsByAbsFn, GlobalApplicationData gad, XmlElement selectObjectsConfigEl)
         {
@@ -103,6 +105,9 @@ namespace CDCplusLib.Common.Import
                 lvi.SubItems.Add(fir.TargetPath);
                 lvi.Tag = fir;
             }
+            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwFirs, true);
+            _lvwSort.Sort(0, SortOrder.Ascending);
+
             if (showMessage) StandardMessage.ShowMessage(Properties.Resources.msgImportErrorsReadToolTips, StandardMessage.Severity.WarningMessage,this);
         }
         private ToolStripItem AddContextMenuItem(ContextMenuStrip cmn, string itemText, string itemName, bool itemEnabled)
