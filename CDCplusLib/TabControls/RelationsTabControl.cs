@@ -657,26 +657,19 @@ namespace CDCplusLib.TabControls
                 foreach (ListViewItem lvi in lvwParents.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    if (rd.Relation == null)
-                    {
-                        C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
-                        requiredRelations.Add(GetRelKey(rel),rel);
-                    }
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
+                    requiredRelations.Add(GetRelKey(rel),rel);
                 }
                 foreach (ListViewItem lvi in lvwChildren.Items)
                 {
                     RelationDescriptor rd = (RelationDescriptor)lvi.Tag;
-                    if(rd.Relation==null)
+                    C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
+                    string relKey = GetRelKey(rel);
+                    requiredRelations.Add(relKey, rel);
+                    if (_o.Locked==_o.Session.User)
                     {
-                        C4Relation rel = new C4Relation((long)rd.RelationType.Id, rd.LeftObject.Id, rd.RightObject.Id, rd.Metadata);
-                        string relKey = GetRelKey(rel);
-                        requiredRelations.Add(relKey, rel);
-                        if (_o.Locked==_o.Session.User)
-                        {
-                            rd.RightObject.Export(CmnObject.ChildExportPolicy.ObjectOnly, true);
-                            _o.Session.LocksMgr.Locks[_o.Id].AddChild(rd.RightObject.Id, rd.RightObject.LocalPath);
-                        }
-
+                        rd.RightObject.Export(CmnObject.ChildExportPolicy.ObjectOnly, true);
+                        _o.Session.LocksMgr.Locks[_o.Id].AddChild(rd.RightObject.Id, rd.RightObject.LocalPath);
                     }
                 }
 
