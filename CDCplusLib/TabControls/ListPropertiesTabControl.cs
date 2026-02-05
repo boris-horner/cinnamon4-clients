@@ -367,11 +367,11 @@ namespace CDCplusLib.TabControls
                 {
                     if (o.Locked == null || o.Locked == _s.User)
                     {
-                        origLock = o.Locked;
-                        if (origLock == null)
-                            o.Lock();
+                        //origLock = o.Locked;
+                        //if (origLock == null)
+                        //    o.Lock();
 
-                        // TODO: combine all this into one statement
+                        // combine all updates into one statement
                         bool? metadataChanged = !_s.User.ChangeTracking && metadataChangedValue.HasValue && metadataChangedValue != o.MetadataChanged ? metadataChangedValue : null;
                         bool? contentChanged = !_s.User.ChangeTracking && contentChangedValue.HasValue && contentChangedValue != o.ContentChanged ? contentChangedValue : null;
                         long? ownerId = (o.Permissions.Node_Owner_Write && cboOwner.SelectedIndex > 0 && o.Owner != (C4User)cboOwner.SelectedItem) ? ((C4User)cboOwner.SelectedItem).Id : null;
@@ -427,8 +427,8 @@ namespace CDCplusLib.TabControls
                 finally
                 {
                     wsd.Selection.Add(o.Id, o);
-                    if (origLock == null)
-                        o.Unlock();
+                    //if (origLock == null)
+                    //    o.Unlock();
                 }
             }
 

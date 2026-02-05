@@ -143,9 +143,9 @@ namespace CDCplusLib.ContextFunctions
                         foreach (CmnObject pasteO in selectedObjsAllVersions.Values)
                         {
                             if (pasteO.ParentId != 0 && !wsd.Selection.ContainsKey(pasteO.ParentId)) wsd.Selection.Add(pasteO.ParentId, pasteO.Parent);
-                            pasteO.Lock();
+                            //pasteO.Lock();
 							_s.CommandSession.UpdateObject(pasteO.Id, _f.Id);
-                            pasteO.Unlock();
+                            //pasteO.Unlock();
                             wsd.Selection.Add(pasteO.Id, pasteO);
                             wsd.Modification.Add(pasteO.Id, pasteO);
                         }
@@ -202,9 +202,9 @@ namespace CDCplusLib.ContextFunctions
                             // object
                             CmnObject pasteO = (CmnObject)ow;
                             if (pasteO.ParentId != 0 && pasteO.ParentId != _f.Id && !wsd.Selection.ContainsKey(pasteO.ParentId)) wsd.Selection.Add(pasteO.ParentId, pasteO.Parent);
-                            pasteO.Lock();
+                            //pasteO.Lock();
 							_s.CommandSession.UpdateObject(pasteO.Id, _f.Id);
-							pasteO.Unlock();
+							//pasteO.Unlock();
                             wsd.Selection.Add(pasteO.Id, pasteO);
                             wsd.Modification.Add(pasteO.Id, pasteO);
                         }

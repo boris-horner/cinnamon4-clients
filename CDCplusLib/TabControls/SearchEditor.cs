@@ -450,9 +450,9 @@ namespace CDCplusLib.TabControls
             //md.MetasetsByTypeId[msTypeId].Add(new C4Metaset(msTypeId, _o.Id, ms.DocumentElement));
 
 
-            _o.Lock();
+            //_o.Lock();
             ApiHelper.SetUniqueObjectMetaset(_o.Session.CommandSession, _o.Session.SessionConfig.C4Sc, _o.Id, ms.DocumentElement, msType.Name, true, _ms == null ? null : _ms.Id);
-            _o.Unlock();
+            //_o.Unlock();
 
             IsDirty = false;
             ActivateControls();

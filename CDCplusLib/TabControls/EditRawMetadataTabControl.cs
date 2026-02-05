@@ -230,11 +230,11 @@ namespace CDCplusLib.TabControls
 				{
 					// object
 					CmnObject o = (CmnObject)ow;
-					o.Lock();
+					//o.Lock();
                     if(deleteMetasetIds.Count()>0) _s.CommandSession.DeleteObjectMetasets(deleteMetasetIds);
 					if(createMetasets.Keys.Count()>0) _s.CommandSession.CreateObjectMeta(createMetasets);
                     if(updateMetasets.Keys.Count() > 0) _s.CommandSession.UpdateObjectMetaContent(updateMetasets);
-                    o.Unlock();
+                    //o.Unlock();
 				}
 				else
 				{

@@ -286,9 +286,9 @@ namespace CDCplusLib.ContextFunctions
                 {
                     if (fir.LifecycleState!=null)
                     {
-                        fir.Object.Lock();
+                        //fir.Object.Lock();
                         fir.Object.LifecycleState = fir.LifecycleState;
-                        fir.Object.Unlock();
+                        //fir.Object.Unlock();
                         Debug.Print("Attached lifecycle to " + fir.ObjectName);
                     }
 

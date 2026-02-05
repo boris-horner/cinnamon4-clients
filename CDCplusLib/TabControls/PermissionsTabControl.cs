@@ -315,13 +315,13 @@ namespace CDCplusLib.TabControls
                 {
                     // object
                     CmnObject o = (CmnObject)ow;
-                    o.Lock();
+                    //o.Lock();
                     o.Session.CommandSession.UpdateObject(o.Id,
 														null,
 														null,
 														null,
 														((C4Acl)cboAcl.SelectedItem).Id);
-                    o.Unlock();
+                    //o.Unlock();
                 }
                 else
                 {
