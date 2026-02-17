@@ -11,6 +11,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
 // License for the specific language governing permissions and limitations under 
 // the License.
+using C4ServerConnector.Utilities;
 using System.Xml;
 
 namespace C4ServerConnector.Assets
@@ -37,7 +38,9 @@ namespace C4ServerConnector.Assets
             TypeId = long.Parse(assetEl.SelectSingleNode("typeId").InnerText);
             ObjectId = long.Parse(assetEl.SelectSingleNode("objectId").InnerText);
             XmlDocument content=new XmlDocument();
-            content.LoadXml(assetEl.SelectSingleNode("content").InnerText);
+            var xml = assetEl.SelectSingleNode("content")?.InnerText ?? "";
+            XmlFragmentLoader.LoadXmlFromInnerText(content, xml);   // avoids problems with XML declarations of > 1.0 
+
             Content = (XmlElement)content.DocumentElement;
         }
         public void AppendAssetEl(XmlElement parentEl)
