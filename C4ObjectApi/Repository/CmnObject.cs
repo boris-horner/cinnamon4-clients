@@ -389,7 +389,7 @@ namespace C4ObjectApi.Repository
                         foreach (string fn in before.Keys)
                         {
                             long origId = long.Parse(before[fn].ToString());
-                            CmnObject origObj = ApiHelper.GetObject(Session, origId);
+                            CmnObject origObj = GetObject(origId);
                             string query = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><BooleanQuery><Clause occurs=\"must\"><ExactPointQuery type=\"long\" fieldName=\"root\" value=\"" + origObj.RootId.ToString() + "\"/></Clause><Clause occurs=\"must\"><TermQuery fieldName=\"latest_head\">true</TermQuery></Clause></BooleanQuery>";
                             CmnObject obj = s.SearchSingleObject(query, false);
                             result.Add(fn, obj.Id);
@@ -403,6 +403,11 @@ namespace C4ObjectApi.Repository
                     }
             }
         }
+        private CmnObject GetObject(long id)
+        {
+            return new CmnObject(Session, Session.CommandSession.GetObjectsById(DictionaryHelper.IdToHashSet(id), false).Values.First());
+        }
+
 
         public CmnObject VersionCmd(string inputFilename, C4Format format, string name)
         {

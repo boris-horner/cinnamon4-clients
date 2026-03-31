@@ -46,7 +46,6 @@ namespace CDCplusLib.TabControls
         private GlobalApplicationData _gad;
         private XmlElement _configEl;
         private CmnObject _o;
-        private C4Metaset _ms;
         private CmnSession _s;
         private int _maxResultCount;
         private bool _enableEvents;
@@ -55,6 +54,7 @@ namespace CDCplusLib.TabControls
         private readonly Random _rnd;
         private Dictionary<long, IRepositoryNode> _dict;
         private C4Metadata _meta;
+        private C4Metaset _c4ms;
 
         public event SessionWindowRequestEventHandler SessionWindowRequest;
         public event ListSelectionChangedEventHandler ListSelectionChanged;
@@ -128,6 +128,7 @@ namespace CDCplusLib.TabControls
             {
                 optSearchObjects.Checked = true;
                 optVersionAll.Checked = true;
+                _c4ms = null;
             }
             else
             {
@@ -148,10 +149,10 @@ namespace CDCplusLib.TabControls
                 HashSet<C4Metaset> metasets = _meta.MetasetsByTypeId[(long)_o.Session.SessionConfig.C4Sc.MetasetTypesByName["search"].Id];
                 if (metasets.Count == 1)
                 {
-                    _ms = metasets.First();
-                    XmlNode soN = _ms.Content.SelectSingleNode("search_type/@value");
+                    _c4ms = metasets.First();
+                    XmlNode soN = _c4ms.Content.SelectSingleNode("search_type/@value");
                     optSearchObjects.Checked = soN == null || soN.InnerText == "objects";
-                    XmlNode svN = _ms.Content.SelectSingleNode("search_version/@value");
+                    XmlNode svN = _c4ms.Content.SelectSingleNode("search_version/@value");
                     if (svN == null) optVersionLatest.Checked = true;
                     else switch (svN.InnerText)
                         {
@@ -159,7 +160,7 @@ namespace CDCplusLib.TabControls
                             case "branches": optVersionLatestBranches.Checked = true; break;
                             case "head": optVersionLatest.Checked = true; break;
                         }
-                    AppendChildren(tvwSearchDef.Nodes, _ms.Content);
+                    AppendChildren(tvwSearchDef.Nodes, _c4ms.Content);
                     tvwSearchDef.ExpandAll();
                     if (tvwSearchDef.Nodes.Count > 0)
                     {
@@ -169,9 +170,9 @@ namespace CDCplusLib.TabControls
 
                     }
                 }
-                else _ms = null;
+                else _c4ms = null;
             }
-            else _ms = null;
+            else _c4ms = null;
 
         }
 
@@ -450,9 +451,24 @@ namespace CDCplusLib.TabControls
             //md.MetasetsByTypeId[msTypeId].Add(new C4Metaset(msTypeId, _o.Id, ms.DocumentElement));
 
 
-            //_o.Lock();
-            ApiHelper.SetUniqueObjectMetaset(_o.Session.CommandSession, _o.Session.SessionConfig.C4Sc, _o.Id, ms.DocumentElement, msType.Name, true, _ms == null ? null : _ms.Id);
-            //_o.Unlock();
+            //ApiHelper.SetUniqueObjectMetaset(_o.Session.CommandSession, _o.Session.SessionConfig.C4Sc, _o.Id, ms.DocumentElement, msType.Name, true, _ms == null ? null : _ms.Id);
+            if (_c4ms == null)
+            {
+                // create metaset
+                Dictionary<long, HashSet<C4Metaset>> updateMetasets = new Dictionary<long, HashSet<C4Metaset>>();
+                C4Metaset c4ms = new C4Metaset((long)msType.Id, _o.Id, ms.DocumentElement);
+                updateMetasets.Add(_o.Id, new HashSet<C4Metaset> { c4ms });
+                _o.Session.CommandSession.CreateObjectMeta(updateMetasets);
+            }
+            else
+            {
+                // update metaset
+                Dictionary<long, HashSet<C4Metaset>> updateMetasets = new Dictionary<long, HashSet<C4Metaset>>();
+                C4Metaset c4ms = new C4Metaset(_c4ms.TypeId, _c4ms.ObjectId, ms.DocumentElement, _c4ms.Id);
+                updateMetasets.Add(_o.Id, new HashSet<C4Metaset> { c4ms });
+                _o.Session.CommandSession.UpdateObjectMetaContent(updateMetasets);
+            }
+
 
             IsDirty = false;
             ActivateControls();
@@ -580,14 +596,14 @@ namespace CDCplusLib.TabControls
 
         private void ChkVariable_CheckedChanged(object sender, EventArgs e)
         {
-            if (tvwSearchDef.SelectedNode != null && _ms != null)
+            if (tvwSearchDef.SelectedNode != null && _c4ms != null)
             {
                 ISearchTermGui stg = (ISearchTermGui)tvwSearchDef.SelectedNode.Tag;
                 vtxtVariableName.ReadOnly = !chkVariable.Checked;
                 if (chkVariable.Checked)
                 {
                     HashSet<string> varNames = new HashSet<string>();
-                    foreach (XmlNode n in _ms.Content.SelectNodes("//@variable_name")) varNames.Add(n.InnerText);
+                    foreach (XmlNode n in _c4ms.Content.SelectNodes("//@variable_name")) varNames.Add(n.InnerText);
                     string testName = null;
                     do
                     {
