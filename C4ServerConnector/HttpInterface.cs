@@ -266,6 +266,10 @@ namespace C4ServerConnector
                     // Optional: responseMessage.EnsureSuccessStatusCode();
 
                     string responseString = Sync(responseMessage.Content.ReadAsStringAsync());
+                    if (_sessionLogFn != null)
+                    {
+                        File.AppendAllText(_sessionLogFn, $"response:\n{responseString}\n");
+                    }
 
                     XmlDocument responseXml = new XmlDocument();
                     responseXml.LoadXml(responseString);
