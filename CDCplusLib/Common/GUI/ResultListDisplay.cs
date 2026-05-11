@@ -1,17 +1,5 @@
-﻿// Copyright 2012,2024 texolution GmbH
-// 
-// Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-// use this file except in compliance with the License. You may obtain a copy of 
-// the License at
-// 
-// http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
-// License for the specific language governing permissions and limitations under 
-// the License.
-using System.Xml;
+﻿using System.Xml;
+using Microsoft.Win32;
 using CDCplusLib.DataModel;
 using CDCplusLib.Interfaces;
 using CDCplusLib.Common.KeyboardEvents;
@@ -26,7 +14,6 @@ namespace CDCplusLib.Common.GUI
 {
     public partial class ResultListDisplay : UserControl
     {
-
         private CmnNodeList _nl;
         private IIconService _iconService;
         private INodeDataProvider _nodeDataProvider;
@@ -36,12 +23,14 @@ namespace CDCplusLib.Common.GUI
         private bool _useTimer = true;
         private View _view;
         private System.Windows.Forms.Timer selectionChangedTimer;
-        public bool EventsActive { get; set; }
-
-        //private bool _idleHandlerSet;
         private CmnSession _s;
 
-        //public event EventHandler SelectedIndexChanged;
+        private ImageList _stateImageList;
+        private string _stateImagePath;
+        private bool _displayEventsHooked;
+
+        public bool EventsActive { get; set; }
+
         public event TreeSelectionChangedEventHandler TreeSelectionChanged;
         public event ListSelectionChangedEventHandler ListSelectionChanged;
         public event ContextMenuRequestEventHandler ContextMenuRequest;
@@ -52,86 +41,220 @@ namespace CDCplusLib.Common.GUI
         public ResultListDisplay()
         {
             InitializeComponent();
+
             EventsActive = false;
+
+            HandleCreated += ResultListDisplay_HandleCreated;
+            Disposed += ResultListDisplay_Disposed;
         }
+
         public void Init(CmnSession s, XmlElement customConfigEl, XmlElement rldConfigEl, INodeDataProvider ndp)
         {
             _nodeDataProvider = ndp;
-            //_nodeDataProvider.Init(s, customConfigEl, rldConfigEl);
             _s = s;
-            //_idleHandlerSet = false;
             _enableCheck = false;
-			_view = View.Details;
-            XmlAttribute frs = ((XmlAttribute)(rldConfigEl.SelectSingleNode("appearance/full_row_select/@value")));
-            _useTimer = s.Server.LocalSettings.ContainsKey("use_threaded_gui_controls") ? s.Server.LocalSettings["use_threaded_gui_controls"] == "true" : true;
-            if(_useTimer)
+            _view = View.Details;
+
+            XmlAttribute frs = (XmlAttribute)rldConfigEl.SelectSingleNode("appearance/full_row_select/@value");
+
+            _useTimer = s.Server.LocalSettings.ContainsKey("use_threaded_gui_controls")
+                ? s.Server.LocalSettings["use_threaded_gui_controls"] == "true"
+                : true;
+
+            if (_useTimer && selectionChangedTimer == null)
             {
                 selectionChangedTimer = new System.Windows.Forms.Timer();
-                selectionChangedTimer.Interval = 100; // Delay in milliseconds
+                selectionChangedTimer.Interval = 100;
                 selectionChangedTimer.Tick += SelectionChangedTimer_Tick;
             }
 
-            lvwNodeList.FullRowSelect = (frs != null && frs.Value == "true");
+            lvwNodeList.FullRowSelect = frs != null && frs.Value == "true";
+            lvwNodeList.View = _view;
+
+            /*
+             * Important:
+             * Set CheckBoxes before assigning StateImageList.
+             * Repeatedly toggling CheckBoxes while a StateImageList is attached
+             * can cause corrupted/wrong state images after handle recreation.
+             */
+            lvwNodeList.CheckBoxes = true;
+
             lvwNodeList.Columns.Clear();
             foreach (string colName in _nodeDataProvider.GetColumnDefinitions().Keys)
             {
                 NodeColumnDefinition col = _nodeDataProvider.GetColumnDefinitions()[colName];
-                lvwNodeList.Columns.Add(colName, _nodeDataProvider.GetFieldTitle(colName), col.Width, col.HorAlignment, -1);
+                lvwNodeList.Columns.Add(
+                    colName,
+                    _nodeDataProvider.GetFieldTitle(colName),
+                    col.Width,
+                    col.HorAlignment,
+                    -1);
             }
 
-            XmlNode customEventsN = customConfigEl.SelectSingleNode("events");  // detect legacy config
-            if(_keyEvents==null) _keyEvents = new KeyEventTable(customEventsN==null?(XmlElement)rldConfigEl.SelectSingleNode("key_events"):customConfigEl, KeyEventTable.Modes.List); // these are only loaded for the first time since they are global
+            XmlNode customEventsN = customConfigEl.SelectSingleNode("events");
+            if (_keyEvents == null)
+            {
+                _keyEvents = new KeyEventTable(
+                    customEventsN == null
+                        ? (XmlElement)rldConfigEl.SelectSingleNode("key_events")
+                        : customConfigEl,
+                    KeyEventTable.Modes.List);
+            }
 
-            if (_lvwSort == null) _lvwSort = new ListViewSort(lvwNodeList, true);
+            if (_lvwSort == null)
+                _lvwSort = new ListViewSort(lvwNodeList, true);
 
             if (_nodeDataProvider.GetDefaultSortColumn() != null)
             {
                 int i = lvwNodeList.Columns.IndexOfKey(_nodeDataProvider.GetDefaultSortColumn());
                 _lvwSort.Sort(i, _nodeDataProvider.GetDefaultSortColumnOrder());
             }
-            _iconService = ((IIconService)(_s.GetSessionExtension("icon_service")));
-            lvwNodeList.SmallImageList = _iconService.GlobalSmallImageList;
-            lvwNodeList.LargeImageList = _iconService.GlobalLargeImageList;
 
-            string stateImagePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Images", "Icons", "16x16");
-            lvwNodeList.StateImageList = new ImageList();
-            lvwNodeList.StateImageList.ImageSize = new Size(16, 16);
-            lvwNodeList.StateImageList.ColorDepth = ColorDepth.Depth24Bit;
-            lvwNodeList.StateImageList.Images.Add("blank", new Bitmap(Path.Combine(stateImagePath, "blank.png")));
-            lvwNodeList.StateImageList.Images.Add("link", new Bitmap(Path.Combine(stateImagePath, "emblem-symbolic-link.png")));
+            _iconService = (IIconService)_s.GetSessionExtension("icon_service");
+
+            _stateImagePath = Path.Combine(
+                Path.GetDirectoryName(Application.ExecutablePath),
+                "Images",
+                "Icons",
+                "16x16");
+
+            ReassignImageLists();
+
+            HookDisplayEvents();
 
             EventsActive = true;
-		}
+        }
+
+        private void HookDisplayEvents()
+        {
+            if (_displayEventsHooked)
+                return;
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            _displayEventsHooked = true;
+        }
+
+        private void ResultListDisplay_Disposed(object sender, EventArgs e)
+        {
+            if (_displayEventsHooked)
+            {
+                SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+                _displayEventsHooked = false;
+            }
+
+            if (selectionChangedTimer != null)
+            {
+                selectionChangedTimer.Tick -= SelectionChangedTimer_Tick;
+                selectionChangedTimer.Dispose();
+                selectionChangedTimer = null;
+            }
+
+            if (_stateImageList != null)
+            {
+                _stateImageList.Dispose();
+                _stateImageList = null;
+            }
+        }
+
+        private void ResultListDisplay_HandleCreated(object sender, EventArgs e)
+        {
+            if (_iconService != null)
+                ReassignImageLists();
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed)
+                return;
+
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)ReassignImageLists);
+            }
+            else
+            {
+                ReassignImageLists();
+            }
+        }
+
+        private void ReassignImageLists()
+        {
+            if (_iconService == null || lvwNodeList == null || lvwNodeList.IsDisposed)
+                return;
+
+            lvwNodeList.BeginUpdate();
+
+            try
+            {
+                lvwNodeList.SmallImageList = null;
+                lvwNodeList.LargeImageList = null;
+                lvwNodeList.StateImageList = null;
+
+                lvwNodeList.SmallImageList = _iconService.GlobalSmallImageList;
+                lvwNodeList.LargeImageList = _iconService.GlobalLargeImageList;
+
+                RebuildStateImageList();
+                lvwNodeList.StateImageList = _stateImageList;
+
+                lvwNodeList.Invalidate();
+            }
+            finally
+            {
+                lvwNodeList.EndUpdate();
+            }
+        }
+
+        private void RebuildStateImageList()
+        {
+            ImageList old = _stateImageList;
+
+            ImageList fresh = new ImageList
+            {
+                ImageSize = new Size(16, 16),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
+
+            fresh.Images.Add("blank", new Bitmap(Path.Combine(_stateImagePath, "blank.png")));
+            fresh.Images.Add("link", new Bitmap(Path.Combine(_stateImagePath, "emblem-symbolic-link.png")));
+
+            _stateImageList = fresh;
+
+            old?.Dispose();
+        }
+
         protected virtual void TreeSelectionChangedEventHandler(WindowSelectionData wsd, ISessionWindow sw)
         {
             TreeSelectionChanged?.Invoke(wsd, null);
         }
+
         protected virtual void ListSelectionChangedEventHandler(WindowSelectionData wsd)
         {
             ListSelectionChanged?.Invoke(wsd);
         }
+
         protected virtual void ContextMenuRequestEventHandler(WindowSelectionData wsd, Point position)
         {
             ContextMenuRequest?.Invoke(wsd, position);
         }
+
         protected virtual void FunctionRequestEventHandler(WindowSelectionData wsd)
         {
             FunctionRequest?.Invoke(wsd, null, null);
         }
+
         protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
         {
             KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
         }
+
         protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
         {
             RefreshRequest?.Invoke();
         }
 
-        public View View {
-            get
-            {
-                return _view;
-            }
+        public View View
+        {
+            get => _view;
             set
             {
                 _view = value;
@@ -139,82 +262,103 @@ namespace CDCplusLib.Common.GUI
             }
         }
 
-
-
         public CmnNodeList NodeList
         {
-            get
-            {
-                return _nl;
-            }
+            get => _nl;
             set
             {
-				_enableCheck = true;
+                _enableCheck = true;
                 lvwNodeList.BeginUpdate();
-                _nl = value;
-                Dictionary<long, IRepositoryNode> selNl = Selection;
 
-                if (_nl == null) lvwNodeList.Items.Clear();
-                else
+                try
                 {
+                    _nl = value;
+
+                    Dictionary<long, IRepositoryNode> selNl = Selection;
+
+                    if (_nl == null)
+                    {
+                        lvwNodeList.Items.Clear();
+                        return;
+                    }
+
                     IList<long> lvsi = ContentsListViewHelper.GetSelectedIds(lvwNodeList);
 
-                    //  TODO: determine delta and decide whether to update or to reload
                     lvwNodeList.Items.Clear();
                     lvwNodeList.Visible = true;
                     lvwNodeList.View = View.Details;
-                    lvwNodeList.CheckBoxes = true;
+
+                    /*
+                     * Do not set lvwNodeList.CheckBoxes here.
+                     * It is already set once in Init before StateImageList is assigned.
+                     */
+
                     _lvwSort.Active = false;
+
                     foreach (IRepositoryNode ow in _nl.List.Values)
                     {
-                        string iconKey = (_nl.IconOverrides != null && _nl.IconOverrides.ContainsKey(ow.Id))?_nl.IconOverrides[ow.Id] :_iconService.GetIconKey(ow);
+                        string iconKey =
+                            _nl.IconOverrides != null && _nl.IconOverrides.ContainsKey(ow.Id)
+                                ? _nl.IconOverrides[ow.Id]
+                                : _iconService.GetIconKey(ow);
+
                         ListViewItem lvi = lvwNodeList.Items.Add(ow.Id.ToString(), ow.Name, iconKey);
-                        if(ow.GetType()==typeof(CmnObject))
+
+                        if (ow.GetType() == typeof(CmnObject))
                         {
                             CmnObject o = (CmnObject)ow;
-                            if(!o.LatestHead)
+
+                            if (!o.LatestHead)
                             {
-                                if (o.LatestBranch) lvi.ForeColor = System.Drawing.Color.SteelBlue;
-                                else if(o.Version.Contains(".")) lvi.ForeColor = System.Drawing.Color.LightSkyBlue;
-                                else lvi.ForeColor = System.Drawing.Color.Silver;
+                                if (o.LatestBranch)
+                                    lvi.ForeColor = Color.SteelBlue;
+                                else if (o.Version.Contains("."))
+                                    lvi.ForeColor = Color.LightSkyBlue;
+                                else
+                                    lvi.ForeColor = Color.Silver;
                             }
                         }
+
                         lvi.StateImageIndex = ow.Link == null ? 0 : 1;
+
                         bool first = true;
                         foreach (string colName in _nodeDataProvider.GetColumnDefinitions().Keys)
                         {
-                            if (first) first = false;
+                            if (first)
+                            {
+                                first = false;
+                            }
                             else
                             {
-                                //NodeColumnDefinition colDef = _nodeDataProvider.GetColumnDefinitions()[colName];
-                                string columnValue = null;
+                                string columnValue;
+
                                 try
                                 {
                                     columnValue = _nodeDataProvider.GetValue(ow, colName);
                                 }
-                                catch(Exception ex)
+                                catch
                                 {
                                     columnValue = "";
                                 }
+
                                 lvi.SubItems.Add(columnValue);
                             }
                         }
 
                         lvi.Tag = ow;
-
-                        //System.Diagnostics.Debug.Print("list value");
-                        // TODO: only if already up front
-                        //lvwNodeList.Focus();
-                        // SelectionChanged()
                     }
+
                     _lvwSort.Active = true;
+
                     Selection = selNl;
 
                     foreach (long id in lvsi)
                     {
-                        if (lvwNodeList.Items.ContainsKey(id.ToString())) lvwNodeList.Items[id.ToString()].Selected = true;
+                        if (lvwNodeList.Items.ContainsKey(id.ToString()))
+                            lvwNodeList.Items[id.ToString()].Selected = true;
                     }
-                    if (_lvwSort != null) _lvwSort.ReSort();
+
+                    _lvwSort?.ReSort();
 
                     WindowSelectionData wsd = new WindowSelectionData();
                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
@@ -222,28 +366,32 @@ namespace CDCplusLib.Common.GUI
                         IRepositoryNode ow = (IRepositoryNode)li.Tag;
                         wsd.Selection.Add(ow.Id, ow);
                     }
+
                     ListSelectionChanged?.Invoke(wsd);
 
-                    if ((lvwNodeList.SelectedItems.Count > 0)) lvwNodeList.SelectedItems[0].EnsureVisible();
-
-                    lvwNodeList.EndUpdate();
+                    if (lvwNodeList.SelectedItems.Count > 0)
+                        lvwNodeList.SelectedItems[0].EnsureVisible();
                 }
-                _enableCheck = false;
-			}
-		}
-
-
-
+                finally
+                {
+                    lvwNodeList.EndUpdate();
+                    _enableCheck = false;
+                }
+            }
+        }
 
         public Dictionary<long, IRepositoryNode> Selection
         {
             get
             {
                 Dictionary<long, IRepositoryNode> result = new Dictionary<long, IRepositoryNode>();
+
                 foreach (ListViewItem n in lvwNodeList.SelectedItems)
                 {
-                    IRepositoryNode ow = ((IRepositoryNode)(n.Tag));
-                    if (!result.ContainsKey(ow.Id)) result.Add(ow.Id, ow);
+                    IRepositoryNode ow = (IRepositoryNode)n.Tag;
+
+                    if (!result.ContainsKey(ow.Id))
+                        result.Add(ow.Id, ow);
                 }
 
                 return result;
@@ -251,131 +399,136 @@ namespace CDCplusLib.Common.GUI
             set
             {
                 lvwNodeList.SelectedItems.Clear();
-                if(value!=null)
+
+                if (value == null)
+                    return;
+
+                foreach (long owId in value.Keys)
                 {
-                    foreach (long owId in value.Keys)
-                    {
-                        IRepositoryNode ow = value[owId];
-                        if (lvwNodeList.Items.ContainsKey(owId.ToString())) lvwNodeList.Items[owId.ToString()].Selected = true;
-                    }
-                    if(lvwNodeList.SelectedItems.Count>0) lvwNodeList.SelectedItems[0].EnsureVisible();
+                    if (lvwNodeList.Items.ContainsKey(owId.ToString()))
+                        lvwNodeList.Items[owId.ToString()].Selected = true;
                 }
+
+                if (lvwNodeList.SelectedItems.Count > 0)
+                    lvwNodeList.SelectedItems[0].EnsureVisible();
             }
         }
 
         private void lvwNodeList_DoubleClick(object sender, EventArgs e)
         {
-            if ((lvwNodeList.SelectedItems[0].Tag).GetType() == typeof(CmnFolder))
+            if (lvwNodeList.SelectedItems.Count == 0)
+                return;
+
+            if (lvwNodeList.SelectedItems[0].Tag.GetType() == typeof(CmnFolder))
             {
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.SelectedFolder = lvwNodeList.SelectedItems[0].Tag as CmnFolder;
                 TreeSelectionChanged?.Invoke(wsd, null);
             }
-            else if ((lvwNodeList.SelectedItems[0].Tag).GetType() == typeof(CmnObject))
+            else if (lvwNodeList.SelectedItems[0].Tag.GetType() == typeof(CmnObject))
             {
-                CmnObject o = (CmnObject)(lvwNodeList.SelectedItems[0].Tag);
+                CmnObject o = (CmnObject)lvwNodeList.SelectedItems[0].Tag;
                 WindowSelectionData wsd = new WindowSelectionData();
                 wsd.Selection.Add(o.Id, o);
-                FunctionRequest?.Invoke(wsd, null, null);   // default function
+                FunctionRequest?.Invoke(wsd, null, null);
             }
         }
 
         private void lvwNodeList_KeyDown(object sender, KeyEventArgs e)
         {
-            // first check for hard coded keys
             switch (e.KeyCode)
             {
-                // Ignore these
-                case Keys.Up: break;
-                case Keys.Down: break;
-                case Keys.Space: break;
-                case Keys.ShiftKey: break;
-                case Keys.Menu: break;// this is the ALT key
-                case Keys.ControlKey: break;
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Space:
+                case Keys.ShiftKey:
+                case Keys.Menu:
+                case Keys.ControlKey:
+                    break;
+
                 default:
-                    // handle configured function
-                    bool useContext = false;
-                    KeyEvent ke = default(KeyEvent);
-                    if (lvwNodeList.SelectedItems.Count > 0)
-                    {
-                        if (lvwNodeList.SelectedItems.Count == 1)
+                    HandleConfiguredKey(e);
+                    break;
+            }
+        }
+
+        private void HandleConfiguredKey(KeyEventArgs e)
+        {
+            bool useContext = false;
+            KeyEvent ke;
+
+            if (lvwNodeList.SelectedItems.Count > 0)
+            {
+                if (lvwNodeList.SelectedItems.Count == 1)
+                {
+                    ke = lvwNodeList.SelectedItems[0].Tag is CmnFolder
+                        ? new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.FolderSelected)
+                        : new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.ObjectSelected);
+                }
+                else
+                {
+                    ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.ListSelected);
+                }
+            }
+            else
+            {
+                if (_nl.Context == null)
+                {
+                    ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.NothingSelected);
+                }
+                else
+                {
+                    ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.FolderSelected);
+                    useContext = true;
+                }
+            }
+
+            try
+            {
+                KeyEventReaction ker = _keyEvents.GetKeyEventReaction(ke);
+
+                switch (ker.EventType)
+                {
+                    case KeyEventReaction.EventTypes.ExecuteMethod:
+                        WindowSelectionData wsd = new WindowSelectionData();
+
+                        if (useContext)
                         {
-                            if (lvwNodeList.SelectedItems[0].Tag is CmnFolder) ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.FolderSelected);
-                            else ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.ObjectSelected);
+                            wsd.SelectedFolder = _nl.Context;
                         }
-                        else ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.ListSelected);
-                    }
-                    else
-                    {
-                        if (_nl.Context == null) ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.NothingSelected);
                         else
                         {
-                            ke = new KeyEvent(e.KeyCode, e.Shift, e.Control, e.Alt, KeyEvent.KeyEventSelection.FolderSelected);    // parent folder
-                            useContext = true;
+                            foreach (ListViewItem li in lvwNodeList.SelectedItems)
+                            {
+                                IRepositoryNode node = (IRepositoryNode)li.Tag;
+                                wsd.Selection.Add(node.Id, node);
+                            }
                         }
-                    }
 
-                    try
-                    {
-                        KeyEventReaction ker = _keyEvents.GetKeyEventReaction(ke);
-                        switch (ker.EventType)
-                        {
-                            case KeyEventReaction.EventTypes.ExecuteMethod:
-                                // send message to Session Window to execute matching function
-                                //switch (ke.Filter)
-                                //{
-                                //    case KeyEvent.KeyEventSelection.FolderSelected:
-                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.FolderFunction;
-                                //        break;
-                                //    case KeyEvent.KeyEventSelection.ObjectSelected:
-                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ObjectFunction;
-                                //        break;
-                                //    case KeyEvent.KeyEventSelection.ListSelected:
-                                //        kpMsg.FunctionType = KeyPressedMessage.FunctionTypes.ListFunction;
-                                //        break;
-                                //    default:
-                                //        throw new ApplicationException("Invalid function type for no selection");
-                                //}
-                                WindowSelectionData wsd = null;
-                                if(useContext)
-                                {
-                                    wsd = new WindowSelectionData();
-                                    wsd.SelectedFolder = _nl.Context;
-                                }
-                                else
-                                {
-                                    wsd = new WindowSelectionData();
-                                    foreach (ListViewItem li in lvwNodeList.SelectedItems)
-                                    {
-                                        wsd.Selection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
-                                    }
-                                }
+                        FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
+                        break;
 
-                                FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
+                    case KeyEventReaction.EventTypes.Refresh:
+                        RefreshRequest?.Invoke();
+                        break;
 
-                                break;
-                            case KeyEventReaction.EventTypes.Refresh:
-                                RefreshRequest?.Invoke();
-                                break;
-                            case KeyEventReaction.EventTypes.SelectAll:
-                                foreach (ListViewItem lvi in lvwNodeList.Items) lvi.Selected = true;
-                                break;
-                            //SelectionChanged()
-                            default:
-                                System.Diagnostics.Debug.Print("Unsupported key was pressed");
-                                break;
-                        }
-                    }
-                    catch (ApplicationException ex)
-                    {
-                        StandardMessage.ShowMessage("Caught ApplicationException", StandardMessage.Severity.ErrorMessage, this, ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        StandardMessage.ShowMessage("Caught Exception", StandardMessage.Severity.ErrorMessage, this, ex);
-                    }
+                    case KeyEventReaction.EventTypes.SelectAll:
+                        foreach (ListViewItem lvi in lvwNodeList.Items)
+                            lvi.Selected = true;
+                        break;
 
-                    break;
+                    default:
+                        Debug.Print("Unsupported key was pressed");
+                        break;
+                }
+            }
+            catch (ApplicationException ex)
+            {
+                StandardMessage.ShowMessage("Caught ApplicationException", StandardMessage.Severity.ErrorMessage, this, ex);
+            }
+            catch (Exception ex)
+            {
+                StandardMessage.ShowMessage("Caught Exception", StandardMessage.Severity.ErrorMessage, this, ex);
             }
         }
 
@@ -383,14 +536,16 @@ namespace CDCplusLib.Common.GUI
         {
             try
             {
-                //SelectionChanged()
                 if (e.Button == MouseButtons.Right)
                 {
                     WindowSelectionData wsd = new WindowSelectionData();
+
                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
                     {
-                        wsd.Selection.Add(((IRepositoryNode)(li.Tag)).Id, (IRepositoryNode)(li.Tag));
+                        IRepositoryNode node = (IRepositoryNode)li.Tag;
+                        wsd.Selection.Add(node.Id, node);
                     }
+
                     ContextMenuRequest?.Invoke(wsd, lvwNodeList.PointToScreen(e.Location));
                 }
             }
@@ -404,20 +559,16 @@ namespace CDCplusLib.Common.GUI
             }
         }
 
-
         private void SelectionChangedTimer_Tick(object sender, EventArgs e)
         {
             try
             {
                 selectionChangedTimer.Stop();
+
                 if (InvokeRequired)
-                {
                     Invoke((MethodInvoker)SelectionChanged);
-                }
                 else
-                {
                     SelectionChanged();
-                }
             }
             catch (Exception ex)
             {
@@ -427,22 +578,25 @@ namespace CDCplusLib.Common.GUI
 
         private void SelectionChanged()
         {
-            if (EventsActive)
+            if (!EventsActive)
+                return;
+
+            WindowSelectionData wsd = new WindowSelectionData();
+
+            foreach (ListViewItem li in lvwNodeList.SelectedItems)
             {
-                WindowSelectionData wsd = new WindowSelectionData();
-                foreach (ListViewItem li in lvwNodeList.SelectedItems)
-                {
-                    IRepositoryNode ow = (IRepositoryNode)li.Tag;
-                    wsd.Selection.Add(ow.Id, ow);
-                }
-                ListSelectionChanged?.Invoke(wsd);
+                IRepositoryNode ow = (IRepositoryNode)li.Tag;
+                wsd.Selection.Add(ow.Id, ow);
             }
+
+            ListSelectionChanged?.Invoke(wsd);
         }
+
         private void lvwNodeList_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                if(_useTimer)
+                if (_useTimer)
                 {
                     selectionChangedTimer.Stop();
                     selectionChangedTimer.Start();
@@ -460,10 +614,8 @@ namespace CDCplusLib.Common.GUI
 
         private void lvwNodeList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if(!_enableCheck) e.NewValue = e.CurrentValue;
+            if (!_enableCheck)
+                e.NewValue = e.CurrentValue;
         }
-
-
-
     }
 }
