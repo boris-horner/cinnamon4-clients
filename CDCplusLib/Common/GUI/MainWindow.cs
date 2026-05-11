@@ -185,9 +185,13 @@ namespace CDCplusLib.Common.GUI
 
             //if (wsd.RootNodeType == SessionTree.RootNodeTypes.Session) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_SESSION, true)[0], wsd);
             //else if (wsd.RootNodeType == RootNodeTypes.Results) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(SessionTree.NODE_RESULTS, true)[0], wsd);
-            //else if(wsd.SelectedFolder!=null) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0], wsd);
-            //ctccTreeContext.EventsActive = true;
+            //else if (wsd.SelectedFolder != null) UpdateTcTabControl(stSession.tvwSession.Nodes.Find(wsd.SelectedFolder.Id.ToString(), true)[0], wsd);
             //Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tab control updated"));
+
+            if (ctccTreeContext.ControlHasSelection)
+            {
+                ctccTreeContext.ControlSelection = wsd.Selection;
+            }
 
             ctccTreeContext.EventsActive = true;
             ctccListContext.EventsActive = true;
@@ -265,6 +269,8 @@ namespace CDCplusLib.Common.GUI
             }
             UpdateTcTabControl(stSession.SelectedNode, wsd);
             SetTitle();
+            if (ctccTreeContext.ControlHasSelection) ctccTreeContext.ControlSelection = wsd.Selection;
+
             //TreeSelectionChanged?.Invoke(wsd, this);
         }
         protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
