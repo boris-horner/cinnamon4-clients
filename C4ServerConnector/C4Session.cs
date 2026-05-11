@@ -2193,7 +2193,7 @@ namespace C4ServerConnector
                         metaEl.AppendChild(requestBody.CreateElement("id"));    //empty metaset id element
                         metaEl.AppendChild(requestBody.CreateElement("objectId")).InnerText=objectId.ToString();    
                         metaEl.AppendChild(requestBody.CreateElement("typeId")).InnerText = metaset.TypeId.ToString();
-                        metaEl.AppendChild(requestBody.CreateElement("content")).InnerText = metaset.Content.OuterXml;
+                        metaEl.AppendChild(requestBody.CreateElement("content")).InnerText = EscapeNonAsciiAsXmlEntities(metaset.Content.OuterXml);
                     }
                 }
                 XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/osd/createMeta"), requestBody);
@@ -2222,7 +2222,7 @@ namespace C4ServerConnector
                         metaEl.AppendChild(requestBody.CreateElement("id")).InnerText = ((long)metaset.Id).ToString();
                         metaEl.AppendChild(requestBody.CreateElement("objectId")).InnerText = objectId.ToString();    
                         metaEl.AppendChild(requestBody.CreateElement("typeId")).InnerText = metaset.TypeId.ToString();
-                        metaEl.AppendChild(requestBody.CreateElement("content")).InnerText = metaset.Content.OuterXml;
+                        metaEl.AppendChild(requestBody.CreateElement("content")).InnerText = EscapeNonAsciiAsXmlEntities(metaset.Content.OuterXml);
                     }
                 }
                 XmlDocument resp = _http.PostCommand(string.Concat(BaseUrl, "/api/osd/updateMetaContent"), requestBody);
@@ -2234,6 +2234,22 @@ namespace C4ServerConnector
                 ThrowException(ex);
                 return null;    // code is never reached - without this line, the compiler states that not all code parts return a value 
             }
+        }
+        private static string EscapeNonAsciiAsXmlEntities(string value)
+        {
+            if (value == null) return null;
+
+            var sb = new StringBuilder(value.Length);
+
+            foreach (char ch in value)
+            {
+                if (ch > 127)
+                    sb.Append("&#x").Append(((int)ch).ToString("X")).Append(';');
+                else
+                    sb.Append(ch);
+            }
+
+            return sb.ToString();
         }
         public XmlDocument DeleteAllObjectMetadata(HashSet<long> ids)
         {
