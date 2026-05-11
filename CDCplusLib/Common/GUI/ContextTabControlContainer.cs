@@ -58,6 +58,7 @@ namespace CDCplusLib.Common.GUI
         {
             get
             {
+                if (tabContext.SelectedTab == null) return false;
                 IGenericControl gc = (IGenericControl)tabContext.SelectedTab.Controls[0];
                 return gc.HasSelection;
             }

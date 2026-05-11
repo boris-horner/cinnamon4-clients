@@ -19,6 +19,8 @@ using C4ObjectApi.Interfaces;
 using C4ObjectApi.Repository;
 using C4ObjectApi.Helpers;
 using CDCplusLib.EventData;
+using CDCplusLib.Common.FolderFilters;
+using System.CodeDom;
 
 namespace CDCplusLib.TabControls
 {
@@ -81,7 +83,34 @@ namespace CDCplusLib.TabControls
             }
             set
             {
+                Cursor = Cursors.WaitCursor;
+                bool latestOnly = true;
+                foreach (IRepositoryNode rn in value.Values)
+                {
+                    if (rn.GetType() == typeof(CmnObject))
+                    {
+                        if (!(rn as CmnObject).LatestHead)
+                        {
+                            latestOnly = false;
+                            break;
+                        }
+                    }
+                }
+                if (!latestOnly)
+                {
+                    rldNodes.EventsActive = false;
+                    _initializing = true;
+
+                    cboVersionDisplay.SelectedItem = _allVersionFilter;
+                    IFolderFilter filter = (IFolderFilter)cboVersionDisplay.SelectedItem;
+                    rldNodes.NodeList = filter.GetNodeList(_f);
+                    _initializing = false;
+                    rldNodes.EventsActive = true;
+
+                }
+
                 rldNodes.Selection = value;
+                Cursor = null;
             }
         }
         public bool AutoRefresh { get { return true; } }
@@ -110,6 +139,7 @@ namespace CDCplusLib.TabControls
                 rldNodes.EventsActive = false;
                 _initializing = true;
                 _f = f;
+
                 IFolderFilter filter = (IFolderFilter)cboVersionDisplay.SelectedItem;
                 rldNodes.NodeList = filter.GetNodeList(f);
                 _initializing = false;
