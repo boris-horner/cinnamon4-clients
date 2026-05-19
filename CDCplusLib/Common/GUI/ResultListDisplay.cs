@@ -123,36 +123,57 @@ namespace CDCplusLib.Common.GUI
 
         private void EnsureStateImageList()
         {
-            bool needsReload =
-                _stateImageList == null ||
-                _stateImageList.Images.Count < 2 ||
-                lvwNodeList.StateImageList == null ||
-                lvwNodeList.StateImageList.Images.Count < 2;
+            bool controlListOk = IsValidStateImageList(lvwNodeList.StateImageList);
+            bool cachedListOk = IsValidStateImageList(_stateImageList);
 
-            if (!needsReload)
+            if (controlListOk)
+                return;
+
+            if (cachedListOk)
             {
-                if (!ReferenceEquals(lvwNodeList.StateImageList, _stateImageList))
-                    lvwNodeList.StateImageList = _stateImageList;
-
+                lvwNodeList.StateImageList = _stateImageList;
                 return;
             }
 
+            ReloadStateImageList();
+        }
+
+        private bool IsValidStateImageList(ImageList imageList)
+        {
+            if (imageList == null)
+                return false;
+
+            if (imageList.Images.Count < 2)
+                return false;
+
+            if (!imageList.Images.ContainsKey("blank"))
+                return false;
+
+            if (!imageList.Images.ContainsKey("link"))
+                return false;
+
+            return true;
+        }
+
+        private void ReloadStateImageList()
+        {
             ImageList old = _stateImageList;
 
-            _stateImageList = new ImageList
+            ImageList fresh = new ImageList
             {
                 ImageSize = new Size(16, 16),
                 ColorDepth = ColorDepth.Depth32Bit
             };
 
-            _stateImageList.Images.Add(
+            fresh.Images.Add(
                 "blank",
                 new Bitmap(Path.Combine(_stateImagePath, "blank.png")));
 
-            _stateImageList.Images.Add(
+            fresh.Images.Add(
                 "link",
                 new Bitmap(Path.Combine(_stateImagePath, "emblem-symbolic-link.png")));
 
+            _stateImageList = fresh;
             lvwNodeList.StateImageList = _stateImageList;
 
             if (old != null && !ReferenceEquals(old, _stateImageList))
