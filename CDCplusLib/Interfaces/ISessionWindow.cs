@@ -25,7 +25,7 @@ namespace CDCplusLib.Interfaces
     public delegate void ListSelectionChangedEventHandler(WindowSelectionData wsd);
     public delegate void FunctionRequestEventHandler(WindowSelectionData wsd, string assembly, string type);
     public delegate void NodesModifiedEventHandler(WindowSelectionData wsd);
-    public delegate void RefreshRequestEventHandler();
+    public delegate void RefreshRequestEventHandler(WindowSelectionData wsd);
     public delegate void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt);
     public interface ISessionWindow
     {

@@ -155,6 +155,7 @@ namespace CDCplusLib.Common.GUI
                         gc.ListSelectionChanged += ListSelectionChangedHandler;
                         gc.TreeSelectionChanged += TreeSelectionChangedHandler;
                         gc.ContextMenuRequest += ContextMenuRequestEventHandler;
+                        gc.RefreshRequest += RefreshRequestEventHandler;
                         gc.NodesModified += NodesModifiedEventHandler;
                         //gc.KeyPressed += FunctionRequestEventHandler;
                         gc.FunctionRequest += FunctionRequestEventHandler;
@@ -207,12 +208,12 @@ namespace CDCplusLib.Common.GUI
         }
         protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
         {
-            if (EventsActive) RefreshRequest?.Invoke();
+            if (EventsActive) RefreshRequest?.Invoke(wsd);
         }
 
         public void UpdateTabControl(Dictionary<long, IRepositoryNode> context, IGenericControl.ContextType ct, WindowSelectionData wsd)
         {
-            if (InvokeRequired)
+            if (InvokeRequired && wsd != null)
             {
                 Invoke((MethodInvoker)(() => UpdateTabControl(context, ct, wsd)));
                 return;

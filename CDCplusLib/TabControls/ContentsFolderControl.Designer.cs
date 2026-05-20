@@ -287,6 +287,7 @@ namespace CDCplusLib.TabControls
             // 
             // rldNodes
             // 
+            rldNodes.ControlContextType = IGenericControl.ContextType.Folder;
             rldNodes.Dock = DockStyle.Fill;
             rldNodes.EventsActive = false;
             rldNodes.Location = new Point(0, 0);

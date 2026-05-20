@@ -228,9 +228,9 @@ namespace CDCplusLib.TabControls
         {
             KeyPressedEvent?.Invoke(wsd, key, shift, ctrl, alt);
         }
-        private void rldNodes_RefreshRequest()
+        private void rldNodes_RefreshRequest(WindowSelectionData wsd)
         {
-            RefreshRequest?.Invoke();
+            RefreshRequest?.Invoke(wsd);
         }
         private void cmdSettings_Click(object sender, EventArgs e)
         {

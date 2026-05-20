@@ -134,6 +134,10 @@ namespace CDCplusLib.Common.GUI
             ctccTreeContext.NodesModified += NodesModifiedEventHandler;
             ctccListContext.NodesModified += NodesModifiedEventHandler;
 
+            ctccTreeContext.RefreshRequest += RefreshRequestEventHandler;
+            ctccListContext.RefreshRequest += RefreshRequestEventHandler;
+
+
             Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: events linked"));
             Width = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.8d);
             Height = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.8d);
@@ -272,6 +276,10 @@ namespace CDCplusLib.Common.GUI
             if (ctccTreeContext.ControlHasSelection) ctccTreeContext.ControlSelection = wsd.Selection;
 
             //TreeSelectionChanged?.Invoke(wsd, this);
+        }
+        protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
+        {
+            UpdateTcTabControl(stSession.SelectedNode, null);
         }
         protected virtual void KeyPressedEventHandler(WindowSelectionData wsd, Keys key, bool shift, bool ctrl, bool alt)
         {

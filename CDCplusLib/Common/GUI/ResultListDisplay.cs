@@ -34,7 +34,7 @@ namespace CDCplusLib.Common.GUI
         private bool _enableCheck;
         private bool _useTimer = true;
         private View _view;
-        private System.Windows.Forms.Timer selectionChangedTimer;
+        private System.Windows.Forms.Timer selectionChangedTimer; 
         public bool EventsActive { get; set; }
 
         private CmnSession _s;
@@ -55,12 +55,15 @@ namespace CDCplusLib.Common.GUI
             EventsActive = false;
         }
 
+        public IGenericControl.ContextType ControlContextType { get; set; }
+
         public void Init(CmnSession s, XmlElement customConfigEl, XmlElement rldConfigEl, INodeDataProvider ndp)
         {
             _nodeDataProvider = ndp;
             _s = s;
             _enableCheck = false;
             _view = View.Details;
+            //ControlContextType = IGenericControl.ContextType.List;
 
             XmlAttribute frs = (XmlAttribute)rldConfigEl.SelectSingleNode("appearance/full_row_select/@value");
 
@@ -207,7 +210,7 @@ namespace CDCplusLib.Common.GUI
 
         protected virtual void RefreshRequestEventHandler(WindowSelectionData wsd)
         {
-            RefreshRequest?.Invoke();
+            RefreshRequest?.Invoke(wsd);
         }
 
         public View View
@@ -435,29 +438,41 @@ namespace CDCplusLib.Common.GUI
                         switch (ker.EventType)
                         {
                             case KeyEventReaction.EventTypes.ExecuteMethod:
-                                WindowSelectionData wsd = null;
+                                if(ControlContextType != IGenericControl.ContextType.List || lvwNodeList.SelectedItems.Count > 0)
+                                {
+                                    WindowSelectionData wsd = null;
 
-                                if (useContext)
-                                {
-                                    wsd = new WindowSelectionData();
-                                    wsd.SelectedFolder = _nl.Context;
+                                    if (useContext)
+                                    {
+                                        wsd = new WindowSelectionData();
+                                        wsd.SelectedFolder = _nl.Context;
+                                    }
+                                    else
+                                    {
+                                        wsd = new WindowSelectionData();
+                                        foreach (ListViewItem li in lvwNodeList.SelectedItems)
+                                        {
+                                            wsd.Selection.Add(
+                                                ((IRepositoryNode)li.Tag).Id,
+                                                (IRepositoryNode)li.Tag);
+                                        }
+                                    }
+
+                                    FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
                                 }
-                                else
+                                break;
+
+                            case KeyEventReaction.EventTypes.Refresh:
                                 {
-                                    wsd = new WindowSelectionData();
+                                    WindowSelectionData wsd = new WindowSelectionData();
                                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
                                     {
                                         wsd.Selection.Add(
                                             ((IRepositoryNode)li.Tag).Id,
                                             (IRepositoryNode)li.Tag);
                                     }
+                                    RefreshRequest?.Invoke(wsd);
                                 }
-
-                                FunctionRequest?.Invoke(wsd, ker.Assembly, ker.Type);
-                                break;
-
-                            case KeyEventReaction.EventTypes.Refresh:
-                                RefreshRequest?.Invoke();
                                 break;
 
                             case KeyEventReaction.EventTypes.SelectAll:
@@ -487,7 +502,7 @@ namespace CDCplusLib.Common.GUI
         {
             try
             {
-                if (e.Button == MouseButtons.Right)
+                if (e.Button == MouseButtons.Right && (ControlContextType != IGenericControl.ContextType.List || lvwNodeList.SelectedItems.Count > 0))
                 {
                     WindowSelectionData wsd = new WindowSelectionData();
                     foreach (ListViewItem li in lvwNodeList.SelectedItems)
