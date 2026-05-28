@@ -1231,6 +1231,15 @@ namespace CDCplusLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Summary.
+        /// </summary>
+        internal static string lblSummary {
+            get {
+                return ResourceManager.GetString("lblSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Superuser.
         /// </summary>
         internal static string lblSuperuser {

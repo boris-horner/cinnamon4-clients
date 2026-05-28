@@ -937,4 +937,7 @@ The change will be committed when you click the Save button.</value>
   <data name="msgNoFolderSelected" xml:space="preserve">
     <value>No target folder was selected.</value>
   </data>
+  <data name="lblSummary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
 </root>
