@@ -38,11 +38,11 @@ namespace CDCplusLib.Common.GUI
         //private bool _selectEventActive;
         private KeyEventTable _keyEvents;
 
-        public SessionWindowRequestEventHandler SessionWindowRequest;
-        public TreeSelectionChangedEventHandler TreeSelectionChanged;
-        public ContextMenuRequestEventHandler ContextMenuRequest;
-        public FunctionRequestEventHandler FunctionRequest;
-        public NodesModifiedEventHandler NodesModified;
+        public event SessionWindowRequestEventHandler SessionWindowRequest;
+        public event TreeSelectionChangedEventHandler TreeSelectionChanged;
+        public event ContextMenuRequestEventHandler ContextMenuRequest;
+        public event FunctionRequestEventHandler FunctionRequest;
+        public event NodesModifiedEventHandler NodesModified;
         public event KeyEventTable.KeyPressedEventHandler KeyPressedEvent;
         public SessionTree()
         {

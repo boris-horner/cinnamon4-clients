@@ -107,6 +107,15 @@ namespace CDCplusLib.Common.GUI
             InitToolbar();
             stSession.InitTreeView(_s);
             Debug.Print(string.Join(" - ", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "ShowSessionWindow: tree view initialized"));
+
+
+            XmlNode twpN = s.UserConfig.DocumentElement.SelectSingleNode("global_settings/main_window/@tree_width_percent");
+            splVert.SplitterDistance = (int)(splVert.Width * (twpN == null ? 0.2 : int.Parse(twpN.InnerText) / 100.0));
+
+            XmlNode lhpN = s.UserConfig.DocumentElement.SelectSingleNode("global_settings/main_window/@list_height_percent");
+            splHor.SplitterDistance = (int)(splHor.Height * (lhpN == null ? 0.5 : int.Parse(lhpN.InnerText) / 100.0));
+
+
             stSession.SessionWindowRequest += SessionWindowRequestEventHandler;
             stSession.TreeSelectionChanged += TreeSelectionChangedEventHandler;
             stSession.ContextMenuRequest += ContextMenuRequestEventHandler;

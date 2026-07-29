@@ -146,6 +146,7 @@ namespace CDCplusLib.Common.GUI
             // stSession
             // 
             stSession.Dock = DockStyle.Fill;
+            stSession.EventsActive = false;
             stSession.Location = new Point(0, 0);
             stSession.Name = "stSession";
             stSession.SelectedNode = null;
@@ -168,23 +169,25 @@ namespace CDCplusLib.Common.GUI
             // 
             splHor.Panel2.Controls.Add(ctccListContext);
             splHor.Size = new Size(1286, 1137);
-            splHor.SplitterDistance = 458;
+            splHor.SplitterDistance = 569;
             splHor.TabIndex = 0;
             // 
             // ctccTreeContext
             // 
             ctccTreeContext.Dock = DockStyle.Fill;
+            ctccTreeContext.EventsActive = false;
             ctccTreeContext.Location = new Point(0, 0);
             ctccTreeContext.Name = "ctccTreeContext";
-            ctccTreeContext.Size = new Size(1286, 458);
+            ctccTreeContext.Size = new Size(1286, 569);
             ctccTreeContext.TabIndex = 0;
             // 
             // ctccListContext
             // 
             ctccListContext.Dock = DockStyle.Fill;
+            ctccListContext.EventsActive = false;
             ctccListContext.Location = new Point(0, 0);
             ctccListContext.Name = "ctccListContext";
-            ctccListContext.Size = new Size(1286, 675);
+            ctccListContext.Size = new Size(1286, 564);
             ctccListContext.TabIndex = 0;
             // 
             // MainWindow
