@@ -51,7 +51,9 @@ namespace CDCplus
                     CmnServer svr = null;
                     try
                     {
-                        int getTimeout = svrEl.HasAttribute("get_timeout") ? int.Parse(svrEl.GetAttribute("get_timeout")) : 10000;
+                        long getTimeout = svrEl.HasAttribute("get_timeout") ? int.Parse(svrEl.GetAttribute("get_timeout")) : 3;
+                        long dataTimeout = svrEl.HasAttribute("data_timeout") ? int.Parse(svrEl.GetAttribute("data_timeout")) : 30;
+                        long contentTimeout = svrEl.HasAttribute("content_timeout") ? int.Parse(svrEl.GetAttribute("content_timeout")) : 900;
                         XmlNode localCertFileN = svrEl.SelectSingleNode("local_cert_file");
                         string localCertFile = (localCertFileN == null ? null : Path.Combine(Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath), localCertFileN.InnerText));
                         Dictionary<string, string> localSettings = new Dictionary<string, string>();
@@ -67,6 +69,8 @@ namespace CDCplus
                                                       localCertFile,
                                                       localSettings,
                                                       getTimeout,
+                                                      dataTimeout,
+                                                      contentTimeout,
                                                       ucN != null ? ucN.InnerText : null);
                     }
                     catch (Exception ex)

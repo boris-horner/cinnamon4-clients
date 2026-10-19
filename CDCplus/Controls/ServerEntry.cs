@@ -28,9 +28,11 @@ namespace CDCplus.Controls
 		private Form _serverHubForm;
 		private XmlElement _svrEl;
 		private GlobalApplicationData _gad;
-		private int _timeout;
-		//private string _localCertFile;
-		private int _baseHeight;
+		private long _getTimeoutSeconds;
+        private long _dataTimeoutSeconds;
+        private long _contentTimeoutSeconds;
+        //private string _localCertFile;
+        private int _baseHeight;
 		private string _logFn;
 
 		public delegate void ResizedHandler(object sender);
@@ -53,7 +55,9 @@ namespace CDCplus.Controls
 								 Server.CdnUrl,
 								 ucN != null ? ucN.InnerText : null,
 								 Server.LocalSettings,
-								 _timeout,
+								 _getTimeoutSeconds,
+								 _dataTimeoutSeconds,
+								 _contentTimeoutSeconds,
 								 Server.LocalCertFile);
 			gbServer.Text = Server.Name;
 			lblVersionBuild.Text = string.Format(Resources.lblVersionBuild, Server.Version, Server.Build);
@@ -78,7 +82,9 @@ namespace CDCplus.Controls
 			_baseHeight = Height;
 			File.AppendAllText(_logFn, " Base server entry height: " + _baseHeight.ToString() + "\n");
 
-			_timeout = _svrEl.HasAttribute("timeout") ? int.Parse(_svrEl.GetAttribute("timeout")) : 10000;
+			_getTimeoutSeconds = _svrEl.HasAttribute("timeout") ? int.Parse(_svrEl.GetAttribute("timeout")) : 3;
+			_dataTimeoutSeconds = _svrEl.HasAttribute("data_timeout") ? int.Parse(_svrEl.GetAttribute("data_timeout")) : 30;
+			_contentTimeoutSeconds = _svrEl.HasAttribute("content_timeout") ? int.Parse(_svrEl.GetAttribute("content_timeout")) : 900;
 			//_localCertFile = _svrEl.HasAttribute("local_cert_file") ? Path.Combine(Application.StartupPath, _svrEl.GetAttribute("local_cert_file")) : null;
 
 			gbServer.Text = serverName;

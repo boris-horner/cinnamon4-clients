@@ -28,22 +28,37 @@ namespace C4ObjectApi.Repository
         public string LocksDir { get; }
         public string LocalCertFile { get; }
         public Dictionary<string, string> LocalSettings { get; }
+        public string Version { get; private set; }
+        public int Build { get; private set; }
+        public int PrimaryVersion { get; private set; }
+        public int SecondaryVersion { get; private set; }
+        public string Id { get; private set; }
+        public string Url { get; private set; }
+        public string CdnUrl { get; private set; }
+        public string Name { get; private set; }
+        public string NamedUserConfig { get; private set; }
+        public long DataTimeoutSeconds { get; private set; }
+        public long ContentTimeoutSeconds { get; private set; }
+        public XmlDocument ServerResponse { get; private set; }
 
-        public CmnServer(string url, string localRoot, string name, string id, string cdnUri, string localCertFile, Dictionary<string, string> localSettings, int getTimeout, string namedUserConfig = null)
+
+        public CmnServer(string url, string localRoot, string name, string id, string cdnUri, string localCertFile, Dictionary<string, string> localSettings, long getTimeoutSeconds, long dataTimeoutSeconds, long contentTimeoutSeconds, string namedUserConfig = null)
         {
             Url = url;
             CdnUrl = cdnUri;
             Name = name;
             Id = id;
             NamedUserConfig = namedUserConfig;
+            DataTimeoutSeconds = dataTimeoutSeconds;
+            ContentTimeoutSeconds = contentTimeoutSeconds;
             CheckoutDir = Path.Combine(localRoot, "checkout");
             LocksDir = Path.Combine(localRoot, "locks");
             LocalCertFile = localCertFile;
             LocalSettings = localSettings;
             InitHost();
-            GetServerResponse(getTimeout);
+            GetServerResponse(getTimeoutSeconds);
         }
-        private void GetServerResponse(int getTimeout)
+        private void GetServerResponse(long getTimeout)
         {
             try
             {
@@ -99,24 +114,13 @@ namespace C4ObjectApi.Repository
 
         public CmnSession GetSessionByTicket(string user, string ticket)
         {
-            return new CmnSession(user, null, ticket, this, NamedUserConfig);
+            return new CmnSession(user, null, ticket, this, DataTimeoutSeconds, ContentTimeoutSeconds, NamedUserConfig);
         }
 
         public CmnSession GetSession(string user, string pwd)
         {
-            return new CmnSession(user, pwd, null, this, NamedUserConfig);
+            return new CmnSession(user, pwd, null, this, DataTimeoutSeconds, ContentTimeoutSeconds, NamedUserConfig);
         }
-        //public string RepositoryName { get; private set; }
-        public string Version { get; private set; }
-        public int Build { get; private set; }
-        public int PrimaryVersion { get; private set; }
-        public int SecondaryVersion { get; private set; }
-        public string Id { get; private set; }
-        public string Url { get; private set; }
-        public string CdnUrl { get; private set; }
-        public string Name { get; private set; }
-        public string NamedUserConfig { get; private set; }
-        public XmlDocument ServerResponse { get; private set; }
         public bool Equals(CmnServer otherServer)
         {
             if (otherServer == null)

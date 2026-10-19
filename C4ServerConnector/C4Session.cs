@@ -24,6 +24,8 @@ namespace C4ServerConnector
 {
     public class C4Session
     {
+        private long _dataTimeoutSeconds;
+        private long _contentTimeoutSeconds;
         public enum NodeType { Object, Folder }
         public enum VersionMode { Head, Branch, All }
         public string Ticket { get; private set; }
@@ -33,12 +35,14 @@ namespace C4ServerConnector
         public string CdnUri { get; private set; }
         private HttpInterface _http;
         public C4AllPermissions AllPermissions { get; private set; }
-        public C4Session(string baseUrl, string user, string password, string cdnUri, string localCertFile, bool writeSessionLog, string localTempPath, long dataTimeoutSeconds=30, long contentTimeoutSeconds=300)
+        public C4Session(string baseUrl, string user, string password, string cdnUri, string localCertFile, bool writeSessionLog, string localTempPath, long dataTimeoutSeconds, long contentTimeoutSeconds)
         {
             Dictionary<long, C4Folder> result = new Dictionary<long, C4Folder>();
             try
             {
                 _http = new HttpInterface(localCertFile, null, writeSessionLog, dataTimeoutSeconds, contentTimeoutSeconds, localTempPath);
+                _dataTimeoutSeconds = dataTimeoutSeconds;
+                _contentTimeoutSeconds = contentTimeoutSeconds;
                 BaseUrl = baseUrl.EndsWith("/") ? baseUrl.Substring(0, BaseUrl.Length - 1) : baseUrl;
                 CdnUri = cdnUri;
                 LocalCertFile = localCertFile;
@@ -56,17 +60,20 @@ namespace C4ServerConnector
                 ThrowException(ex);
             }
         }
-        public C4Session(string baseUrl, string ticket, string cdnUri, string localCertFile, bool writeSessionLog, string localTempPath, long dataTimeoutSeconds = 30, long contentTimeoutSeconds = 300)
+        public C4Session(string baseUrl, string ticket, string cdnUri, string localCertFile, bool writeSessionLog, string localTempPath, long dataTimeoutSeconds, long contentTimeoutSeconds)
         {
             _http = new HttpInterface(localCertFile, ticket, writeSessionLog, dataTimeoutSeconds, contentTimeoutSeconds, localTempPath);
+            _dataTimeoutSeconds = dataTimeoutSeconds;
+            _contentTimeoutSeconds = contentTimeoutSeconds;
             Ticket = ticket;
             BaseUrl = baseUrl.EndsWith("/") ? baseUrl.Substring(0, BaseUrl.Length - 1) : baseUrl;
             CdnUri = cdnUri;
             AllPermissions = ListPermissions();
         }
-        public static string GetRequest(string baseUrl, string localCertFile, int timeout)
+        public static string GetRequest(string baseUrl, string localCertFile, long getTimeout)
         {
-            HttpInterface http = new HttpInterface(localCertFile, null, false, timeout, 300, Path.GetTempPath());
+            // contentTimeout is irrelevant here
+            HttpInterface http = new HttpInterface(localCertFile, null, false, getTimeout, 300, Path.GetTempPath());
             string httpResult = http.GetCommand(baseUrl);
             return httpResult;
         }

@@ -68,7 +68,7 @@ namespace C4ObjectApi.Repository
             } 
         }
 
-        public CmnSession(string userName, string pwd, string ticket, CmnServer svr, string namedUserConfig = null)
+        public CmnSession(string userName, string pwd, string ticket, CmnServer svr, long dataTimeoutSeconds, long contentTimeoutSeconds, string namedUserConfig = null)
         {
             if(pwd!=null)
             {
@@ -78,7 +78,7 @@ namespace C4ObjectApi.Repository
                 _sessionExtensions = new Dictionary<string, ISessionExtension>();
                 CachedFolders = new Dictionary<long, CmnFolder>();
 
-                CommandSession = new C4Session(Server.Url, userName, pwd, svr.CdnUrl, svr.LocalCertFile, false, Path.GetTempPath());
+                CommandSession = new C4Session(Server.Url, userName, pwd, svr.CdnUrl, svr.LocalCertFile, false, Path.GetTempPath(), dataTimeoutSeconds, contentTimeoutSeconds);
                 Ticket = CommandSession.Ticket;
                 Dictionary<long, C4Group> groups = CommandSession.ListGroups();
                 SessionConfig = new CmnSessionConfiguration(this, userName, groups);
@@ -105,7 +105,7 @@ namespace C4ObjectApi.Repository
                 Ticket = ticket;
                 CachedFolders = new Dictionary<long, CmnFolder>();
 
-                CommandSession = new C4Session(Server.Url, Ticket,svr.CdnUrl, svr.LocalCertFile, false, Path.GetTempPath());
+                CommandSession = new C4Session(Server.Url, Ticket,svr.CdnUrl, svr.LocalCertFile, false, Path.GetTempPath(), dataTimeoutSeconds, contentTimeoutSeconds);
                 _sessionExtensions = new Dictionary<string, ISessionExtension>();
                 _configEntries = new Dictionary<string, XmlDocument>();
                 Dictionary<long, C4Group> groups = CommandSession.ListGroups();
