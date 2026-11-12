@@ -1,16 +1,18 @@
-# Installing Cinnamon 4 Change Trigger on Debian 12
+# Installing Cinnamon 4 Change Trigger on Debian 13
 ## Install Change Trigger
 * Install .net8:
   ```
-  wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-  dpkg -i packages-microsoft-prod.deb
-  rm packages-microsoft-prod.deb
-  apt update
-  apt install -y dotnet-sdk-8.0
+  cd /tmp
+  wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt update
+  sudo apt install aspnetcore-runtime-8.0
   ```
-* Move the `changetrigger` folder into `/opt`}.
+* Move the `changetrigger` folder into `/opt`.
 * Run with
   ```
+  #!/bin/bash
+  cd /opt/changetrigger
   dotnet ChangeTrigger.dll --urls="http://127.0.0.1:8081"
   ```
 > [!NOTE]
@@ -30,45 +32,29 @@
   ```
   [Unit]
   Description=ChangeTrigger Service
-  After=network.target
-  StartLimitIntervalSec=0
-  
+  Wants=network-online.target
+  After=network-online.target
+
   [Service]
   Type=simple
   User=install
   WorkingDirectory=/opt/changetrigger
   ExecStart=/opt/changetrigger/run.sh
-  Restart=always
+  Restart=on-failure
   RestartSec=5
-  
+  SyslogIdentifier=changetrigger
+
   [Install]
   WantedBy=multi-user.target
   ```
-* Create a timer file to configure the start up delay:
-  ```
-  nano /etc/systemd/system/changetrigger.timer
-  ```
-* Paste this content and save the file:
-  ```
-  [Unit]
-  Description=Start ChangeTrigger Service after 10 seconds
-  
-  [Timer]
-  OnBootSec=10
-  Unit=changetrigger.service
-  
-  [Install]
-  WantedBy=timers.target
-  ```
-* Reload and enable service and timer:
+* Reload and enable service:
   ```
   systemctl daemon-reload
-  systemctl enable changetrigger.timer
   systemctl enable changetrigger.service
-  systemctl start changetrigger.timer
+  systemctl start changetrigger
   ```
 * Check the status:
   ```
-  systemctl status changetrigger.timer
   systemctl status changetrigger.service
   ```
+

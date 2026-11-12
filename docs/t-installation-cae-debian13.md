@@ -1,19 +1,21 @@
-# Installing Cinnamon 4 CAE on Debian 12
+# Installing Cinnamon 4 CAE on Debian 13
 ## Install CAE
 > [!NOTE]
 > CAE, like Change Trigger, is not a Java application as the Cinnamon 4 server, but runs on .NET 8.
 
 * Install .net8:
 ```
-wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-apt update
-apt install -y dotnet-sdk-8.0
+cd /tmp
+wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update
+sudo apt install aspnetcore-runtime-8.0
 ```
 * Move the ```cae``` folder into ```/opt```.
 * Run with
 ```
+#!/bin/bash
+cd /opt/cae/bin
 dotnet CAE.dll
 ```
 > [!NOTE]
@@ -34,46 +36,32 @@ nano /etc/systemd/system/cae.service
 ```
 [Unit]
 Description=CAE Service
-After=network.target
-StartLimitIntervalSec=0
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=simple
 User=install
 WorkingDirectory=/opt/cae/bin
 ExecStart=/opt/cae/bin/cae.sh
-Restart=always
+
+Restart=on-failure
 RestartSec=5
+TimeoutStopSec=60
+
+SyslogIdentifier=cae
 
 [Install]
 WantedBy=multi-user.target
 ```
-* Create a timer file to configure the start up delay:
-```
-nano /etc/systemd/system/cae.timer
-```
-* Paste this content and save the file:
-```
-[Unit]
-Description=Start CAE Service after 30 seconds
-
-[Timer]
-OnBootSec=30
-Unit=cae.service
-
-[Install]
-WantedBy=timers.target
-```
-* Reload and enable service and timer:
+* Reload and enable service:
 ```
 systemctl daemon-reload
-systemctl enable cae.timer
 systemctl enable cae.service
-systemctl start cae.timer
 ```
 * Check the status:
 ```
-systemctl status cae.timer
 systemctl status cae.service
 ```
+
 
