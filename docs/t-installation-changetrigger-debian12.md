@@ -1,4 +1,4 @@
-# Installing Cinnamon 4 Change Trigger on Debian 12
+# Installing Cinnamon 4 Change Trigger on Debian 13
 ## Install Change Trigger
 * Install .net8:
   ```
