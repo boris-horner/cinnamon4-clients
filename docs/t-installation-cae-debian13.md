@@ -36,46 +36,31 @@ nano /etc/systemd/system/cae.service
 ```
 [Unit]
 Description=CAE Service
-After=network.target
-StartLimitIntervalSec=0
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=simple
 User=install
 WorkingDirectory=/opt/cae/bin
 ExecStart=/opt/cae/bin/cae.sh
-Restart=always
+
+Restart=on-failure
 RestartSec=5
+TimeoutStopSec=60
+
+SyslogIdentifier=cae
 
 [Install]
 WantedBy=multi-user.target
 ```
-* Create a timer file to configure the start up delay:
-```
-nano /etc/systemd/system/cae.timer
-```
-* Paste this content and save the file:
-```
-[Unit]
-Description=Start CAE Service after 30 seconds
-
-[Timer]
-OnBootSec=30
-Unit=cae.service
-
-[Install]
-WantedBy=timers.target
-```
-* Reload and enable service and timer:
+* Reload and enable service:
 ```
 systemctl daemon-reload
-systemctl enable cae.timer
 systemctl enable cae.service
-systemctl start cae.timer
 ```
 * Check the status:
 ```
-systemctl status cae.timer
 systemctl status cae.service
 ```
 
