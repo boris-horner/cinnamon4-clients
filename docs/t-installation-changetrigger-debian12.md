@@ -8,7 +8,7 @@
   sudo apt update
   sudo apt install aspnetcore-runtime-8.0
   ```
-* Move the `changetrigger` folder into `/opt`}.
+* Move the `changetrigger` folder into `/opt`.
 * Run with
   ```
   #!/bin/bash
