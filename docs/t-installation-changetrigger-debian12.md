@@ -2,11 +2,11 @@
 ## Install Change Trigger
 * Install .net8:
   ```
-  wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-  dpkg -i packages-microsoft-prod.deb
-  rm packages-microsoft-prod.deb
-  apt update
-  apt install -y dotnet-sdk-8.0
+  cd /tmp
+  wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  sudo apt update
+  sudo apt install aspnetcore-runtime-8.0
   ```
 * Move the `changetrigger` folder into `/opt`}.
 * Run with
