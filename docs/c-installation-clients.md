@@ -30,6 +30,6 @@ These interfaces are also used by the client itself for its own standard functio
 
 ## Installing Cinnamon 4 client applications
 
-* [Installing Cinnamon 4 CAE on Debian 12 Linux](t-installation-cae-debian12.md)
-* [Installing Cinnamon 4 Change Trigger on Debian 12 Linux](t-installation-changetrigger-debian12.md)
+* [Installing Cinnamon 4 CAE on Debian 13 Linux](t-installation-cae-debian13.md)
+* [Installing Cinnamon 4 Change Trigger on Debian 13 Linux](t-installation-changetrigger-debian13.md)
 * [Installing Cinnamon 4 Desktop Client (CDCplus) on Windows](t-installation-cdcplus-windows.md)
