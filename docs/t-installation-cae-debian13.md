@@ -1,4 +1,4 @@
-# Installing Cinnamon 4 CAE on Debian 12
+# Installing Cinnamon 4 CAE on Debian 13
 ## Install CAE
 > [!NOTE]
 > CAE, like Change Trigger, is not a Java application as the Cinnamon 4 server, but runs on .NET 8.
