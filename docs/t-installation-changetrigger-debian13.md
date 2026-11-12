@@ -32,17 +32,18 @@
   ```
   [Unit]
   Description=ChangeTrigger Service
-  After=network.target
-  StartLimitIntervalSec=0
-  
+  Wants=network-online.target
+  After=network-online.target
+
   [Service]
   Type=simple
   User=install
   WorkingDirectory=/opt/changetrigger
   ExecStart=/opt/changetrigger/run.sh
-  Restart=always
+  Restart=on-failure
   RestartSec=5
-  
+  SyslogIdentifier=changetrigger
+
   [Install]
   WantedBy=multi-user.target
   ```
