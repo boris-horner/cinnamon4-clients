@@ -60,7 +60,7 @@ namespace CAE
                 XmlNode localCertFileN = serverEl.SelectSingleNode("local_cert_file");
                 string localCertFile = (localCertFileN == null ? null : Path.Combine(Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath), localCertFileN.InnerText));
                 l.Log(string.Concat("Connecting to server ", url));
-                C4Session c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath);
+                C4Session c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath, 15, 300);
                 C4SessionConfiguration sc = new C4SessionConfiguration(c4s, username, tempPath, null, null);
 
                 l.Log("Connected");
@@ -253,7 +253,7 @@ namespace CAE
                         try
                         {
                             l.Log("Failure processing cycle, trying to reconnect" + Environment.NewLine + ex3.GetType().ToString() + Environment.NewLine + ex3.Message + Environment.NewLine + ex3.StackTrace);
-                            c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath);
+                            c4s = new C4Session(url, username, password, null, localCertFile, session, tempPath, 15, 300);
 
                         }
                         catch (Exception ex4)

@@ -148,6 +148,6 @@
     <value>Version: {0}</value>
   </data>
   <data name="lblVersionBuild" xml:space="preserve">
-    <value>Version: {0}, Build {1}</value>
+    <value>Version: {0}, Build {1} [{2}]</value>
   </data>
 </root>

@@ -548,7 +548,7 @@ namespace CDCplusLib.TabControls
             }
             else
             {
-                _editable = (_allowRelationEditOnLockedObjects || _o.Locked == null) && (_o.Permissions.Relation_Parent_Add || _o.Permissions.Relation_Child_Add || _o.Session.Server.Build < 148);
+                _editable = (_allowRelationEditOnLockedObjects || _o.Locked == null) && (_o.Permissions.Relation_Parent_Add || _o.Permissions.Relation_Child_Add);
                 _readable = _o.Permissions.Node_Browse;
 
                 if (_readable)

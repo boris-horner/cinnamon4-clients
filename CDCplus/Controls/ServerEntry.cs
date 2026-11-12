@@ -60,7 +60,7 @@ namespace CDCplus.Controls
 								 _contentTimeoutSeconds,
 								 Server.LocalCertFile);
 			gbServer.Text = Server.Name;
-			lblVersionBuild.Text = string.Format(Resources.lblVersionBuild, Server.Version, Server.Build);
+			lblVersionBuild.Text = string.Format(Resources.lblVersionBuild, Server.Version, Server.Build, Server.BuildDate.ToString());
 
             if (Server.ServerResponse != null)
 			{
@@ -88,7 +88,7 @@ namespace CDCplus.Controls
 			//_localCertFile = _svrEl.HasAttribute("local_cert_file") ? Path.Combine(Application.StartupPath, _svrEl.GetAttribute("local_cert_file")) : null;
 
 			gbServer.Text = serverName;
-			lblVersionBuild.Text = svr == null ? "" : string.Format(Resources.lblVersionBuild, svr.Version, svr.Build);
+			lblVersionBuild.Text = svr == null ? "" : string.Format(Resources.lblVersionBuild, svr.Version, svr.Build, Server.BuildDate.ToString());
 
 			if (svr == null || svr.ServerResponse == null)
 			{

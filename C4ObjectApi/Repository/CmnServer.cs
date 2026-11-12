@@ -29,7 +29,8 @@ namespace C4ObjectApi.Repository
         public string LocalCertFile { get; }
         public Dictionary<string, string> LocalSettings { get; }
         public string Version { get; private set; }
-        public int Build { get; private set; }
+        public string Build { get; private set; }
+        public DateTime BuildDate { get; private set; }
         public int PrimaryVersion { get; private set; }
         public int SecondaryVersion { get; private set; }
         public string Id { get; private set; }
@@ -90,7 +91,24 @@ namespace C4ObjectApi.Repository
                     SecondaryVersion = 0;
                 }
                 XmlNode buildN = ServerResponse.SelectSingleNode("/*/build");
-                Build = buildN == null ? 0 : int.Parse(buildN.InnerText);
+                Build = buildN.InnerText;
+
+                XmlNode buildTimeN = ServerResponse.SelectSingleNode("/*/buildTime");
+                if (buildTimeN != null)
+                {
+                    try
+                    {
+                        BuildDate = DateTime.Parse(buildTimeN.InnerText);
+                    }
+                    catch (Exception)
+                    {
+                        BuildDate = DateTime.MinValue;
+                    }
+                }
+                else
+                {
+                    BuildDate = DateTime.MinValue;
+                }
             }
             catch (Exception ex)
             {

@@ -44,7 +44,9 @@ namespace ChangeTriggerLib.Services
                                               null,
                                               localCertFileN == null ? null : localCertFileN.InnerText,
                                               false,
-                                              localTempPathN == null ? null : localTempPathN.InnerText);
+                                              localTempPathN == null ? null : localTempPathN.InnerText,
+                                              15,
+                                              300);
                 SessionConfiguration = new C4SessionConfiguration(ServiceSession, username, ServiceSession.LocalTempPath, null, null);
 
             }
@@ -140,7 +142,9 @@ namespace ChangeTriggerLib.Services
                                           null,
                                           localCertFileN == null ? null : localCertFileN.InnerText,
                                           false,
-                                          localTempPathN == null ? null : localTempPathN.InnerText);
+                                          localTempPathN == null ? null : localTempPathN.InnerText,
+                                          15,
+                                          300);
             SessionConfiguration = new C4SessionConfiguration(ServiceSession, username, ServiceSession.LocalTempPath, null, null);
         }
     }
