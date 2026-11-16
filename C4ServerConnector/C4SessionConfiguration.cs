@@ -65,7 +65,7 @@ namespace C4ServerConnector
             LocalTempFolder = localTempFolder;
             LocalizedLabels = localizedLabels;
             _uiLanguageId = uiLanguageId;
-            if(_uiLanguageId != null)
+            if (_uiLanguageId != null)
             {
                 _uiLanguageIso = UILanguagesById[(long)_uiLanguageId].Name;
             }
@@ -92,9 +92,15 @@ namespace C4ServerConnector
 
         public void InitUsers()     // this is now public because in change triggers, it makes sense to upload the user list after a new user has been created
         {
-            _usersById = _c4s.ListUsers();
-            _usersByName = new Dictionary<string, C4User>();
-            foreach (C4User u in _usersById.Values) _usersByName.Add(u.Name, u);
+            Dictionary<long, C4User> usersById;
+            Dictionary<string, C4User> usersByName;
+
+            usersById = _c4s.ListUsers();
+            usersByName = new Dictionary<string, C4User>();
+            foreach (C4User u in usersById.Values) if (!usersByName.ContainsKey(u.Name)) usersByName.Add(u.Name, u);
+
+            _usersById = usersById;
+            _usersByName = usersByName;
         }
 
         public Dictionary<long, C4Group> GroupsById
@@ -117,13 +123,19 @@ namespace C4ServerConnector
 
         private void InitGroups()
         {
-            _groupsById = _c4s.ListGroups();
-            _groupsByName = new Dictionary<string, C4Group>();
-            foreach (C4Group g in _groupsById.Values)
-            {
-                g.LocalizedName = GetLocalizedLabel(g.Name, "group");
-                _groupsByName.Add(g.Name, g);
-            }
+            Dictionary<long, C4Group> groupsById;
+            Dictionary<string, C4Group> groupsByName;
+
+            groupsById = _c4s.ListGroups();
+            groupsByName = new Dictionary<string, C4Group>();
+            foreach (C4Group g in groupsById.Values) if (!groupsByName.ContainsKey(g.Name))
+                {
+                    g.LocalizedName = GetLocalizedLabel(g.Name, "group");
+                    groupsByName.Add(g.Name, g);
+                }
+
+            _groupsById = groupsById;
+            _groupsByName = groupsByName;
         }
 
 
@@ -167,21 +179,31 @@ namespace C4ServerConnector
 
         public void InitLifecycles()
         {
-            _lifecyclesById = _c4s.ListLifecycles();
-            _lifecyclesByName = new Dictionary<string, C4Lifecycle>();
-            _lifecycleStatesById = new Dictionary<long, C4LifecycleState>();
-            _lifecycleStatesByName = new Dictionary<string, C4LifecycleState>();
-            foreach (C4Lifecycle lc in _lifecyclesById.Values)
-            {
-                lc.LocalizedName = GetLocalizedLabel(lc.Name, "lifecycle");
-                _lifecyclesByName.Add(lc.Name, lc);
-                foreach (C4LifecycleState lcs in lc.States.Values)
+            Dictionary<long, C4Lifecycle> lifecyclesById;
+            Dictionary<string, C4Lifecycle> lifecyclesByName;
+            Dictionary<long, C4LifecycleState> lifecycleStatesById;
+            Dictionary<string, C4LifecycleState> lifecycleStatesByName;
+
+            lifecyclesById = _c4s.ListLifecycles();
+            lifecyclesByName = new Dictionary<string, C4Lifecycle>();
+            lifecycleStatesById = new Dictionary<long, C4LifecycleState>();
+            lifecycleStatesByName = new Dictionary<string, C4LifecycleState>();
+            foreach (C4Lifecycle lc in lifecyclesById.Values) if (!lifecyclesByName.ContainsKey(lc.Name))
                 {
-                    lcs.LocalizedName = GetLocalizedLabel(lcs.Name, "lifecycle_state");
-                    _lifecycleStatesById.Add((long)lcs.Id, lcs);
-                    _lifecycleStatesByName.Add(lcs.Name, lcs);
+                    lc.LocalizedName = GetLocalizedLabel(lc.Name, "lifecycle");
+                    lifecyclesByName.Add(lc.Name, lc);
+                    foreach (C4LifecycleState lcs in lc.States.Values) if (!lifecycleStatesByName.ContainsKey(lcs.Name))
+                        {
+                            lcs.LocalizedName = GetLocalizedLabel(lcs.Name, "lifecycle_state");
+                            lifecycleStatesById.Add((long)lcs.Id, lcs);
+                            lifecycleStatesByName.Add(lcs.Name, lcs);
+                        }
                 }
-            }
+
+            _lifecyclesById = lifecyclesById;
+            _lifecyclesByName = lifecyclesByName;
+            _lifecycleStatesById = lifecycleStatesById;
+            _lifecycleStatesByName = lifecycleStatesByName;
         }
 
 
@@ -208,13 +230,19 @@ namespace C4ServerConnector
 
         private void InitAcls()
         {
-            _aclsById = _c4s.ListAcls();
-            _aclsByName = new Dictionary<string, C4Acl>();
-            foreach (C4Acl a in _aclsById.Values)
-            {
-                a.LocalizedName = GetLocalizedLabel(a.Name, "acl");
-                _aclsByName.Add(a.Name, a);
-            }
+            Dictionary<long, C4Acl> aclsById;
+            Dictionary<string, C4Acl> aclsByName;
+
+            aclsById = _c4s.ListAcls();
+            aclsByName = new Dictionary<string, C4Acl>();
+            foreach (C4Acl a in aclsById.Values) if (!aclsByName.ContainsKey(a.Name))
+                {
+                    a.LocalizedName = GetLocalizedLabel(a.Name, "acl");
+                    aclsByName.Add(a.Name, a);
+                }
+
+            _aclsById = aclsById;
+            _aclsByName = aclsByName;
         }
 
 
@@ -239,13 +267,19 @@ namespace C4ServerConnector
 
         private void InitRelationTypes()
         {
-            _relTypesById = _c4s.ListRelationTypes();
-            _relTypesByName = new Dictionary<string, C4RelationType>();
-            foreach (C4RelationType rt in _relTypesById.Values)
-            {
-                rt.LocalizedName = GetLocalizedLabel(rt.Name, "relation_type");
-                _relTypesByName.Add(rt.Name, rt);
-            }
+            Dictionary<long, C4RelationType> relTypesById;
+            Dictionary<string, C4RelationType> relTypesByName;
+
+            relTypesById = _c4s.ListRelationTypes();
+            relTypesByName = new Dictionary<string, C4RelationType>();
+            foreach (C4RelationType rt in relTypesById.Values) if (!relTypesByName.ContainsKey(rt.Name))
+                {
+                    rt.LocalizedName = GetLocalizedLabel(rt.Name, "relation_type");
+                    relTypesByName.Add(rt.Name, rt);
+                }
+
+            _relTypesById = relTypesById;
+            _relTypesByName = relTypesByName;
         }
 
 
@@ -270,13 +304,19 @@ namespace C4ServerConnector
         }
         private void InitObjectTypes()
         {
-            _objectTypesById = _c4s.ListObjectTypes();
-            _objectTypesByName = new Dictionary<string, C4ObjectType>();
-            foreach (C4ObjectType ot in _objectTypesById.Values)
-            {
-                ot.LocalizedName = GetLocalizedLabel(ot.Name, "object_type");
-                _objectTypesByName.Add(ot.Name, ot);
-            }
+            Dictionary<long, C4ObjectType> objectTypesById;
+            Dictionary<string, C4ObjectType> objectTypesByName;
+
+            objectTypesById = _c4s.ListObjectTypes();
+            objectTypesByName = new Dictionary<string, C4ObjectType>();
+            foreach (C4ObjectType ot in objectTypesById.Values) if (!objectTypesByName.ContainsKey(ot.Name))
+                {
+                    ot.LocalizedName = GetLocalizedLabel(ot.Name, "object_type");
+                    objectTypesByName.Add(ot.Name, ot);
+                }
+
+            _objectTypesById = objectTypesById;
+            _objectTypesByName = objectTypesByName;
         }
 
         public Dictionary<string, C4FolderType> FolderTypesByName
@@ -299,13 +339,19 @@ namespace C4ServerConnector
 
         private void InitFolderTypes()
         {
-            _folderTypesById = _c4s.ListFolderTypes();
-            _folderTypesByName = new Dictionary<string, C4FolderType>();
-            foreach (C4FolderType ft in _folderTypesById.Values)
-            {
-                ft.LocalizedName = GetLocalizedLabel(ft.Name, "folder_type");
-                _folderTypesByName.Add(ft.Name, ft);
-            }
+            Dictionary<long, C4FolderType> folderTypesById;
+            Dictionary<string, C4FolderType> folderTypesByName;
+
+            folderTypesById = _c4s.ListFolderTypes();
+            folderTypesByName = new Dictionary<string, C4FolderType>();
+            foreach (C4FolderType ft in folderTypesById.Values) if (!folderTypesByName.ContainsKey(ft.Name))
+                {
+                    ft.LocalizedName = GetLocalizedLabel(ft.Name, "folder_type");
+                    folderTypesByName.Add(ft.Name, ft);
+                }
+
+            _folderTypesById = folderTypesById;
+            _folderTypesByName = folderTypesByName;
         }
 
 
@@ -332,9 +378,15 @@ namespace C4ServerConnector
 
         private void InitMetasetTypes()
         {
-            _metasetTypesById = _c4s.ListMetasetTypes();
-            _metasetTypesByName = new Dictionary<string, C4MetasetType>();
-            foreach (C4MetasetType mst in _metasetTypesById.Values) _metasetTypesByName.Add(mst.Name, mst);
+            Dictionary<long, C4MetasetType> metasetTypesById;
+            Dictionary<string, C4MetasetType> metasetTypesByName;
+
+            metasetTypesById = _c4s.ListMetasetTypes();
+            metasetTypesByName = new Dictionary<string, C4MetasetType>();
+            foreach (C4MetasetType mst in metasetTypesById.Values) if (!metasetTypesByName.ContainsKey(mst.Name)) metasetTypesByName.Add(mst.Name, mst);
+
+            _metasetTypesById = metasetTypesById;
+            _metasetTypesByName = metasetTypesByName;
         }
 
 
@@ -347,11 +399,12 @@ namespace C4ServerConnector
             {
                 if (_indexItemsByName == null)
                 {
-                    _indexItemsByName = _c4s.ListIndexItems(true);
-                    foreach (C4IndexItem ii in _indexItemsByName.Values)
+                    Dictionary<string, C4IndexItem> indexItemsByName = _c4s.ListIndexItems(true);
+                    foreach (C4IndexItem ii in indexItemsByName.Values)
                     {
                         ii.LocalizedName = GetLocalizedLabel(ii.Name, "index_item");
                     }
+                    _indexItemsByName = indexItemsByName;
                 }
                 return _indexItemsByName;
             }
@@ -368,13 +421,19 @@ namespace C4ServerConnector
         }
         private void InitLanguages()
         {
-            _languagesById = _c4s.ListLanguages();
-            _languagesByName = new Dictionary<string, C4Language>();
-            foreach (C4Language l in _languagesById.Values)
-            {
-                l.LocalizedName = GetLocalizedLabel(l.Name, "language");
-                _languagesByName.Add(l.Name, l);
-            }
+            Dictionary<long, C4Language> languagesById;
+            Dictionary<string, C4Language> languagesByName;
+
+            languagesById = _c4s.ListLanguages();
+            languagesByName = new Dictionary<string, C4Language>();
+            foreach (C4Language l in languagesById.Values) if (!languagesByName.ContainsKey(l.Name))
+                {
+                    l.LocalizedName = GetLocalizedLabel(l.Name, "language");
+                    languagesByName.Add(l.Name, l);
+                }
+
+            _languagesById = languagesById;
+            _languagesByName = languagesByName;
         }
         public Dictionary<string, C4Language> LanguagesByName
         {
@@ -403,13 +462,19 @@ namespace C4ServerConnector
         }
         private void InitUiLanguages()
         {
-            _uiLanguagesById = _c4s.ListUiLanguages();
-            _uiLanguagesByName = new Dictionary<string, C4Language>();
-            foreach (C4Language l in _uiLanguagesById.Values)
-            {
-                l.LocalizedName = GetLocalizedLabel(l.Name, "language");
-                _uiLanguagesByName.Add(l.Name, l);
-            }
+            Dictionary<long, C4Language> uiLanguagesById;
+            Dictionary<string, C4Language> uiLanguagesByName;
+
+            uiLanguagesById = _c4s.ListUiLanguages();
+            uiLanguagesByName = new Dictionary<string, C4Language>();
+            foreach (C4Language l in uiLanguagesById.Values) if (!uiLanguagesByName.ContainsKey(l.Name))
+                {
+                    l.LocalizedName = GetLocalizedLabel(l.Name, "language");
+                    uiLanguagesByName.Add(l.Name, l);
+                }
+
+            _uiLanguagesById = uiLanguagesById;
+            _uiLanguagesByName = uiLanguagesByName;
         }
 
 
@@ -443,15 +508,23 @@ namespace C4ServerConnector
 
         private void InitFormats()
         {
-            _formatsById = _c4s.ListFormats();
-            _formatsByName = new Dictionary<string, C4Format>();
-            _formatsByExt = new Dictionary<string, C4Format>();
-            foreach (C4Format fmt in _formatsById.Values)
-            {
-                fmt.LocalizedName = GetLocalizedLabel(fmt.Name, "format");
-                _formatsByExt.Add(fmt.Extension, fmt);
-                _formatsByName.Add(fmt.Name, fmt);
-            }
+            Dictionary<long, C4Format> formatsById;
+            Dictionary<string, C4Format> formatsByName;
+            Dictionary<string, C4Format> formatsByExt;
+
+            formatsById = _c4s.ListFormats();
+            formatsByName = new Dictionary<string, C4Format>();
+            formatsByExt = new Dictionary<string, C4Format>();
+            foreach (C4Format fmt in formatsById.Values) if (!formatsByName.ContainsKey(fmt.Name) && !formatsByExt.ContainsKey(fmt.Extension))
+                {
+                    fmt.LocalizedName = GetLocalizedLabel(fmt.Name, "format");
+                    formatsByExt.Add(fmt.Extension, fmt);
+                    formatsByName.Add(fmt.Name, fmt);
+                }
+
+            _formatsById = formatsById;
+            _formatsByName = formatsByName;
+            _formatsByExt = formatsByExt;
         }
 
 
@@ -460,9 +533,9 @@ namespace C4ServerConnector
         {
             get
             {
-                if(_notificationFolder==null)
+                if (_notificationFolder == null)
                 {
-                    _notificationFolder = _c4s.GetFolderByPath("/.data/transient/notifications"); 
+                    _notificationFolder = _c4s.GetFolderByPath("/.data/transient/notifications");
                     if (_notificationFolder == null) throw new ApplicationException("Failure getting notification folder.");
                 }
                 return _notificationFolder;
@@ -476,11 +549,12 @@ namespace C4ServerConnector
                 if (_configEntries == null)
                 {
                     Dictionary<long, C4ConfigEntry> cesById = _c4s.ListConfigEntries();
-                    _configEntries = new Dictionary<string, XmlDocument>();
-                    foreach(C4ConfigEntry ce in cesById.Values)
+                    Dictionary<string, XmlDocument> configEntries = new Dictionary<string, XmlDocument>();
+                    foreach (C4ConfigEntry ce in cesById.Values)
                     {
-                        _configEntries.Add(ce.Name, ce.Config);
+                        configEntries.Add(ce.Name, ce.Config);
                     }
+                    _configEntries = configEntries;
                 }
                 return _configEntries;
             }
